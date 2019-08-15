@@ -1,0 +1,19 @@
+{
+	"name": "Aktyn Assistant",
+	"short_name": "Aktyn Assistant",
+	"description": "Voice controlled assistant",
+	"dir": "auto",
+	"lang": "en",
+	"display": "standalone",
+	"orientation": "any",
+	"start_url": "/",
+	"background_color": "#FF5722",
+	"theme_color": "#FF5722",
+	"icons": [
+		{
+			"src": "icon.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}

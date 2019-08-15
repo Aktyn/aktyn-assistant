@@ -1,0 +1,55 @@
+{
+	"name": "aktynassistant",
+	"version": "1.0.0",
+	"description": "voice controlled assistant",
+	"main": "src/main.js",
+	"scripts": {
+		"dev": "NODE_ENV=dev nodemon --watch src/ --exec 'tsc -p ./tsconfig.json && node ./dist/main.js' -e ts",
+		"publish": "rm -rf ./dist && NODE_ENV=prod tsc -p ./tsconfig.json",
+		"run": "NODE_ENV=production node ./dist/main.js",
+		"postinstall": "install-app-deps",
+		"rebuild": "electron-rebuild",
+		"electron": "npm run publish && electron ./dist/main.js",
+		"electron:dev": "NODE_ENV=dev nodemon --watch src/ --watch voice_listener/ --exec 'tsc -p ./tsconfig.json && electron ./dist/main.js'",
+		"electron:build": "npm run publish && build",
+		"pack:windows": "npm run publish && electron-builder --win --x64 portable",
+		"pack:linux": "npm run publish && electron-builder --linux --x64 portable"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Aktyn/AktynAssistant.git"
+	},
+	"keywords": [
+		"voice",
+		"speech",
+		"assistant"
+	],
+	"author": "Aktyn",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Aktyn/AktynAssistant/issues"
+	},
+	"homepage": "https://github.com/Aktyn/AktynAssistant#readme",
+	"devDependencies": {
+		"@types/electron": "^1.6.10",
+		"@types/express": "^4.17.0",
+		"@types/node": "^12.7.2",
+		"nodemon": "^1.19.1",
+		"typescript": "^3.5.3"
+	},
+	"dependencies": {
+		"electron": "^6.0.2",
+		"express": "^4.17.1"
+	},
+	"build": {
+		"appId": "aktyn.assistant",
+		"win": {
+			"target": "portable",
+			"icon": "./voice_listener/icon.png"
+		},
+		"linux": {
+			"target": "AppImage",
+			"icon": "./voice_listener/icon.png"
+		}
+	}
+}

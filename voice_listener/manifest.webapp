@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "name": "Aktyn Assistant",
+  "description": "Voice controlled assistant",
+  "icons": {
+    "512": "/icon.png"
+  },
+  "developer": {
+    "name": "Aktyn",
+    "url": "https://github.com/Aktyn"
+  }
+}
