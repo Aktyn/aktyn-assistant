@@ -6,8 +6,10 @@ const serviceWorkerOption = {
 		"/manifest.json",
 		"/manifest.webapp",
 		"/style.css",
+		"/speech-module.js",
 		"/main.js",
-		"/index.html"
+		"/index.html",
+		"/microphone.svg"
 	]
 };
 

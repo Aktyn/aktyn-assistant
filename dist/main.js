@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const electron_manager_1 = require("./electron_manager");
+const utils_1 = require("./utils");
 console.log('NODE_ENV:', process.env.NODE_ENV);
 const express = require("express");
 const fs = require("fs");
@@ -19,9 +19,5 @@ app.use(express.static(client_dir));
 const index_html = fs.readFileSync(client_dir + '/index.html', 'utf8');
 app.get('*', (req, res) => res.send(index_html));
 console.log('Client files are now accessible through express server');
-electron_manager_1.default.openWindow().catch(e => {
-    if (e.message === electron_manager_1.NO_ELECTRON_ENVIRONMENT_ERROR) {
-    }
-    else
-        console.error(e);
-});
+const execulate = 'google-chrome';
+utils_1.executeCommand(`${execulate} --app=http://localhost:${config_1.default.PORT} --app-shell-host-window-size=512x828`);

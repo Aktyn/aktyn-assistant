@@ -11,12 +11,16 @@
 	<link rel="manifest" href="manifest.json">
 	<link href="style.css" rel="stylesheet">
 	<title>Voice listener</title>
+	<script type="text/javascript" src="speech-module.js"></script>
 </head>
 <body>
-	<div>
-		<button id="install-btn" style="display: none">INSTALL</button>
-		<div id="okay" style="display: none">Okay, Bye</div>
-	</div>
+	<main>
+		<div id="microphone"></div>
+		<div class="results-container">
+			<div class="hider"></div>
+			<div id="results-preview"></div>
+		</div>
+	</main>
 	<script type="text/javascript" src="main.js"></script>
 </body>
 </html>

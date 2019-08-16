@@ -68,13 +68,21 @@ const ElectronManager = {
 	        title: 'Aktyn Assistant installer',
 			icon: path.join(__dirname, '..', 'voice_listener', 'icon.png'),
 		    webPreferences: {
-				nodeIntegration: true,
-				contextIsolation: true,
-				sandbox: true,
+				nodeIntegration: false,
+				//contextIsolation: true,
+				//sandbox: true,
 			    allowRunningInsecureContent: false,
 			    experimentalFeatures: false,
 				webSecurity: true
 			}
+	    });
+	    
+	    window.webContents.setUserAgent(
+	    	'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36'
+	    );
+	    
+	    window.on('closed', function () {
+	        window = null;
 	    });
 	
 	    // Load the index.html
@@ -83,10 +91,6 @@ const ElectronManager = {
 	    //window.setMenu(null);
 		if( process.env.NODE_ENV === 'dev' )
 			window.webContents.toggleDevTools();
-	
-	    window.on('closed', function () {
-	        window = null;
-	    });
 	}
 };
 

@@ -1,13 +1,9 @@
-const electron = new URL(location.href).searchParams.get('electron');
 const service_worker_support = 'serviceWorker' in navigator &&
 	(window.location.protocol === 'https:' || window.location.hostname === 'localhost');
 
-if( electron ) {
-
-}
-
 if( service_worker_support ) {
-	window.addEventListener('beforeinstallprompt', (e) => {
+	console.log('service worker supported');
+	/*window.addEventListener('beforeinstallprompt', (e) => {
 		e.preventDefault();
 		
 		//ready_to_install_event = <BeforeInstallPromptEvent>e;
@@ -16,115 +12,100 @@ if( service_worker_support ) {
 		console.log(e);
 		
 		let install_btn = document.getElementById('install-btn');
-		if(install_btn)
+		if (install_btn)
 			install_btn.style.display = 'initial';
-			install_btn.onclick = () => {
-				e.prompt();
-				e.userChoice.then(choice => {
-					console.log(choice);
-					if(choice.outcome !== 'accepted')
-						closeApp();
-				});
-			};
-		});
+		install_btn.onclick = () => {
+			e.prompt();
+			e.userChoice.then(choice => {
+				console.log(choice);
+				if (choice.outcome !== 'accepted')
+					closeApp();
+			});
+		};
+	});*/
 	
-	navigator.serviceWorker.register('sw.js').catch(console.error);
+	navigator.serviceWorker.register('sw.js').then(() => {
+		console.log('Service worker is registered');
+	}).catch(console.error);
 }
 
 function closeApp() {
 	let okay = document.getElementById('okay');
 	if(okay)
 		okay.style.display = 'block';
+	// close();
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-/**
- * @param  {string} result
- * @return {boolean}
- */
-/*function checkResult(result) {
-	for(let command_name in COMMANDS) {
-		if(command_name in listeners === false)//no listener assigned for this command
-			continue;
-		for(let keyword of COMMANDS[command_name]) {
-			//look for keyword inside result string
-			if( result.toLowerCase().indexOf( keyword.toLowerCase() ) !== -1 ) {
-				listeners[command_name]();//callback
-				return true;
-			}
-		}
-	}
-	return false;
-}*/
-
-// noinspection JSUnresolvedVariable
-let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-if( !SpeechRecognition ) {
-	console.log('SpeechRecognition not supported');
-	SpeechRecognition = function() {
-		// noinspection JSUnusedGlobalSymbols
-		this.start = function(){};
-	};
-}
-
-let recognition = new SpeechRecognition();
-recognition.lang = 'pl-PL';
-recognition.continuous = true;
-recognition.interimResults = true;
-recognition.maxAlternatives = 5;
-
-console.log(recognition);
-
-let recognition_active = false;
-let recognition_start_timestamp = 0;
-let ignore_index = -1;
-
-recognition.onstart = () => {
-	ignore_index = -1;
-	recognition_active = true;
-	recognition_start_timestamp = Date.now();
-	console.log('recognition started');
-};
-recognition.onend = () => {
-	if(recognition_active) {
-		if(Date.now() - recognition_start_timestamp > 1000) {//at least 1 second difference
-			console.log('recognition restarted');
-			recognition_active = false;
-			recognition_start_timestamp = Date.now();
-			recognition.start();//restart recognition
-		}
-	}
-	else
-		console.log('recognition ended');
-};
-
-//recognition.onerror = e => console.error(e);
-
-// noinspection SpellCheckingInspection
-/** @param {SpeechRecognitionEvent} event */
-recognition.onresult = (event) => {
-	let result = event.results[event.results.length-1];
-	//console.log('result:', result);
-
-	if(ignore_index === event.resultIndex) {//recognition already succeeded
-		console.log('further results ignored');
-		return;
-	}
-
-	if(!result.isFinal) {
-		console.log('\tinterim:', result[0].transcript);
-		//if( checkResult(result[0].transcript) )
-		//	ignore_index = event.resultIndex;
-		return;
-
-	}
+const addToPreview = (function() {
+	const container = document.getElementById('results-preview');
+	if(!container)
+		return function() {};
 	
-	for(let j=0; j<result.length; j++) {
-		console.log(`${j>0?'\talternative: ':'final: '}${result[j].transcript} (${result[j].confidence})`);
-		//if( checkResult(result[j].transcript) )
-		//	return;
-	}
-};
+	//test messages
+	/*let i=0;
+	setInterval(() => {
+		addToPreview('test message: ' + (++i));
+	}, 1000);*/
+	
+	/** @type {HTMLDivElement[]} */
+	let buffer = [];
+	
+	/** @param {string} result */
+	return function(result) {
+		let line = document.createElement('div');
+		line.innerText = result;
+		container.appendChild(line);
+		container.scrollTop = container.scrollHeight;
+		
+		buffer.push(line);
+		if(buffer.length > 128)//TODO: let there be less elements and fade away each of them after few seconds
+			buffer.shift().remove();
+	};
+})();
 
-recognition.start();
+(function() {
+	if( !('RECOGNITION' in window) )
+		return;
+	
+	let microphone = document.getElementById('microphone');
+	if(!microphone)
+		return;
+	
+	RECOGNITION.onstart = () => {
+		microphone.classList.add('active');
+	};
+	RECOGNITION.onend = () => {
+		microphone.classList.remove('active');
+	};
+	
+	const THRESHOLD = 0.25;
+	
+	/**
+	 * @param {string} result
+	 * @param {number} confidence
+	 * @param {RESULT_TYPE} type
+	 * @returns Promise<boolean>
+	 */
+	async function onResult(result, confidence, type) {
+		console.log(result, confidence, type);
+		
+		if(confidence < THRESHOLD)
+			return false;
+		
+		addToPreview(result);
+		
+		return false;
+	}
+	RECOGNITION.onresult = onResult;
+	
+	microphone.onclick = () => {
+		if( RECOGNITION.isActive() )
+			RECOGNITION.end();
+		else
+			RECOGNITION.start();
+	};
+	
+	RECOGNITION.start();//auto-start
+})();
