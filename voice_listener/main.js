@@ -1,7 +1,7 @@
 const service_worker_support = 'serviceWorker' in navigator &&
 	(window.location.protocol === 'https:' || window.location.hostname === 'localhost');
 
-if( service_worker_support ) {
+if( service_worker_support && false ) {//TODO: remove "&& false" before publishing
 	console.log('service worker supported');
 	/*window.addEventListener('beforeinstallprompt', (e) => {
 		e.preventDefault();
@@ -29,14 +29,90 @@ if( service_worker_support ) {
 	}).catch(console.error);
 }
 
-function closeApp() {
-	let okay = document.getElementById('okay');
-	if(okay)
-		okay.style.display = 'block';
-	// close();
+///////////////////////////////////////////////////////////////////////
+
+const session_id = new URL(location.href).searchParams.get('session');
+
+//ping server to check session stability
+if( !new URL(location.href).searchParams.get('keepAlive') ) {
+	setInterval(function () {
+		// console.log(session_id);
+		fetch(`${location.origin}/ping?session_id=${session_id}`).then(res => res.text()).then((res) => {
+			//console.log(res);
+			if (res !== 'OK') {
+				close();//closes app
+			}
+		}).catch(e => {
+			console.error(e);
+			close();//closes app
+		});
+	}, 1000);
 }
 
-///////////////////////////////////////////////////////////////////////
+/* LANGUAGE SELECTOR */
+(function() {
+	let selector = document.getElementById('language-selector');
+	if(!selector)
+		return;
+	
+	if( !('RECOGNITION' in window) )
+		return;
+	
+	let open = false;
+	
+	const languages = new Map([
+		['Polski', 'pl-PL'],//first one is the default
+		['English', 'en-US']
+	]);
+	const item_h = 16;
+	selector.style.height = `${item_h}px`;
+	
+	/** @param {Event} e */
+	function switchView(e) {
+		open = !open;
+		if(open) {
+			selector.classList.remove('open');
+			selector.style.height = `${item_h}px`;
+		}
+		else {
+			selector.classList.add('open');
+			selector.style.height = `${item_h * languages.size}px`;
+		}
+		e.preventDefault();
+	}
+	
+	let selected = '';
+	
+	/** @param {string} language_name */
+	function select(language_name) {
+		if(language_name === selected)
+			return;
+		selected = language_name;
+		
+		RECOGNITION.init( languages.get(language_name) );
+		
+		selector.innerText = '';
+		for(let [name] of languages.entries()) {
+			//console.log(name, code);
+			let item = document.createElement('div');
+			item.style.height = `${item_h}px`;
+			item.innerText = name;
+			
+			if(name === language_name)
+				selector.insertBefore(item, selector.firstChild);
+			else
+				selector.appendChild(item);
+			
+			item.onclick = (e) => {
+				if(!open)
+					select(name);
+				switchView(e);
+			}
+		}
+	}
+	
+	select( languages.keys().next().value );
+})();
 
 const addToPreview = (function() {
 	const container = document.getElementById('results-preview');
@@ -47,21 +123,40 @@ const addToPreview = (function() {
 	/*let i=0;
 	setInterval(() => {
 		addToPreview('test message: ' + (++i));
-	}, 1000);*/
+	}, 3000);*/
 	
-	/** @type {HTMLDivElement[]} */
+	/** @type {{div: HTMLDivElement[], confidence: number, index: number}[]} */
 	let buffer = [];
 	
-	/** @param {string} result */
-	return function(result) {
+	/**
+	 * @param {string} result
+	 * @param {number} confidence
+	 * @param {number} index
+	 * */
+	return function(result, confidence, index) {
+		let last_result = buffer[buffer.length-1];
+		
+		if( last_result && last_result.index === index ) {
+			if(confidence >= last_result.confidence) {
+				last_result.div.innerText = result;
+				last_result.confidence = confidence;
+			}
+			return last_result.div;
+		}
+		
 		let line = document.createElement('div');
 		line.innerText = result;
 		container.appendChild(line);
 		container.scrollTop = container.scrollHeight;
 		
-		buffer.push(line);
-		if(buffer.length > 128)//TODO: let there be less elements and fade away each of them after few seconds
-			buffer.shift().remove();
+		buffer.push({
+			div: line,
+			confidence,
+			index
+		});
+		if(buffer.length > 24)
+			buffer.shift().div.remove();
+		return line;
 	};
 })();
 
@@ -80,23 +175,45 @@ const addToPreview = (function() {
 		microphone.classList.remove('active');
 	};
 	
-	const THRESHOLD = 0.25;
+	//const THRESHOLD = 0.25;
+	let check_url = new URL(`${location.origin}/check_result`);
 	
 	/**
 	 * @param {string} result
 	 * @param {number} confidence
+	 * @param {number} index
 	 * @param {RESULT_TYPE} type
 	 * @returns Promise<boolean>
 	 */
-	async function onResult(result, confidence, type) {
-		console.log(result, confidence, type);
+	async function onResult(result, confidence, index, type) {
+		console.log(result, confidence, index, type);
 		
-		if(confidence < THRESHOLD)
+		//if(confidence < THRESHOLD)
+		//	return false;
+		
+		try {
+			let div = addToPreview(result, confidence, index);
+			
+			check_url.searchParams.set('result', result);
+			check_url.searchParams.set('confidence', confidence.toString());
+			check_url.searchParams.set('index', index.toString());
+			check_url.searchParams.set('type', type.toString());
+			//console.log(check_url);
+			
+			//send over GET request
+			
+			let check_result = await fetch(check_url, {method: 'GET'}).then(res => res.text());
+			
+			if( check_result === 'executed' ) {
+				div.classList.add('executed');
+				return true;
+			}
 			return false;
-		
-		addToPreview(result);
-		
-		return false;
+		}
+		catch (e) {
+			console.error(e);
+			return false;
+		}
 	}
 	RECOGNITION.onresult = onResult;
 	

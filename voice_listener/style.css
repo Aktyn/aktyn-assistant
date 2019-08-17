@@ -21,6 +21,7 @@ html, body {
 * {
     outline: none;
     margin: auto;
+    box-sizing: border-box;
 }
 
 main {
@@ -70,7 +71,7 @@ button:active {
     display: block;
     height: 256px;
 }
-#microphone::before {
+#microphone::after {
     content: "";
     display: block;
     /*width: 192px;*/
@@ -82,34 +83,35 @@ button:active {
     background-size: contain;
 
     cursor: pointer;
-    transition: opacity 0.3s ease-in-out, transform 0.3s cubic-bezier(.36,.07,.19,.97);
+    transition: opacity 0.9s ease-in-out, transform 0.5s cubic-bezier(.36,.07,.19,.97);
 }
-#microphone:hover::before {
+#microphone:hover::after {
     transform: scale(1.1);
 }
-#microphone:not(.active)::before {
+#microphone:not(.active)::after {
     opacity: 0.3;
 }
 
-#microphone::after {
+#microphone::before {
     display: block;
+    cursor: pointer;
     /*background-color: #fff2;*/
     height: 98px;
     line-height: 98px;
     font-size: 25px;
     /*background-color: red;*/
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.7s cubic-bezier(.36,.07,.19,.97);
 }
 
-#microphone::after {
+#microphone::before {
     content: "Deactivate";
 }
-#microphone:not(.active)::after {
+#microphone:not(.active)::before {
     content: "Activate";
 }
 
-#microphone:hover::after {
+#microphone:hover::before {
     opacity: 1;
 }
 
@@ -121,6 +123,8 @@ button:active {
     font-weight: normal;
     font-size: 12px;
     position: relative;
+    /*padding: 5px 0;*/
+    /*box-sizing: border-box;*/
 }
 
 .results-container .hider {
@@ -148,7 +152,55 @@ button:active {
 }
 
 #results-preview > * {/*single message line*/
-    animation: fade-in 0.5s ease-in-out;
+    animation: fade-in 0.5s ease-in-out, fade-out 1.5s 60s ease-in-out forwards;/*fade out after a minute*/
+}
+
+#results-preview > .executed {
+    font-weight: bold;
+}
+
+#language-selector {
+    position: fixed;
+    top: 0;
+    right: 0;
+    user-select: none;
+    background-color: #ff8a65;
+    box-shadow: 0 1px 4px #0004;
+
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0 0 1px #0008;
+    /*width: 64px;*/
+    /*height: 16px;*/
+    /*padding: 0 16px;*/
+    overflow: hidden;
+    /*background-color: #FFAB91;*/
+    /*color: #BF360C;*/
+    border: 1px solid #FFAB91;
+    border-top: none;
+    border-right: none;
+    border-bottom-left-radius: 16px;
+    cursor: pointer;
+    /*border-bottom-right-radius: 24px;*/
+
+    opacity: 0.5;
+    transform-origin: 100% 0;
+
+    transition: height 0.3s cubic-bezier(.36,.07,.19,.97), opacity 0.3s ease-in-out,
+        transform 0.3s cubic-bezier(.36,.07,.19,.97);
+}
+
+#language-selector:hover, #language-selector.open {
+    transform: scale(1.5);
+    opacity: 1;
+}
+
+#language-selector > * {
+    padding: 0 16px;
+    background-color: #fff0;
+}
+#language-selector > *:hover {
+    background-color: #FFAB91;
 }
 
 /* animations */
@@ -166,4 +218,8 @@ button:active {
 @keyframes fade-in {
     0%  {opacity: 0}
     100%{opacity: 1}
+}
+@keyframes fade-out {
+    0%  {opacity: 1}
+    100%{opacity: 0}
 }

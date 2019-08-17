@@ -36,3 +36,7 @@ function executeCommand(cmd, timeout = 1000 * 60 * 5) {
     });
 }
 exports.executeCommand = executeCommand;
+function encodeBase64(input) {
+    return Buffer.from(input).toString('base64');
+}
+exports.encodeBase64 = encodeBase64;
