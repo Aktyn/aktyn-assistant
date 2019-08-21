@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const config_1 = require("./config");
 const utils_1 = require("./utils");
+const result_parser_1 = require("./result_parser");
 const SESSION_ID = utils_1.encodeBase64(Date.now().toString());
 const app = express();
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -20,8 +21,14 @@ app.get('/ping', (req, res) => {
     else
         res.send('OK');
 });
-app.get('/check_result', (req, res) => {
-    res.send('ignored');
+app.post('/check_result', (req, res) => {
+    for (let [key, type] of [['result', 'string'], ['confidence', 'number'], ['index', 'number'], ['type', 'number']]) {
+        if (typeof req.body[key] !== type)
+            return res.jsonp({ res: 'incorrect input' });
+    }
+    if (result_parser_1.parseResult(req.body))
+        return res.jsonp({ res: 'executed' });
+    return res.jsonp({ res: 'ignored' });
 });
 const index_html = fs.readFileSync(client_dir + '/index.html', 'utf8');
 app.get('*', (req, res) => res.send(index_html));

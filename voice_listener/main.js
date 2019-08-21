@@ -60,9 +60,10 @@ if( !new URL(location.href).searchParams.get('keepAlive') ) {
 	
 	let open = false;
 	
-	const languages = new Map([
-		['Polski', 'pl-PL'],//first one is the default
-		['English', 'en-US']
+	/** @type {Map<string, string>} */
+	const languages = new Map([//first one is the default
+		['English', 'en-US'],
+		['Polski', 'pl-PL'],
 	]);
 	const item_h = 16;
 	selector.style.height = `${item_h}px`;
@@ -175,7 +176,6 @@ const addToPreview = (function() {
 		microphone.classList.remove('active');
 	};
 	
-	//const THRESHOLD = 0.25;
 	let check_url = new URL(`${location.origin}/check_result`);
 	
 	/**
@@ -186,25 +186,27 @@ const addToPreview = (function() {
 	 * @returns Promise<boolean>
 	 */
 	async function onResult(result, confidence, index, type) {
-		console.log(result, confidence, index, type);
-		
-		//if(confidence < THRESHOLD)
-		//	return false;
+		//console.log(result, confidence, index, type);
 		
 		try {
 			let div = addToPreview(result, confidence, index);
 			
-			check_url.searchParams.set('result', result);
-			check_url.searchParams.set('confidence', confidence.toString());
-			check_url.searchParams.set('index', index.toString());
-			check_url.searchParams.set('type', type.toString());
+			//check_url.searchParams.set('result', result);
+			//check_url.searchParams.set('confidence', confidence.toString());
+			//check_url.searchParams.set('index', index.toString());
+			//check_url.searchParams.set('type', type.toString());
 			//console.log(check_url);
 			
 			//send over GET request
+			let check_result = await fetch(check_url, {
+				method: 'POST',
+				mode: 'cors',
+				headers: {"Content-Type": "application/json; charset=utf-8"},
+				body: JSON.stringify({ result, confidence, index, type })
+			}).then(res => res.json());
+			console.log(check_result);
 			
-			let check_result = await fetch(check_url, {method: 'GET'}).then(res => res.text());
-			
-			if( check_result === 'executed' ) {
+			if( check_result.res === 'executed' ) {
 				div.classList.add('executed');
 				return true;
 			}

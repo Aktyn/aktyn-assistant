@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Config from "./config";
 import {encodeBase64, executeCommand} from "./utils";
+import {parseResult} from './result_parser';
 
 const SESSION_ID = encodeBase64( Date.now().toString() );
 const app = express();
@@ -31,9 +32,16 @@ app.get('/ping', (req, res) => {
 		res.send('OK');
 });
 
-app.get('/check_result', (req, res) => {
-	// res.send('executed');
-	res.send('ignored');
+app.post('/check_result', (req, res) => {//result, confidence, index, type
+	for(let [key, type] of [['result', 'string'], ['confidence', 'number'], ['index', 'number'], ['type', 'number']]) {
+		if( typeof req.body[key] !== type )
+			return res.jsonp({res: 'incorrect input'});
+	}
+	
+	if( parseResult(req.body) )
+		return res.jsonp({res: 'executed'});
+	
+	return res.jsonp({res: 'ignored'});
 });
 
 const index_html = fs.readFileSync(client_dir + '/index.html', 'utf8');
