@@ -2,11 +2,11 @@
 	"name": "aktynassistant",
 	"version": "1.0.0",
 	"description": "voice controlled assistant",
-	"main": "./src/main.ts",
+	"main": "dist/index.js",
 	"scripts": {
-		"dev": "NODE_ENV=dev nodemon --watch src/ --exec 'tsc -p ./tsconfig.json && node ./dist/main.js' -e ts",
+		"dev": "NODE_ENV=dev nodemon --watch src/ --exec 'tsc -p ./tsconfig.json && node ./dist/index.js' -e ts",
 		"publish": "rm -rf ./dist && NODE_ENV=prod tsc -p ./tsconfig.json",
-		"run": "NODE_ENV=production node ./dist/main.js"
+		"run": "NODE_ENV=production node ./dist/index.js"
 	},
 	"repository": {
 		"type": "git",

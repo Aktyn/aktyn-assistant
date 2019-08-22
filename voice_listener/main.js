@@ -62,8 +62,8 @@ if( !new URL(location.href).searchParams.get('keepAlive') ) {
 	
 	/** @type {Map<string, string>} */
 	const languages = new Map([//first one is the default
-		['English', 'en-US'],
 		['Polski', 'pl-PL'],
+		['English', 'en-US']
 	]);
 	const item_h = 16;
 	selector.style.height = `${item_h}px`;
@@ -130,11 +130,17 @@ const addToPreview = (function() {
 	let buffer = [];
 	
 	/**
-	 * @param {string} result
-	 * @param {number} confidence
+	 * @param {{
+	 *     result: string,
+	 *     confidence: number,
+	 *     type: RESULT_TYPE
+	 * }[]} results
 	 * @param {number} index
 	 * */
-	return function(result, confidence, index) {
+	return function(results, index) {
+		// console.log(JSON.stringify(results), index);
+		let {result, confidence} = results.sort((r1, r2) => r2.confidence - r1.confidence)[0];
+		
 		let last_result = buffer[buffer.length-1];
 		
 		if( last_result && last_result.index === index ) {
@@ -179,30 +185,26 @@ const addToPreview = (function() {
 	let check_url = new URL(`${location.origin}/check_result`);
 	
 	/**
-	 * @param {string} result
-	 * @param {number} confidence
+	 * @param {{
+	 *     result: string,
+	 *     confidence: number,
+	 *     type: RESULT_TYPE
+	 * }[]} results
 	 * @param {number} index
-	 * @param {RESULT_TYPE} type
 	 * @returns Promise<boolean>
 	 */
-	async function onResult(result, confidence, index, type) {
+	async function onResult(results, index) {
 		//console.log(result, confidence, index, type);
 		
 		try {
-			let div = addToPreview(result, confidence, index);
-			
-			//check_url.searchParams.set('result', result);
-			//check_url.searchParams.set('confidence', confidence.toString());
-			//check_url.searchParams.set('index', index.toString());
-			//check_url.searchParams.set('type', type.toString());
-			//console.log(check_url);
+			let div = addToPreview(results, index);
 			
 			//send over GET request
 			let check_result = await fetch(check_url, {
 				method: 'POST',
 				mode: 'cors',
 				headers: {"Content-Type": "application/json; charset=utf-8"},
-				body: JSON.stringify({ result, confidence, index, type })
+				body: JSON.stringify({results, index})
 			}).then(res => res.json());
 			console.log(check_result);
 			

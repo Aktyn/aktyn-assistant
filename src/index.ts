@@ -32,13 +32,15 @@ app.get('/ping', (req, res) => {
 		res.send('OK');
 });
 
-app.post('/check_result', (req, res) => {//result, confidence, index, type
-	for(let [key, type] of [['result', 'string'], ['confidence', 'number'], ['index', 'number'], ['type', 'number']]) {
+app.post('/check_result', (req, res) => {//[{result, confidence, index, type}]
+	/*for(let [key, type] of [['result', 'string'], ['confidence', 'number'], ['index', 'number'], ['type', 'number']]) {
 		if( typeof req.body[key] !== type )
 			return res.jsonp({res: 'incorrect input'});
-	}
+	}*/
+	if( !Array.isArray(req.body.results) || typeof req.body.index !== 'number' )
+		return res.jsonp({res: 'incorrect input'});
 	
-	if( parseResult(req.body) )
+	if( parseResult(req.body.results, req.body.index) )
 		return res.jsonp({res: 'executed'});
 	
 	return res.jsonp({res: 'ignored'});
@@ -52,7 +54,7 @@ app.listen(Config.PORT, () => console.log(`Server listens on: ${Config.PORT}!`))
 
 /////////////////////////////////////////////////////////////////////////////////
 
-const executable = 'google-chrome';//TODO - change according to OS
+const executable = 'google-chrome';//TODO - change executable command according to OS
 executeCommand(`${executable} --app=http://localhost:${Config.PORT}?session=${
 	SESSION_ID} --app-shell-host-window-size=256x414`).catch(e =>
 {

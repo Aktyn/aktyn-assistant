@@ -1,22 +1,30 @@
+export const enum RESULT_TYPE {
+	INTERIM = 1,
+	FINAL,
+	ALTERNATIVE
+}
+
 export interface ResultSchema {
 	result: string;
 	confidence: number;
-	index: number;
-	type: number;
+	//index: number;
+	type: RESULT_TYPE;
 }
 
 export default abstract class ProcedureBase {
-	public static readonly regexp = /.*/;//should be overwritten by child classes
+	public static readonly regexp: RegExp | RegExp[] = /.*/;//should be overwritten by child classes
 	
-	protected result: ResultSchema;
+	protected results: ResultSchema[];
 	protected finished = false;
 	
-	protected constructor(result: ResultSchema) {
-		this.result = result;
+	protected constructor(results: ResultSchema[]) {
+		this.results = results;
 	}
 	
-	public update(result: ResultSchema) {
-		this.result = result;
+	public update(results: ResultSchema[]) {
+		//this.results = results;
+		console.warn('This method should\'ve be overwritten or procedure should finish right away in parent class constructor');
+		this.finished = true;
 	}
 	
 	public isFinished() {
@@ -24,6 +32,6 @@ export default abstract class ProcedureBase {
 	}
 }
 
-export abstract class ActiveProcedure extends ProcedureBase {
+/*export abstract class ActiveProcedure extends ProcedureBase {
 	public abstract update(result: ResultSchema): void;
-}
+}*/

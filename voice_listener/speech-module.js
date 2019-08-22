@@ -25,7 +25,6 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 			recognition.stop();
 		
 		recognition = new SpeechRecognition();
-		// recognition.lang = 'pl-PL';
 		// recognition.lang = 'en-US';
 		recognition.lang = lang_code;
 		recognition.continuous = true;
@@ -79,22 +78,40 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 			if (!result.isFinal) {
 				//console.log('\tinterim:', result[0].transcript);
 				if (_module.onresult) {
-					let recognized = await _module.onresult(result[0].transcript,
-						result[0].confidence, event.resultIndex, RESULT_TYPE.INTERIM);
+					//let recognized = await _module.onresult(result[0].transcript,
+					//	result[0].confidence, event.resultIndex, RESULT_TYPE.INTERIM);
+					let recognized = await _module.onresult([{
+						result: result[0].transcript,
+						confidence: result[0].confidence,
+						type: RESULT_TYPE.INTERIM
+					}], event.resultIndex);
 					if (recognized)
 						ignore_index = event.resultIndex;
 				}
 				return;
-				
 			}
 			
-			// noinspection SpellCheckingInspection
-			for (let j = 0; j < result.length; j++) {
-				//console.log(`${j>0?'\talternative: ':'final: '}${result[j].transcript} (${result[j].confidence})`);
+			
+			
+			/*for (let j = 0; j < result.length; j++) {
+				//console.log(result.length, result);
 				if (_module.onresult) {
 					_module.onresult(result[j].transcript, result[j].confidence, event.resultIndex,
 						j > 0 ? RESULT_TYPE.ALTERNATIVE : RESULT_TYPE.FINAL);
 				}
+			}*/
+			if (_module.onresult) {
+				let out_res = [];
+				
+				for (let j = 0; j < result.length; j++) {
+					out_res.push({
+						result: result[j].transcript,
+						confidence: result[j].confidence,
+						type: j > 0 ? RESULT_TYPE.ALTERNATIVE : RESULT_TYPE.FINAL
+					});
+				}
+				
+				_module.onresult(out_res, event.resultIndex);
 			}
 		};
 	}
@@ -102,10 +119,12 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 	/** This function returns interim or final results of speech recognizing
 	    @name OnResult
 	    @function
-	    @param {string} result
-	    @param {number} confidence
-	    @param {number} index
-	    @param {RESULT_TYPE} type
+	    * @param {{
+	    *     result: string,
+	    *     confidence: number,
+	    *     type: RESULT_TYPE
+	    * }[]} results
+	    * @param {number} index
 	    @returns Promise<boolean>
 	 */
 	
