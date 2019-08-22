@@ -1,28 +1,29 @@
 {
-	"name": "aktynassistant",
+	"name": "desktop-voice-assistant",
 	"version": "1.0.0",
-	"description": "voice controlled assistant",
-	"main": "dist/index.js",
+	"description": "Easily extensible voice controlled assistant",
+	"main": "lib/index.js",
 	"scripts": {
-		"dev": "NODE_ENV=dev nodemon --watch src/ --exec 'tsc -p ./tsconfig.json && node ./dist/index.js' -e ts",
-		"publish": "rm -rf ./dist && NODE_ENV=prod tsc -p ./tsconfig.json",
+		"dev": "NODE_ENV=dev nodemon --watch src/ --exec 'tsc -p ./tsconfig.json && npm run test' -e ts",
+		"test": "node ./lib/index.js",
+		"publish": "rm -rf ./lib && NODE_ENV=prod tsc -p ./tsconfig.json",
 		"run": "NODE_ENV=production node ./dist/index.js"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Aktyn/AktynAssistant.git"
+		"url": "git+https://github.com/Aktyn/DesktopVoiceAssistant.git"
 	},
 	"keywords": [
 		"voice",
 		"speech",
 		"assistant"
 	],
-	"author": "Aktyn",
+	"author": "Aktyn <Aktyn3@gmail.com>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Aktyn/AktynAssistant/issues"
+		"url": "https://github.com/Aktyn/DesktopVoiceAssistant/issues"
 	},
-	"homepage": "https://github.com/Aktyn/AktynAssistant#readme",
+	"homepage": "https://github.com/Aktyn/DesktopVoiceAssistant#readme",
 	"devDependencies": {
 		"@types/body-parser": "^1.17.0",
 		"@types/express": "^4.17.0",

@@ -1,36 +1,3 @@
-const service_worker_support = 'serviceWorker' in navigator &&
-	(window.location.protocol === 'https:' || window.location.hostname === 'localhost');
-
-if( service_worker_support && false ) {//TODO: remove "&& false" before publishing
-	console.log('service worker supported');
-	/*window.addEventListener('beforeinstallprompt', (e) => {
-		e.preventDefault();
-		
-		//ready_to_install_event = <BeforeInstallPromptEvent>e;
-		
-		//on ready to install
-		console.log(e);
-		
-		let install_btn = document.getElementById('install-btn');
-		if (install_btn)
-			install_btn.style.display = 'initial';
-		install_btn.onclick = () => {
-			e.prompt();
-			e.userChoice.then(choice => {
-				console.log(choice);
-				if (choice.outcome !== 'accepted')
-					closeApp();
-			});
-		};
-	});*/
-	
-	navigator.serviceWorker.register('sw.js').then(() => {
-		console.log('Service worker is registered');
-	}).catch(console.error);
-}
-
-///////////////////////////////////////////////////////////////////////
-
 const session_id = new URL(location.href).searchParams.get('session');
 
 //ping server to check session stability
@@ -119,12 +86,6 @@ const addToPreview = (function() {
 	const container = document.getElementById('results-preview');
 	if(!container)
 		return function() {};
-	
-	//test messages
-	/*let i=0;
-	setInterval(() => {
-		addToPreview('test message: ' + (++i));
-	}, 3000);*/
 	
 	/** @type {{div: HTMLDivElement[], confidence: number, index: number}[]} */
 	let buffer = [];

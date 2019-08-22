@@ -9,8 +9,8 @@ import {parseResult} from './result_parser';
 const SESSION_ID = encodeBase64( Date.now().toString() );
 const app = express();
 
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('Session:', SESSION_ID);
+//console.log('NODE_ENV:', process.env.NODE_ENV);
+//console.log('Session:', SESSION_ID);
 
 /*app.use(function(req, res, next) {//ALLOW CROSS-DOMAIN REQUESTS
 	res.header('Access-Control-Allow-Origin','*');
@@ -48,9 +48,9 @@ app.post('/check_result', (req, res) => {//[{result, confidence, index, type}]
 
 const index_html = fs.readFileSync(client_dir + '/index.html', 'utf8');
 app.get('*', (req, res) => res.send(index_html));
-console.log('Client files are now accessible through express server');
 
-app.listen(Config.PORT, () => console.log(`Server listens on: ${Config.PORT}!`));
+// app.listen(Config.PORT, () => console.log(`Server listens on: ${Config.PORT}!`));
+app.listen(Config.PORT);
 
 /////////////////////////////////////////////////////////////////////////////////
 
