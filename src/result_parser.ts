@@ -17,8 +17,7 @@ export function useProcedures(procedures: procedure[]) {
 			PROCEDURES.push(procedure);
 		}
 	}
-	
-	console.log( PROCEDURES );
+	//console.log( PROCEDURES );
 }
 
 class ResultHolder {
