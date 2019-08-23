@@ -1,6 +1,6 @@
 const session_id = new URL(location.href).searchParams.get('session');
 
-//ping server to check session stability
+//ping server to check whether current session is still active
 if( !new URL(location.href).searchParams.get('keepAlive') ) {
 	setInterval(function () {
 		// console.log(session_id);
@@ -128,6 +128,67 @@ const addToPreview = (function() {
 	};
 })();
 
+let sendResult = (function() {//send over POST request
+	const check_url = new URL(`${location.origin}/check_result`);
+	/**
+	 * @param {{
+	 *     result: string,
+	 *     confidence: number,
+	 *     type: RESULT_TYPE
+	 * }[]} results
+	 * @param {number} index
+	 * @returns { Promise<{res: string}> }
+	 */
+	return async function sendResult(results, index) {
+		return fetch(check_url, {
+			method: 'POST',
+			mode: 'cors',
+			headers: {"Content-Type": "application/json; charset=utf-8"},
+			body: JSON.stringify({results, index})
+		}).then(res => res.json());
+	}
+})();
+
+/* TEXT COMMANDS */
+(function() {
+	// noinspection JSValidateTypes
+	/** @type {HTMLInputElement} */
+	let input = document.getElementById('text-input');
+	if( !input )
+		return;
+	
+	if( !('RESULT_TYPE' in window) )
+		throw new Error('RESULT_TYPE not found. speech-module.js must be loaded before this script');
+	
+	let text_command_index = -1;//text command indexes are negative
+	
+	async function sendTextCommand() {
+		let command = (input.value || '').trim();
+		if(command.length < 1)
+			return;
+		
+		//add to preview and send to server
+		//NOTE: text command type is final
+		const results = [{result: command, confidence: 1, type: RESULT_TYPE.FINAL}];
+		let div = addToPreview(results, text_command_index);
+		let send_result = await sendResult(results, text_command_index);
+		if( send_result.res === 'executed' )
+			div.classList.add('executed');
+		
+		text_command_index--;
+		
+		input.value = '';//reset input
+	}
+	
+	let sendBtn = document.getElementById('send-btn');
+	if(sendBtn)
+		sendBtn.onclick = sendTextCommand;
+	input.onkeydown = ({key}) => {
+		if(key === 'Enter')
+			sendTextCommand().catch(console.error);
+	};
+})();
+
 (function() {
 	if( !('RECOGNITION' in window) )
 		return;
@@ -143,8 +204,6 @@ const addToPreview = (function() {
 		microphone.classList.remove('active');
 	};
 	
-	let check_url = new URL(`${location.origin}/check_result`);
-	
 	/**
 	 * @param {{
 	 *     result: string,
@@ -159,17 +218,10 @@ const addToPreview = (function() {
 		
 		try {
 			let div = addToPreview(results, index);
+			let send_result = await sendResult(results, index);
+			//console.log(check_result);
 			
-			//send over GET request
-			let check_result = await fetch(check_url, {
-				method: 'POST',
-				mode: 'cors',
-				headers: {"Content-Type": "application/json; charset=utf-8"},
-				body: JSON.stringify({results, index})
-			}).then(res => res.json());
-			console.log(check_result);
-			
-			if( check_result.res === 'executed' ) {
+			if( send_result.res === 'executed' ) {
 				div.classList.add('executed');
 				return true;
 			}

@@ -7,7 +7,6 @@ export const enum RESULT_TYPE {
 export interface ResultSchema {
 	result: string;
 	confidence: number;
-	//index: number;
 	type: RESULT_TYPE;
 }
 

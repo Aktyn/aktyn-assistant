@@ -1,3 +1,9 @@
+window.RESULT_TYPE = window.RESULT_TYPE || {
+	INTERIM: 1,
+	FINAL: 2,
+	ALTERNATIVE: 3
+};
+
 window.RECOGNITION = window.RECOGNITION || (function() {
 	// noinspection JSUnresolvedVariable
 	let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -8,12 +14,6 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 			this.start = function(){};
 		};
 	}
-	
-	const RESULT_TYPE = {
-		INTERIM: 1,
-		FINAL: 2,
-		ALTERNATIVE: 3
-	};
 	
 	/** @type {SpeechRecognition | null} */
 	let recognition = null;

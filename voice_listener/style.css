@@ -3,14 +3,16 @@ cubic-bezier(.87,-.41,.19,1.44)*/
 
 html, body {
     font-family: Arial, sans-serif;
-    background-color: #FF8A65;
+    /*background-color: #FF8A65;!*FF7043*!*/
+    background: linear-gradient(45deg, #FF7043, #FF8A65);
     text-align: center;
-    color: #fff;
+    color: #FFCCBC;
     margin: 0;
     padding: 0;
     max-height: 100vh;
     max-width: 100vw;
     height: 100%;
+    width: 100%;
     overflow: hidden;
 
     display: flex;
@@ -25,42 +27,19 @@ html, body {
 }
 
 main {
-    /*background-color: #fff2;*/
+    background: linear-gradient(45deg, #FF7043, #FF8A65);
+    /*background-color: #FF8A65;*/
+    /*border: 1px solid #FF7043;*/
+    box-shadow: 0 4px 8px #0004;
+    box-sizing: content-box;
+    overflow: visible;
     width: 256px;
     height: 414px;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 256px 158px;/*158 = 414-256*/
+    grid-template-rows: 256px 128px 30px;/*128 = 414-256-30*/
     align-items: center;
     justify-items: center;
-}
-
-button {
-    /*background-color: #FF5722;*/
-    background-color: #fff0;
-    cursor: pointer;
-    color: #fff;
-    font-weight: bold;
-    font-size: 30px;
-    padding: 20px 40px;
-    border: 1px solid #fff;
-    border-radius: 100px;
-    box-shadow: 0 3px 6px #0004;
-
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out,
-        box-shadow 0.1s ease-in-out;
-
-    opacity: 0;
-    animation: pop-in 0.5s cubic-bezier(.87,-.41,.19,1.44) forwards;
-}
-
-button:hover {
-    background-color: #fff;
-    color: #FF8A65;
-    border-color: #FF8A65;
-}
-button:active {
-    box-shadow: 0 0 4px #0004;
 }
 
 #okay {
@@ -83,7 +62,7 @@ button:active {
     background-size: contain;
 
     cursor: pointer;
-    transition: opacity 0.9s ease-in-out, transform 0.5s cubic-bezier(.36,.07,.19,.97);
+    transition: opacity 0.9s ease-in-out, transform 0.4s cubic-bezier(.36,.07,.19,.97);
 }
 #microphone:hover::after {
     transform: scale(1.1);
@@ -96,12 +75,13 @@ button:active {
     display: block;
     cursor: pointer;
     /*background-color: #fff2;*/
+    color: #FFCCBC;
     height: 98px;
     line-height: 98px;
     font-size: 25px;
     /*background-color: red;*/
     opacity: 0;
-    transition: opacity 0.7s cubic-bezier(.36,.07,.19,.97);
+    transition: opacity 0.4s cubic-bezier(.36,.07,.19,.97);
 }
 
 #microphone::before {
@@ -117,7 +97,7 @@ button:active {
 
 .results-container {
     width: 100%;
-    height: 158px;
+    height: 128px;/*158 - 30*/
     overflow: hidden;
     /*background-color: #fff2;*/
     font-weight: normal;
@@ -133,10 +113,11 @@ button:active {
     left: 0;
     top: 0;
     width: 100%;
-    height: 50px;
+    height: 20px;
 
     z-index: 2;
-    background: linear-gradient(#ff8a65, transparent);
+    /*background: linear-gradient(#ff8a65, transparent);*/
+    border-top: 1px solid #FF8A65;
 }
 
 #results-preview {
@@ -157,6 +138,69 @@ button:active {
 
 #results-preview > .executed {
     font-weight: bold;
+}
+
+.input-holder {
+    content: "x";
+    height: 30px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 208px 48px;/*208 = 256-48; 48 = floor(30*1.618)*/
+    align-items: center;
+    justify-content: stretch;
+    justify-items: stretch;
+}
+
+.input-holder > * {
+    height: 30px;
+    border: none;
+    border-top: 1px solid #FF8A65;
+}
+
+.input-holder > input {
+    width: 100%;
+
+    background-color: transparent;
+    font-size: 13px;
+    font-weight: normal;
+    text-shadow: 0 0 1px #FF5722;
+    padding: 0 5px;
+    color: #fff;
+}
+
+.input-holder > input, .input-holder > input ~ * {
+    transition: border-color 0.2s ease-in-out;
+}
+
+.input-holder > input::placeholder {
+    color: #FFAB91;
+}
+.input-holder > input:focus, .input-holder > input:focus ~ * {
+    border-color: #FFAB91;
+}
+
+.input-holder > #send-btn {/*send button*/
+    width: 48px;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+.input-holder > #send-btn::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    background: url('./send.svg') center no-repeat;
+    background-size: auto 61.8%;
+    opacity: 0.4;
+
+    transition: opacity 0.2s ease-in-out;
+}
+
+.input-holder > #send-btn:hover::after {
+    opacity: 1;
 }
 
 #language-selector {

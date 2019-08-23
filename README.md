@@ -1,2 +1,2 @@
-<h3>Aktyn Assistant</h3>
-Voice controlled assistant
+<h3>Desktop Voice Assistant</h3>
+Voice controlled assistant for desktop environment

@@ -1,15 +1,25 @@
 import ProcedureBase, {ResultSchema} from "./procedures/procedure_base";
-import ShowDesktop from "./procedures/show_desktop";
-import Calculate from "./procedures/calculate";
 
-function extendType<T>(procedures: T): T & ProcedureBase[] {
-	return procedures as T & ProcedureBase[];
+export type procedure = Function & typeof ProcedureBase;
+const PROCEDURES: procedure[] = [];
+
+export function useProcedures(procedures: procedure[]) {
+	for(let procedure of procedures) {
+		if( typeof procedure.regexp !== 'object' )
+			console.error(`Given procedure must be a class that contains static parameter "regexp" which is a single regular expression or array of regular expressions (${procedure.name})`);
+		else if( (<any>procedure.regexp).source === /.*/.source )
+			console.error(`"regexp" parameter must differ from the default one: /.*/ (${procedure.name})`);
+		else {
+			if( typeof procedure.prototype.isFinished !== 'function' ) {
+				console.warn(`Procedure class should contain method "isFinished" to ignore further results after procedure finishes (${procedure.name})`);
+			}
+			
+			PROCEDURES.push(procedure);
+		}
+	}
+	
+	console.log( PROCEDURES );
 }
-
-const PROCEDURES = extendType([
-	ShowDesktop,
-	Calculate
-]);
 
 class ResultHolder {
 	private results: ResultSchema[];
@@ -28,8 +38,10 @@ class ResultHolder {
 	}
 	
 	public execute() {
-		if( this.procedure )
-			this.procedure.update( this.results );
+		if( this.procedure ) {
+			if( typeof this.procedure.update === 'function' )
+				this.procedure.update(this.results);
+		}
 		else {
 			let matching_procedures = PROCEDURES.filter(p => {
 				if( Array.isArray(p.regexp) ) {
@@ -53,10 +65,11 @@ class ResultHolder {
 				return false;
 			}
 			
-			this.procedure = new matching_procedures[0](this.results);
+			//this.procedure = new matching_procedures[0](this.results);
+			this.procedure = <ProcedureBase>Reflect.construct(matching_procedures[0], [this.results]);
 		}
 		
-		return this.procedure.isFinished();
+		return (typeof this.procedure.isFinished === 'function') && this.procedure.isFinished();
 	}
 }
 
