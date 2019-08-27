@@ -1,4 +1,10 @@
 import ProcedureBase, {RESULT_TYPE, ResultSchema} from "./procedure_base";
+import {convertInfixToPostfix, calculatePostfix} from "./infix_calculator";
+import * as notifier from 'node-notifier';
+
+notifier.on('click', function(notifierObject, options) {
+	console.log('Notification clicked', options);
+});
 
 interface OperationSchema {
 	symbol: string;
@@ -30,7 +36,7 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 	//replace operation names
 	[ operations.add.symbol,        [/plus/, /doda[cć]/]            ],
 	[ operations.subtract.symbol,   [/minus/, /odj[aą][cć]/]        ],
-	[ operations.multiply.symbol,   [/razy/]                        ],
+	[ operations.multiply.symbol,   [/razy/, /x/]                        ],
 	[ operations.divide.symbol,     [/podzieli[cć] (na|przez)?/]    ],
 	[ operations.power.symbol,      (input) => {
 		let match = input.match(/do ([^ ]+) pot[eę]gi/);
@@ -54,6 +60,7 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 	[ '7', [/siedem/, /si[oó]dmej/]             ],
 	[ '8', [/osiem/, /[oó]smej/]                ],
 	[ '9', [/dziewi[eę][cć]/, /dziewi[aą]tej/]  ],
+	[ '10', [/dziesi[eę][cć]/, /dziesi[aą]tej/] ],
 ]);
 
 export class Calculate extends ProcedureBase {
@@ -91,21 +98,37 @@ export class Calculate extends ProcedureBase {
 		//clean
 		const operation_symbols: string[] = Object.values(operations).map(op => escapeRegExp(op.symbol));
 		//console.log(operation_symbols);
-		const symbols_regexp = new RegExp([/\d/.source, /\(/.source, /\)/.source, ...operation_symbols]
+		const symbols_regexp = new RegExp([/\d+[.,]?\d*/.source, /\(/.source, /\)/.source, ...operation_symbols]
 			.join('|'), 'gi');
 		//console.log('test', symbols_regexp);
 		formatted_sentence = (formatted_sentence.match(symbols_regexp) || []).join('');
 		
+		
+		
+		let postfix = convertInfixToPostfix(formatted_sentence);
+		let result = calculatePostfix(postfix);
+		
+		console.log(formatted_sentence + ' = ' + result);
+		
+		notifier.notify({//TODO: use listener chrome window for notifications
+			title: 'Calculation result: ' + result,
+			message: formatted_sentence + ' = ' + result,
+			sound: false,
+			wait: true
+		});
+		
+		this.notification = {
+			content: formatted_sentence + ' = ' + result
+		};
 		this.finished = true;
-		console.log(formatted_sentence);
 	}
 }
 
 (() => {//tests
 	let samples = [
 		'oblicz 5+4',
-		'oblicz 3 plus 2 razy 2 - 7',
-		'oblicz 5 kwadrat dodać 4 do sześcianu podzielić przez trzy do drugiej potęgi'
+		'oblicz 5 plus 2 razy 3 - 7',
+		'oblicz 5.28 kwadrat dodać 4,5 do sześcianu podzielić przez trzy do drugiej potęgi'
 	];
 	for(let s of samples) {
 		let procedure = new Calculate([{result: s, type: RESULT_TYPE.FINAL, confidence: 1}]);

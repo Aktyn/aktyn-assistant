@@ -33,7 +33,7 @@ export function init(use_procedures: procedure[], config: Partial<ConfigSchema> 
 	let listener_url = `http://${ip.address()}:${config.port}`;
 	
 	if( config.open_listener ) {
-		listener_url += `?session=${SESSION_ID}`;
+		listener_url = listener_url.replace(ip.address(), 'localhost') + `?session=${SESSION_ID}`;
 		
 		executeCommand(`${config.chrome_command} --app=${listener_url} --chrome-frame --app-shell-host-window-size=256x414 --ash-host-window-bounds=256x414 --content-shell-host-window-size=256x414 --window-size=256,414`)
 			.catch(e => console.error(e));

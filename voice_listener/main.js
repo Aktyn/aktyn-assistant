@@ -140,12 +140,23 @@ let sendResult = (function() {//send over POST request
 	 * @returns { Promise<{res: string}> }
 	 */
 	return async function sendResult(results, index) {
-		return fetch(check_url, {
+		let response = await fetch(check_url, {
 			method: 'POST',
 			mode: 'cors',
 			headers: {"Content-Type": "application/json; charset=utf-8"},
 			body: JSON.stringify({results, index})
 		}).then(res => res.json());
+		
+		//console.log(response);
+		if(response.notify) {
+			if(Notification.permission !== 'granted') {
+				let permission_result = await Notification.requestPermission();
+				console.log(permission_result);
+			}
+			new Notification( response.notify.content );
+		}
+		
+		return response;
 	}
 })();
 

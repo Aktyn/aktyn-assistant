@@ -32,15 +32,12 @@ export default {
 				res.send('OK');
 		});
 		
-		app.post('/check_result', (req, res) => {//[{result, confidence, index, type}]
+		app.post('/check_result', (req, res) => {//[{result, confidence, type}], index
 			try {
 				if (!Array.isArray(req.body.results) || typeof req.body.index !== 'number')
 					return res.jsonp({res: 'incorrect input'});
-				
-				if (parseResult(req.body.results, req.body.index))
-					return res.jsonp({res: 'executed'});
-				
-				return res.jsonp({res: 'ignored'});
+				let response: {[index: string]: any, res: string} = parseResult(req.body.results, req.body.index);
+				return res.jsonp(response);
 			}
 			catch(e) {
 				console.error(e);

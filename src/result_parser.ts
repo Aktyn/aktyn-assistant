@@ -26,14 +26,14 @@ class ResultHolder {
 	private procedure: ProcedureBase | null = null;
 	
 	constructor(results: ResultSchema[], index: number) {
-		this.results = results;
+		this.results = results || [];
 		this.index = index;
 	}
 	
 	public update(updated_results: ResultSchema[], index: number) {
 		if( this.index !== index )
 			this.procedure = null;//DISCARD PROCEDURE
-		this.results = updated_results;
+		this.results = updated_results || [];
 	}
 	
 	public execute() {
@@ -70,19 +70,27 @@ class ResultHolder {
 		
 		return (typeof this.procedure.isFinished === 'function') && this.procedure.isFinished();
 	}
+	
+	public getNotification() {
+		if( this.procedure )
+			return this.procedure.notification;
+		return undefined;
+	}
 }
 
 let holder: ResultHolder | null;
 
-export function parseResult(results: ResultSchema[], index: number) {//returns true if result was executed
+export function parseResult(results: ResultSchema[], index: number) {
 	if( holder )
 		holder.update(results, index);
 	else
 		holder = new ResultHolder(results, index);
 	
 	if( holder.execute() ) {
+		if( holder.getNotification() )
+			return {res: 'executed', notify: holder.getNotification()};
 		holder = null;
-		return true;
+		return {res: 'executed'};
 	}
-	return false;
+	return {res: 'ignored'};
 }
