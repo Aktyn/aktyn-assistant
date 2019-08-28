@@ -35,7 +35,3 @@ export function executeCommand(cmd: string, timeout = 1000 * 60 * 5): Promise<st
 		}
 	});
 }
-
-export function encodeBase64(input: string) {
-	return Buffer.from(input).toString('base64');
-}

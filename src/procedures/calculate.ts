@@ -1,10 +1,5 @@
-import ProcedureBase, {RESULT_TYPE, ResultSchema} from "./procedure_base";
-import {convertInfixToPostfix, calculatePostfix} from "./infix_calculator";
-import * as notifier from 'node-notifier';
-
-notifier.on('click', function(notifierObject, options) {
-	console.log('Notification clicked', options);
-});
+import {ProcedureBase, RESULT_TYPE, ResultSchema} from "./procedure_base";
+import {calculateInfix} from "./common/infix_calculator";
 
 interface OperationSchema {
 	symbol: string;
@@ -25,6 +20,9 @@ const operations: {[index: string]: OperationSchema} = {
 	},
 	power: {
 		symbol: '^'
+	},
+	factorial: {
+		symbol: '!'
 	}
 };
 
@@ -36,8 +34,9 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 	//replace operation names
 	[ operations.add.symbol,        [/plus/, /doda[cć]/]            ],
 	[ operations.subtract.symbol,   [/minus/, /odj[aą][cć]/]        ],
-	[ operations.multiply.symbol,   [/razy/, /x/]                        ],
+	[ operations.multiply.symbol,   [/razy/, /x/]                   ],
 	[ operations.divide.symbol,     [/podzieli[cć] (na|przez)?/]    ],
+	[ operations.factorial.symbol,  [/silnia/]                      ],
 	[ operations.power.symbol,      (input) => {
 		let match = input.match(/do ([^ ]+) pot[eę]gi/);
 		if(match) {
@@ -103,19 +102,9 @@ export class Calculate extends ProcedureBase {
 		//console.log('test', symbols_regexp);
 		formatted_sentence = (formatted_sentence.match(symbols_regexp) || []).join('');
 		
-		
-		
-		let postfix = convertInfixToPostfix(formatted_sentence);
-		let result = calculatePostfix(postfix);
+		let result = calculateInfix(formatted_sentence);
 		
 		console.log(formatted_sentence + ' = ' + result);
-		
-		notifier.notify({//TODO: use listener chrome window for notifications
-			title: 'Calculation result: ' + result,
-			message: formatted_sentence + ' = ' + result,
-			sound: false,
-			wait: true
-		});
 		
 		this.notification = {
 			content: formatted_sentence + ' = ' + result
@@ -124,9 +113,9 @@ export class Calculate extends ProcedureBase {
 	}
 }
 
-(() => {//tests
+/*(() => {//tests
 	let samples = [
-		'oblicz 5+4',
+		'oblicz 20!',
 		'oblicz 5 plus 2 razy 3 - 7',
 		'oblicz 5.28 kwadrat dodać 4,5 do sześcianu podzielić przez trzy do drugiej potęgi'
 	];
@@ -135,4 +124,4 @@ export class Calculate extends ProcedureBase {
 		if( !procedure.isFinished() )
 			console.error('Test not passed for sentence: ' + s);
 	}
-})();
+})();*/

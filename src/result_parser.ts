@@ -1,4 +1,4 @@
-import ProcedureBase, {ResultSchema} from "./procedures/procedure_base";
+import {ProcedureBase, ResultSchema} from "./procedures/procedure_base";
 
 export type procedure = Function & typeof ProcedureBase;
 const PROCEDURES: procedure[] = [];

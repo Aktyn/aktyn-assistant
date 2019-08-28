@@ -14,8 +14,8 @@ export interface NotificationParams {
 	content: string;
 }
 
-export default abstract class ProcedureBase {
-	public static readonly regexp: RegExp | RegExp[] = /.*/;//should be overwritten by child classes
+export abstract class ProcedureBase {
+	public static regexp: RegExp | RegExp[] = /.*/;//should be overwritten by child classes
 	
 	protected results: ResultSchema[];
 	protected finished = false;
