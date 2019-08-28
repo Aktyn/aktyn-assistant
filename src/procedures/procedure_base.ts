@@ -26,7 +26,6 @@ export abstract class ProcedureBase {
 	}
 	
 	public update(results: ResultSchema[]) {
-		//this.results = results;
 		console.warn('This method should\'ve be overwritten or procedure should finish right away in parent class constructor');
 		this.finished = true;
 	}
@@ -35,7 +34,3 @@ export abstract class ProcedureBase {
 		return this.finished;
 	}
 }
-
-/*export abstract class ActiveProcedure extends ProcedureBase {
-	public abstract update(result: ResultSchema): void;
-}*/

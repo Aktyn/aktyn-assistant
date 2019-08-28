@@ -19,6 +19,8 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 	let recognition = null;
 	let recognition_active = false;
 	
+	let ignore_index = -1;
+	
 	/** @param {string} lang_code */
 	function init(lang_code) {
 		if( recognition )
@@ -34,7 +36,6 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 		console.log(recognition);
 		
 		let recognition_start_timestamp = 0;
-		let ignore_index = -1;
 		
 		recognition.onstart = () => {
 			ignore_index = -1;
@@ -80,18 +81,16 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 				if (_module.onresult) {
 					//let recognized = await _module.onresult(result[0].transcript,
 					//	result[0].confidence, event.resultIndex, RESULT_TYPE.INTERIM);
-					let recognized = await _module.onresult([{
+					/*let recognized = */await _module.onresult([{
 						result: result[0].transcript,
 						confidence: result[0].confidence,
 						type: RESULT_TYPE.INTERIM
 					}], event.resultIndex);
-					if (recognized)
-						ignore_index = event.resultIndex;
+					//if (recognized)
+					//	ignore_index = event.resultIndex;
 				}
 				return;
 			}
-			
-			
 			
 			/*for (let j = 0; j < result.length; j++) {
 				//console.log(result.length, result);
@@ -157,6 +156,11 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 		
 		isActive() {
 			return recognition_active;
+		},
+		
+		/** @param {number} index */
+		ignoreIndex(index) {
+			ignore_index = index;
 		}
 	};
 	return _module;

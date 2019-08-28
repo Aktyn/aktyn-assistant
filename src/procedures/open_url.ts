@@ -1,11 +1,11 @@
 import {ProcedureBase, RESULT_TYPE, ResultSchema} from "./procedure_base";
 import * as open from 'open';
 
-const predefined = new Map([
-	[/googlr/,      'https://google.com'],
-	[/youtube/,     'https://youtube.com'],
-	[/facebook/,    'https://facebook.com'],
-	[/messenger/,   'https://facebook.com/messages/t']
+const predefined = new Map([//NOTE: regexps should have 'i' flag
+	[/google/i,      'https://google.com'],
+	[/youtube/i,     'https://youtube.com'],
+	[/facebook/i,    'https://facebook.com'],
+	[/messenger/i,   'https://facebook.com/messages/t']
 ]);
 
 export class OpenUrl extends ProcedureBase {
@@ -25,8 +25,8 @@ export class OpenUrl extends ProcedureBase {
 		//from most to least confident result
 		for(let {result} of results.sort((r1, r2) => r2.confidence - r1.confidence)) {
 			
-			//TODO: handle slashes in urls like: "drive.google.com/drive/folders"
-			let url_match = result.trim().match(/([^. /:]+\.[a-z]{2,3})$/i);
+			//TODO: handle slashes in urls like: "drive.google.com/drive/folders" "Otwórz komiksy pl ukośnik nowość"
+			let url_match = result.trim().match(/([^. /:]+[. ][a-z]{2,3})$/i);
 			if(!url_match || !url_match[0]) {
 				//try predefined website
 				for(let [regexp, href] of predefined.entries()) {

@@ -1,20 +1,74 @@
-const session_id = new URL(location.href).searchParams.get('session');
+const url = new URL(location.href);
+const ws_port = url.searchParams.get('wsPort');
 
-//ping server to check whether current session is still active
-if( !new URL(location.href).searchParams.get('keepAlive') ) {
-	setInterval(function () {
-		// console.log(session_id);
-		fetch(`${location.origin}/ping?session_id=${session_id}`).then(res => res.text()).then((res) => {
-			//console.log(res);
-			if (res !== 'OK') {
-				close();//closes app
+const noop = function(){};
+
+/* WEBSOCKET CONNECTION */
+const sendMessage = (function() {
+	if( !('RECOGNITION' in window) )
+		return noop;
+	
+	const ws_address = `ws://${location.hostname || 'localhost'}:${ws_port}`;
+	
+	let socket = new WebSocket(ws_address);
+	
+	/** @param {Object} data */
+	async function handleJSON(data) {
+		console.log( 'data', data );
+		
+		if( data.res === 'executed' ) {
+			markExecuted(data.index);
+			RECOGNITION.ignoreIndex(data.index);
+		}
+		
+		if(data.notify) {
+			if(Notification.permission !== 'granted') {
+				let permission_result = await Notification.requestPermission();
+				console.log(permission_result);
 			}
-		}).catch(e => {
+			new Notification( data.notify.content );
+		}
+	}
+	
+	socket.onopen = async function () {
+		console.log('OPEN!!');
+	};
+	
+	socket.onmessage = function (message) {
+		console.log('message from server:', message);
+		if (message.isTrusted !== true)
+			return;
+		
+		try {
+			if (typeof message.data === 'string')//JSON object
+				handleJSON( JSON.parse(message.data) ).catch(console.error);
+			else
+				console.error('Incorrect message type');
+		} catch (e) {
+			console.error(e, message && message.data);
+		}
+	};
+	
+	socket.onclose = function () {
+		close();//closes app
+	};
+	socket.onerror = function (error) {
+		console.error('Socket error:', error);
+		close();//closes app
+	};
+	
+	/**
+	 * @param {Object} data
+	 */
+	return function(data) {
+		try {
+			socket.send(JSON.stringify(data));
+		}
+		catch(e) {
 			console.error(e);
-			close();//closes app
-		});
-	}, 1000);
-}
+		}
+	};
+})();
 
 /* LANGUAGE SELECTOR */
 (function() {
@@ -82,82 +136,60 @@ if( !new URL(location.href).searchParams.get('keepAlive') ) {
 	select( languages.keys().next().value );
 })();
 
-const addToPreview = (function() {
+const [addToPreview, markExecuted] = (function() {
 	const container = document.getElementById('results-preview');
 	if(!container)
-		return function() {};
+		return [noop, noop];
 	
-	/** @type {{div: HTMLDivElement[], confidence: number, index: number}[]} */
+	/** @type {{div: HTMLDivElement, confidence: number, index: number}[]} */
 	let buffer = [];
 	
-	/**
-	 * @param {{
-	 *     result: string,
-	 *     confidence: number,
-	 *     type: RESULT_TYPE
-	 * }[]} results
-	 * @param {number} index
-	 * */
-	return function(results, index) {
-		// console.log(JSON.stringify(results), index);
-		let {result, confidence} = results.sort((r1, r2) => r2.confidence - r1.confidence)[0];
-		
-		let last_result = buffer[buffer.length-1];
-		
-		if( last_result && last_result.index === index ) {
-			if(confidence >= last_result.confidence) {
-				last_result.div.innerText = result;
-				last_result.confidence = confidence;
+	return [
+		/**
+		 * @param {{
+		 *     result: string,
+		 *     confidence: number,
+		 *     type: RESULT_TYPE
+		 * }[]} results
+		 * @param {number} index
+		 * */
+		function addToPreview(results, index) {
+			// console.log(JSON.stringify(results), index);
+			let {result, confidence} = results.sort((r1, r2) => r2.confidence - r1.confidence)[0];
+			
+			let last_result = buffer[buffer.length-1];
+			
+			if( last_result && last_result.index === index ) {
+				if(confidence >= last_result.confidence) {
+					last_result.div.innerText = result;
+					last_result.confidence = confidence;
+				}
+				return last_result.div;
 			}
-			return last_result.div;
+			
+			let line = document.createElement('div');
+			line.innerText = result;
+			container.appendChild(line);
+			container.scrollTop = container.scrollHeight;
+			
+			buffer.push({
+				div: line,
+				confidence,
+				index
+			});
+			if(buffer.length > 24)
+				buffer.shift().div.remove();
+		},
+		
+		/**
+		 * @param {number} index
+		 * */
+		function markExecuted(index) {
+			let last = buffer[buffer.length-1];
+			if(last.index === index)
+				last.div.classList.add('executed');
 		}
-		
-		let line = document.createElement('div');
-		line.innerText = result;
-		container.appendChild(line);
-		container.scrollTop = container.scrollHeight;
-		
-		buffer.push({
-			div: line,
-			confidence,
-			index
-		});
-		if(buffer.length > 24)
-			buffer.shift().div.remove();
-		return line;
-	};
-})();
-
-let sendResult = (function() {//send over POST request
-	const check_url = new URL(`${location.origin}/check_result`);
-	/**
-	 * @param {{
-	 *     result: string,
-	 *     confidence: number,
-	 *     type: RESULT_TYPE
-	 * }[]} results
-	 * @param {number} index
-	 * @returns { Promise<{res: string}> }
-	 */
-	return async function sendResult(results, index) {
-		let response = await fetch(check_url, {
-			method: 'POST',
-			mode: 'cors',
-			headers: {"Content-Type": "application/json; charset=utf-8"},
-			body: JSON.stringify({results, index})
-		}).then(res => res.json());
-		
-		//console.log(response);
-		if(response.notify) {
-			if(Notification.permission !== 'granted') {
-				let permission_result = await Notification.requestPermission();
-				console.log(permission_result);
-			}
-			new Notification( response.notify.content );
-		}
-		
-		return response;
-	}
+	];
 })();
 
 /* TEXT COMMANDS */
@@ -181,10 +213,8 @@ let sendResult = (function() {//send over POST request
 		//add to preview and send to server
 		//NOTE: text command type is final
 		const results = [{result: command, confidence: 1, type: RESULT_TYPE.FINAL}];
-		let div = addToPreview(results, text_command_index);
-		let send_result = await sendResult(results, text_command_index);
-		if( send_result.res === 'executed' )
-			div.classList.add('executed');
+		addToPreview(results, text_command_index);
+		await sendMessage({results, index: text_command_index});
 		
 		text_command_index--;
 		
@@ -222,26 +252,12 @@ let sendResult = (function() {//send over POST request
 	 *     type: RESULT_TYPE
 	 * }[]} results
 	 * @param {number} index
-	 * @returns Promise<boolean>
 	 */
-	async function onResult(results, index) {
+	function onResult(results, index) {
 		//console.log(result, confidence, index, type);
 		
-		try {
-			let div = addToPreview(results, index);
-			let send_result = await sendResult(results, index);
-			//console.log(check_result);
-			
-			if( send_result.res === 'executed' ) {
-				div.classList.add('executed');
-				return true;
-			}
-			return false;
-		}
-		catch (e) {
-			console.error(e);
-			return false;
-		}
+		addToPreview(results, index);
+		sendMessage({results, index});
 	}
 	RECOGNITION.onresult = onResult;
 	

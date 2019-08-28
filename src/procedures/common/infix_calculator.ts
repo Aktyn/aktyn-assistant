@@ -114,8 +114,6 @@ function convertInfixToPostfix(expression: string) {
 		else if(typeof element === 'object') {//Operator
 			let op = <Operator>infix[index];
 			
-			//if( op === operators.get('-') && (index === 0 || infix[index-1] === '(' || infix[in]) )
-			
 			while(typeof stack[stack.length-1] === 'object' && (<Operator>stack[stack.length-1]).priority >= op.priority)
 				postfix.push( <Operator>stack.pop() );
 			

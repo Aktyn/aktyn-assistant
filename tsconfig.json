@@ -1,7 +1,7 @@
 {
 	"include": [
-		"./src/index.ts",
-		"./src/procedures/*.ts"
+		"./src/index.ts"
+		//"./src/procedures/*.ts"
 	],
 	"exclude": [
 		"./node_modules",

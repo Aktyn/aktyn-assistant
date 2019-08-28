@@ -82,6 +82,8 @@ export class Calculate extends ProcedureBase {
 		//get most confident sentence that is math command
 		let equation_sentence = results.filter(res => Calculate.isMathCommand(res.result))
 			.sort((r1, r2) => r2.confidence - r1.confidence)[0];
+		if(!equation_sentence)
+			return;
 		
 		let formatted_sentence = equation_sentence.result;//.replace(/\s/g, '');
 
@@ -117,7 +119,9 @@ export class Calculate extends ProcedureBase {
 	let samples = [
 		'oblicz 20!',
 		'oblicz 5 plus 2 razy 3 - 7',
-		'oblicz 5.28 kwadrat dodać 4,5 do sześcianu podzielić przez trzy do drugiej potęgi'
+		'oblicz 5.28 kwadrat dodać 4,5 do sześcianu podzielić przez trzy do drugiej potęgi',
+		'Oblicz cosinus 20 stopni',
+		'oblicz 5 silnia minus 2'//TODO: fix this
 	];
 	for(let s of samples) {
 		let procedure = new Calculate([{result: s, type: RESULT_TYPE.FINAL, confidence: 1}]);
