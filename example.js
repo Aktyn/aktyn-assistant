@@ -1,7 +1,10 @@
 const Assistant = require('./lib');//it would be require('desktop-voice-assistant') in your project
 const { ProcedureBase } = require('./lib/procedures/procedure_base');
 
-class MyProcedure extends ProcedureBase {//it is not necessary to extend your class
+const open = require('open');//only for case of this example
+
+//Example procedure which opens google.com page with search results
+class MyProcedureSearch extends ProcedureBase {//it's not necessary but recommended to extend your class
 	/**
 	 @param {ResultSchema[]} results
 	 */
@@ -9,7 +12,7 @@ class MyProcedure extends ProcedureBase {//it is not necessary to extend your cl
 		super(results);
 		
 		//PREPARE SOMETHING HERE OR HANDLE IT AND FINISH OR PASS TO UPDATE
-		console.log('doing something');
+		console.log('prepare something');
 		
 		this.update(results);
 	}
@@ -22,19 +25,20 @@ class MyProcedure extends ProcedureBase {//it is not necessary to extend your cl
 		results.sort((r1, r2) => r2.confidence - r1.confidence);
 		
 		for(let {result} of results) {//from most confident
-			if( result.match(/do something better/i) )
-				console.log('Something better :)');
+			let match = result.match(/search (.*)/i);
+			
+			if( match )
+				open('https://google.com/search?q=' + encodeURI(match[1].trim())).catch(console.error);
 		}
 		
-		console.log('something has been done');
 		this.finished = true;
 	}
 }
-MyProcedure.regexp = [/do something/i];//you say those words to trigger procedure
+MyProcedureSearch.regexp = [/^search .+/i];//you say those words to trigger procedure
 
 /***********************************************************************************/
 
-Assistant.init([...Assistant.procedures, MyProcedure], {
+Assistant.init([...Assistant.procedures, MyProcedureSearch], {
 	open_listener: true,
 	ws_port: 3456,//ws_port for websocket connection
 	express_port: 4567,//required for browser notifications to work or for listening from other location

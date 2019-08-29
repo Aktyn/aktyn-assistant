@@ -1,31 +1,28 @@
-interface Operator {
+interface Operation {
+	apply: (...args: (number|bigint)[]) => (number | bigint);
 	priority: number;
-	apply(...args: number[]): number;
 	arguments: number;
 }
 
-const operators = new Map<string, Operator>([
+const operators = new Map<string, Operation>([
 	['+', {
 		priority: 1,
-		apply: (a, b) => a+b,
+		apply: (a, b) => Number(a)+Number(b),
 		arguments: 2
 	}],
 	['-', {
 		priority: 1,
-		apply: (a, b) => {
-			console.log('test', a,b);
-			return a-b;
-		},
+		apply: (a, b) => Number(a)-Number(b),
 		arguments: 2
 	}],
 	['*', {
 		priority: 2,
-		apply: (a, b) => a*b,
+		apply: (a, b) => Number(a)*Number(b),
 		arguments: 2
 	}],
 	['/', {
 		priority: 2,
-		apply: (a, b) => a/b,
+		apply: (a, b) => Number(a)/Number(b),
 		arguments: 2
 	}],
 	['~', {//negation
@@ -36,15 +33,38 @@ const operators = new Map<string, Operator>([
 	
 	['^', {
 		priority: 4,
-		apply: (a, b) => Math.pow(a, b),
+		apply: (b,p) => Math.pow(<number>b, <number>p),
 		arguments: 2
 	}],
 	
 	['!', {
 		priority: 5,
-		apply: function(n) {
-			return n > 1 ? n*this.apply(n-1) : 1;
+		apply: function(n) {//factorial
+			let out: bigint = BigInt(1);
+			for(let i=2; i<=n; i++)
+				out *= BigInt(i);
+			return out;
+			//return n > 1 ? n*this.apply(n-1) : 1;
 		},
+		arguments: 1
+	}],
+]);
+
+//NOTE: functions names should be 3 letters long
+const functions = new Map<string, Operation>([
+	['sin', {
+		priority: 6,
+		apply: a => Math.sin(<number>a),
+		arguments: 1
+	}],
+	['cos', {
+		priority: 6,
+		apply: a => Math.cos(<number>a),
+		arguments: 1
+	}],
+	['tan', {
+		priority: 6,
+		apply: a => Math.tan(<number>a),
 		arguments: 1
 	}],
 ]);
@@ -65,32 +85,38 @@ function convertInfixToPostfix(expression: string) {
 	expression = expression.replace(/[\[{]/g, '(')
 		.replace(/[\]}]/g, ')').replace(/\s/g, '');
 	
-	let infix: (string | number | Operator)[] = [];//variables, numbers or operators
+	let infix: (string | number | Operation)[] = [];//variables, numbers or operators
 	for(let i=0; i<expression.length; i++) {
-		let found_operand: Operator | undefined;
-		if( expression[i] === '-' && (i===0 || expression[i-1] === '(' || operators.has(expression[i-1])) ) {
-			infix.push( <Operator>operators.get('~') );
+		let prev_operator: Operation | undefined;
+		let found_operator = operators.get(expression[i]);
+		let found_func = functions.get( expression.substr(i, 3) );
+		
+		if( expression[i] === '-' && (i===0 || expression[i-1] === '(' ||
+			( !!(prev_operator = operators.get(expression[i-1])) && prev_operator.priority < 4 )) )
+		{
+			infix.push( <Operation>operators.get('~') );
 		}
-		else if( (found_operand = operators.get(expression[i])) ) {
-			infix.push(found_operand);
+		else if( found_operator ) {
+			infix.push(found_operator);
 		}
 		else if( !isNaN(parseInt(expression[i])) ) {
 			let num = extractNumber( expression, i );
 			i += num.length - 1;
 			infix.push( parseFloat(num) );
 		}
-		else {//TODO: search for function
-			
-			//for now add bracelet symbol or any letter
-			infix.push( expression[i] );
+		else if(found_func) {
+			// console.log('found func:', found_func);
+			infix.push(found_func);
 		}
+		else
+			infix.push( expression[i] );
 	}
 	infix.push(')');
 	
-	//console.log( 'infix:', infix );
+	//console.log('infix:', infix);
 	
-	let stack: ('(' | ')' | Operator)[] = ['('];
-	let postfix: (number | Operator)[] = [];
+	let stack: ('(' | ')' | Operation)[] = ['('];
+	let postfix: (number | Operation)[] = [];
 	
 	let index = 0;
 	while( stack.length > 0 ) {
@@ -107,15 +133,15 @@ function convertInfixToPostfix(expression: string) {
 				stack.push(element);
 			else if(element === ')') {
 				while( stack[stack.length-1] !== '(' )
-					postfix.push( <Operator>stack.pop() );
+					postfix.push( <Operation>stack.pop() );
 				stack.pop();//removes left parenthesis
 			}
 		}
 		else if(typeof element === 'object') {//Operator
-			let op = <Operator>infix[index];
+			let op = <Operation>infix[index];
 			
-			while(typeof stack[stack.length-1] === 'object' && (<Operator>stack[stack.length-1]).priority >= op.priority)
-				postfix.push( <Operator>stack.pop() );
+			while(typeof stack[stack.length-1] === 'object' && (<Operation>stack[stack.length-1]).priority >= op.priority)
+				postfix.push( <Operation>stack.pop() );
 			
 			stack.push(op);
 		}
@@ -127,8 +153,8 @@ function convertInfixToPostfix(expression: string) {
 	return postfix;
 }
 
-function calculatePostfix(postfix: (number | Operator)[]) {
-	let stack: number[] = [];
+function calculatePostfix(postfix: (number | Operation)[]) {
+	let stack: (number | bigint)[] = [];
 	for(let element of postfix) {
 		if( typeof element !== 'object' )//number
 			stack.push( element );

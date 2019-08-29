@@ -23,6 +23,15 @@ const operations: {[index: string]: OperationSchema} = {
 	},
 	factorial: {
 		symbol: '!'
+	},
+	sinus: {
+		symbol: 'sin'
+	},
+	cosinus: {
+		symbol: 'cos'
+	},
+	tangent: {
+		symbol: 'tan'
 	}
 };
 
@@ -47,6 +56,21 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 	}                                                               ],
 	[ operations.power.symbol+'2',  [/(do)? kwadratu?/]             ],
 	[ operations.power.symbol+'3',  [/(do)? sze[sś]cianu?/]         ],
+	[ operations.sinus.symbol,      (input) => {
+		let match = input.match(/sinus (\d+[.,]?\d*) stopni/);
+		return match ? `${input.substring(0, match.index)} sin(${match[1]}) ${
+			input.substr((match.index||0)+match[0].length)}` : input;
+	}                                                               ],
+	[ operations.cosinus.symbol,      (input) => {
+		let match = input.match(/cosinus (\d+[.,]?\d*) stopni/);
+		return match ? `${input.substring(0, match.index)} cos(${match[1]}) ${
+			input.substr((match.index||0)+match[0].length)}` : input;
+	}                                                               ],
+	[ operations.tangent.symbol,      (input) => {
+		let match = input.match(/tangens (\d+[.,]?\d*) stopni/);
+		return match ? `${input.substring(0, match.index)} tan(${match[1]}) ${
+			input.substr((match.index||0)+match[0].length)}` : input;
+	}                                                               ],
 	
 	//replace numbers
 	[ '0', [/zero/, /zerowej/]                  ],
@@ -63,7 +87,7 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 ]);
 
 export class Calculate extends ProcedureBase {
-	static readonly regexp = /oblicz \d+[.,]?\d*/i;
+	static readonly regexp = /^oblicz \d+[.,]?\d*/i;
 	
 	constructor(results: ResultSchema[]) {
 		super(results);
@@ -117,11 +141,11 @@ export class Calculate extends ProcedureBase {
 
 /*(() => {//tests
 	let samples = [
-		'oblicz 20!',
+		'oblicz 30 silnia',
 		'oblicz 5 plus 2 razy 3 - 7',
 		'oblicz 5.28 kwadrat dodać 4,5 do sześcianu podzielić przez trzy do drugiej potęgi',
-		'Oblicz cosinus 20 stopni',
-		'oblicz 5 silnia minus 2'//TODO: fix this
+		'Oblicz sinus 69 stopni kwadrat dodać cosinus 69 stopni kwadrat',
+		'oblicz 5 silnia minus 2'
 	];
 	for(let s of samples) {
 		let procedure = new Calculate([{result: s, type: RESULT_TYPE.FINAL, confidence: 1}]);

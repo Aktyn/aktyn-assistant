@@ -9,7 +9,7 @@ const predefined = new Map([//NOTE: regexps should have 'i' flag
 ]);
 
 export class OpenUrl extends ProcedureBase {
-	static readonly regexp = [/otw[oó]rz (link|adres|stron[eę])?/i, /open (url|website|page)?/i];
+	static readonly regexp = [/^otw[oó]rz (link|adres|stron[eę])?/i, /^open (url|website|page)?/i];
 	
 	constructor(results: ResultSchema[]) {
 		super(results);
@@ -25,8 +25,7 @@ export class OpenUrl extends ProcedureBase {
 		//from most to least confident result
 		for(let {result} of results.sort((r1, r2) => r2.confidence - r1.confidence)) {
 			
-			//TODO: handle slashes in urls like: "drive.google.com/drive/folders" "Otwórz komiksy pl ukośnik nowość"
-			let url_match = result.trim().match(/([^. /:]+[. ][a-z]{2,3})$/i);
+			let url_match = result.trim().match(/([^. /:]+[. ][a-z]{2,3})( ?uko[sś]nik ?.+)*$/i);
 			if(!url_match || !url_match[0]) {
 				//try predefined website
 				for(let [regexp, href] of predefined.entries()) {
@@ -39,7 +38,9 @@ export class OpenUrl extends ProcedureBase {
 				continue;//try with next result
 			}
 			
-			open( 'http://' + url_match[0] ).catch(console.error);
+			open( 'http://' + url_match[0].trim().replace(/ ?uko[sś]nik ?/gi, '/')
+				.replace(/\s/g, '.') )
+				.catch(console.error);
 			return;
 		}
 	}
