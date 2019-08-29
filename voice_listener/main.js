@@ -21,6 +21,14 @@ const sendMessage = (function() {
 			RECOGNITION.ignoreIndex(data.index);
 		}
 		
+		if(data.answer) {
+			printAnswer(data.answer.message);
+			
+			if(data.answer.loud) {
+				//TODO: speech synthesis
+			}
+		}
+		
 		if(data.notify) {
 			if(Notification.permission !== 'granted') {
 				let permission_result = await Notification.requestPermission();
@@ -136,13 +144,16 @@ const sendMessage = (function() {
 	select( languages.keys().next().value );
 })();
 
-const [addToPreview, markExecuted] = (function() {
+const [addToPreview, printAnswer, markExecuted] = (function() {
 	const container = document.getElementById('results-preview');
 	if(!container)
 		return [noop, noop];
 	
 	/** @type {{div: HTMLDivElement, confidence: number, index: number}[]} */
 	let buffer = [];
+	
+	/** @type {HTMLDivElement[]} */
+	let answers = [];
 	
 	return [
 		/**
@@ -179,6 +190,20 @@ const [addToPreview, markExecuted] = (function() {
 			});
 			if(buffer.length > 24)
 				buffer.shift().div.remove();
+		},
+		
+		/**
+		 * @param {string} message
+		 */
+		function printAnswer(message) {
+			let div = document.createElement('div');
+			div.innerText = 'Assistant: ' + message;
+			container.appendChild(div);
+			container.scrollTop = container.scrollHeight;
+			
+			answers.push(div);
+			if(answers.length > 24)
+				answers.shift().remove();
 		},
 		
 		/**

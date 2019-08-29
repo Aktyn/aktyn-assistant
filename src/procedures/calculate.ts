@@ -129,11 +129,16 @@ export class Calculate extends ProcedureBase {
 		formatted_sentence = (formatted_sentence.match(symbols_regexp) || []).join('');
 		
 		let result = calculateInfix(formatted_sentence);
+		let equation = formatted_sentence + ' = ' + result;
 		
-		console.log(formatted_sentence + ' = ' + result);
+		console.log(equation);
 		
 		this.notification = {
-			content: formatted_sentence + ' = ' + result
+			content: equation
+		};
+		this.answer = {
+			message: equation,
+			loud: true
 		};
 		this.finished = true;
 	}

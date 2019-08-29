@@ -10,6 +10,11 @@ export interface ResultSchema {
 	type: RESULT_TYPE;
 }
 
+export interface AnswerSchema {
+	message: string;
+	loud: boolean;//use speech synthesis in chrome browser to speak message
+}
+
 export interface NotificationParams {
 	content: string;
 }
@@ -19,7 +24,8 @@ export abstract class ProcedureBase {
 	
 	protected results: ResultSchema[];
 	protected finished = false;
-	public notification: NotificationParams | undefined;
+	public answer: AnswerSchema | undefined;//prints answer in listener window
+	public notification: NotificationParams | undefined;//shows notification after procedure finished
 	
 	protected constructor(results: ResultSchema[]) {
 		this.results = results;

@@ -71,10 +71,8 @@ class ResultHolder {
 		return (typeof this.procedure.isFinished === 'function') && this.procedure.isFinished();
 	}
 	
-	public getNotification() {
-		if( this.procedure )
-			return this.procedure.notification;
-		return undefined;
+	public getProcedure() {
+		return this.procedure;
 	}
 }
 
@@ -87,8 +85,9 @@ export function parseResult(results: ResultSchema[], index: number) {
 		holder = new ResultHolder(results, index);
 	
 	if( holder.execute() ) {
-		if( holder.getNotification() )
-			return {res: 'executed', notify: holder.getNotification()};
+		let procedure = holder.getProcedure();
+		if( procedure )
+			return {res: 'executed', notify: procedure.notification, answer: procedure.answer};
 		holder = null;
 		return {res: 'executed'};
 	}

@@ -32,6 +32,17 @@ class MyProcedureSearch extends ProcedureBase {//it's not necessary but recommen
 		}
 		
 		this.finished = true;
+		
+		// IF YOU WANT TO SHOW NOTIFICATION OR PRINT ANSWER IN LISTENER WINDOW - YOU CAN DO IT LIKE THAT
+		/*******************************
+			this.notification = {
+				content: equation
+			};
+			this.answer = {
+				message: equation,
+				loud: true
+			};
+		*******************************/
 	}
 }
 MyProcedureSearch.regexp = [/^search .+/i];//you say those words to trigger procedure
