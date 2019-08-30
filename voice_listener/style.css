@@ -44,10 +44,6 @@ main {
     position: relative;
 }
 
-#okay {
-    padding: 20px;
-}
-
 #microphone {
     display: block;
     height: 256px;

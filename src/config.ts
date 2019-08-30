@@ -10,7 +10,16 @@ export const CONFIG: ConfigSchema = {//NOTE: no undefined values
 	"ws_port": 3456,
 	"express_port": 4567,
 	"open_listener": true,
-	"chrome_command": 'google-chrome',//TODO: change default chrome command according to OS
+	"chrome_command": (platform => {
+		switch(platform) {
+			case 'win32': return 'start chrome';
+			case 'linux': return 'google-chrome';
+			default:
+				console.warn('Unresolved platform');
+				break;
+		}
+		return 'google-chrome';
+	})(process.platform),
 	"use_native_notifications": false
 };
 

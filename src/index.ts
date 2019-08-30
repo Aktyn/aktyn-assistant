@@ -51,7 +51,9 @@ export async function init(use_procedures: procedure[], params: Partial<ConfigSc
 	}
 	
 	if( config.open_listener )
-		await executeCommand(`${config.chrome_command} --app=${app_value} ${chrome_args}`).catch(console.error);
+		await executeCommand(`${config.chrome_command} --app=${app_value} ${chrome_args}`).catch(e => {
+			console.error('Cannot open google chrome: ' + e);
+		});
 	
 	return app_value;
 }

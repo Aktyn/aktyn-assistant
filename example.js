@@ -1,6 +1,6 @@
 const Assistant = require('./lib');//it would be require('desktop-voice-assistant') in your project
 
-const open = require('open');//only for case of this example
+const open = require('open');//only for matter of this example
 
 //Example procedure which opens google.com page with search results
 class MyProcedureSearch extends Assistant.ProcedureBase {//it's not necessary but recommended to extend your class
@@ -53,6 +53,6 @@ Assistant.init([...Assistant.procedures, MyProcedureSearch], {
 	open_listener: true,
 	ws_port: 3456,//ws_port for websocket connection
 	express_port: 4567,//required for browser notifications to work or for listening from other location
-	chrome_command: 'google-chrome',//or absolute path to google-chrome executable
+	//chrome_command: 'start chrome',//or absolute path to google chrome executable
 	use_native_notifications: false//if false - notifications will be handled by browser
 }).catch(console.error);
