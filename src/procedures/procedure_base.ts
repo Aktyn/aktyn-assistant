@@ -12,8 +12,8 @@ export interface ResultSchema {
 
 export interface AnswerSchema {
 	message: string;
-	loud_message?: string;
 	loud: boolean;//use speech synthesis in chrome browser to speak message
+	loud_message?: string;//overwrites messages if you want something else to be say than printed
 }
 
 export interface NotificationParams {

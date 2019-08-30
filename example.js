@@ -48,6 +48,7 @@ MyProcedureSearch.regexp = [/^search .+/i];//you say anything that matches any o
 
 /***********************************************************************************/
 
+//procedures can be installed like any node package
 Assistant.init([...Assistant.procedures, MyProcedureSearch], {
 	open_listener: true,
 	ws_port: 3456,//ws_port for websocket connection
