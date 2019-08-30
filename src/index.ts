@@ -4,6 +4,7 @@ import {executeCommand} from "./procedures/common/utils";
 
 import {OpenUrl} from "./procedures/open_url";
 import {Calculate} from "./procedures/calculate";
+export {ProcedureBase} from "./procedures/procedure_base";
 import {procedure, useProcedures} from "./result_parser";
 import * as ip from 'ip';
 import {ConfigSchema, setConfig} from "./config";

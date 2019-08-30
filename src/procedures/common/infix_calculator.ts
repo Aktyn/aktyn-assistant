@@ -54,17 +54,17 @@ const operators = new Map<string, Operation>([
 const functions = new Map<string, Operation>([
 	['sin', {
 		priority: 6,
-		apply: a => Math.sin(<number>a),
+		apply: a => Math.sin(<number>a / 180.0 * Math.PI),
 		arguments: 1
 	}],
 	['cos', {
 		priority: 6,
-		apply: a => Math.cos(<number>a),
+		apply: a => Math.cos(<number>a / 180.0 * Math.PI),
 		arguments: 1
 	}],
 	['tan', {
 		priority: 6,
-		apply: a => Math.tan(<number>a),
+		apply: a => Math.tan(<number>a / 180.0 * Math.PI),
 		arguments: 1
 	}],
 ]);

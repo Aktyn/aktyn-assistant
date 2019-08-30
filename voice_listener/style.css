@@ -32,7 +32,7 @@ main {
     /*border: 1px solid #FF7043;*/
     box-shadow: 0 4px 8px #0004;
     box-sizing: content-box;
-    overflow: visible;
+    overflow: hidden;
     width: 256px;
     height: 414px;
     display: grid;
@@ -40,6 +40,8 @@ main {
     grid-template-rows: 256px 128px 30px;/*128 = 414-256-30*/
     align-items: center;
     justify-items: center;
+
+    position: relative;
 }
 
 #okay {
@@ -58,7 +60,7 @@ main {
     width: 158px;
     height: 158px;
 
-    background: url('./microphone.svg') center no-repeat;
+    background: url('img/microphone.svg') center no-repeat;
     background-size: contain;
 
     cursor: pointer;
@@ -192,7 +194,7 @@ main {
     width: 100%;
     height: 100%;
 
-    background: url('./send.svg') center no-repeat;
+    background: url('img/send.svg') center no-repeat;
     background-size: auto 61.8%;
     opacity: 0.4;
 
@@ -204,12 +206,13 @@ main {
 }
 
 #language-selector {
-    position: fixed;
+    position: absolute;
     top: 0;
-    right: 0;
+    left: 0;
     user-select: none;
     background-color: #ff8a65;
     box-shadow: 0 1px 4px #0004;
+    color: #fff;
 
     font-size: 12px;
     font-weight: bold;
@@ -222,20 +225,20 @@ main {
     /*color: #BF360C;*/
     border: 1px solid #FFAB91;
     border-top: none;
-    border-right: none;
-    border-bottom-left-radius: 16px;
+    border-left: none;
+    border-bottom-right-radius: 4px;
     cursor: pointer;
     /*border-bottom-right-radius: 24px;*/
 
     opacity: 0.5;
-    transform-origin: 100% 0;
+    transform-origin: 0 0;
 
     transition: height 0.3s cubic-bezier(.36,.07,.19,.97), opacity 0.3s ease-in-out,
         transform 0.3s cubic-bezier(.36,.07,.19,.97);
 }
 
 #language-selector:hover, #language-selector.open {
-    transform: scale(1.5);
+    transform: scale(1.25);
     opacity: 1;
 }
 
@@ -245,6 +248,119 @@ main {
 }
 #language-selector > *:hover {
     background-color: #FFAB91;
+}
+
+#volume-settings {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 4px;
+    cursor: pointer;
+
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+#volume-settings::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 32px;
+    width: 32px;
+
+    background: url('./img/volume_up.svg') center no-repeat;
+    background-size: 80%;
+    opacity: 0.3;
+    transform: scale(1);
+
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+#volume-settings.muted::before {
+    background-image: url('./img/volume_mute.svg');
+}
+
+#volume-settings:hover {
+    width: 158px;
+}
+#volume-settings:hover::before {
+    opacity: 0;
+    transform: scale(0.4);
+}
+
+#volume-settings > .volume-panel {
+    height: 32px;
+    text-align: right;
+    padding: 0 4px;
+    transform: translateX(100%);
+    color: #fff;
+    font-size: 12px;
+    transition: transform 0.5s cubic-bezier(.87,-.41,.19,1.44);
+    white-space: nowrap;
+
+    display: grid;
+    width: 100%;
+    grid-template-columns: 18px 18px auto 18px 18px;
+    align-items: center;
+    justify-items: stretch;
+    flex-direction: row;
+    user-select: none;
+}
+
+#volume-settings:hover > .volume-panel {
+    transform: translateX(0%);
+}
+
+#volume-settings > .volume-panel > button {
+    width: 18px;
+    height: 18px;
+    background: center no-repeat;
+    background-size: contain;
+    border: none;
+    opacity: 0.3;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: opacity 0.3s ease-in-out;
+}
+
+#volume-settings > .volume-panel > button:hover {
+    opacity: 1;
+}
+
+.volume-bar-holder {
+    width: 100%;
+    height: 32px;
+    line-height: 32px;
+    text-align: left;
+}
+
+#volume-bar {
+    align-self: start;
+    display: inline-block;
+
+    vertical-align: middle;
+    height: 2px;
+    background-color: #fff6;
+
+    width: 0;
+    transition: width 0.3s ease-in-out;
+}
+
+#mute-btn {
+    background-image: url('./img/volume_mute.svg') !important;
+}
+#volume-max-btn {
+    background-image: url('./img/volume_up.svg') !important;
 }
 
 /* animations */

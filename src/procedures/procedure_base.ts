@@ -12,6 +12,7 @@ export interface ResultSchema {
 
 export interface AnswerSchema {
 	message: string;
+	loud_message?: string;
 	loud: boolean;//use speech synthesis in chrome browser to speak message
 }
 

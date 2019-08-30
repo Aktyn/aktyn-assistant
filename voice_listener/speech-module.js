@@ -5,15 +5,28 @@ window.RESULT_TYPE = window.RESULT_TYPE || {
 };
 
 window.RECOGNITION = window.RECOGNITION || (function() {
+	const noop = function() {};
+	
+	let speechSynthesis = window.speechSynthesis || {
+		speak: noop
+	};
+	let volume = parseFloat(localStorage.getItem('volume') || '0.5');
+	
 	// noinspection JSUnresolvedVariable
 	let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 	if( !SpeechRecognition ) {
 		console.warn('SpeechRecognition not supported');
 		SpeechRecognition = function() {
 			// noinspection JSUnusedGlobalSymbols
-			this.start = function(){};
+			this.start = noop;
 		};
 	}
+	
+	/** @type {SpeechSynthesisUtterance | null} */
+	let synthesis = null;
+	
+	/** @type {Function} */
+	let setVolume = noop;
 	
 	/** @type {SpeechRecognition | null} */
 	let recognition = null;
@@ -23,6 +36,51 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 	
 	/** @param {string} lang_code */
 	function init(lang_code) {
+		setVolume = (function() {
+			let volume_bar = document.getElementById('volume-bar');
+			if(!volume_bar) {
+				console.error('No element with volume-bar id found');
+				return noop;
+			}
+			
+			let volume_settings = document.getElementById('volume-settings');
+			
+			let mute_btn = document.getElementById('mute-btn');
+			if(mute_btn)
+				mute_btn.onclick = () => setVolume(0);
+			let volume_max_btn = document.getElementById('volume-max-btn');
+			if(volume_max_btn)
+				volume_max_btn.onclick = () => setVolume(1);
+			
+			const VOLUME_STEP = 0.2;
+			
+			let volume_down = document.getElementById('volume-down');
+			if(volume_down)
+				volume_down.onclick = () => setVolume( Math.max(0, volume-VOLUME_STEP) );
+			let volume_up = document.getElementById('volume-up');
+			if(volume_up)
+				volume_up.onclick = () => setVolume( Math.min(1, volume+VOLUME_STEP) );
+			
+			/**
+			 @param {number} vol
+			 */
+			return function(vol) {
+				volume = vol;
+				localStorage.setItem('volume', volume.toString());
+				volume_bar.style.width = `${(volume*100)|0}%`;
+				synthesis.volume = volume;
+				
+				if(volume_settings) {
+					if (volume > 0.001)
+						volume_settings.classList.remove('muted');
+					else
+						volume_settings.classList.add('muted');
+				}
+			};
+		})();
+		synthesis = new SpeechSynthesisUtterance();
+		setVolume(volume);
+		
 		if( recognition )
 			recognition.stop();
 		
@@ -161,6 +219,18 @@ window.RECOGNITION = window.RECOGNITION || (function() {
 		/** @param {number} index */
 		ignoreIndex(index) {
 			ignore_index = index;
+		},
+		
+		setVolume,
+		
+		/**
+		 @param {string} text
+		 */
+		speak(text) {
+			if(volume <= 0.001)
+				return;
+			synthesis.text = text;
+			speechSynthesis.speak(synthesis);
 		}
 	};
 	return _module;

@@ -56,14 +56,14 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 	}                                                               ],
 	[ operations.power.symbol+'2',  [/(do)? kwadratu?/]             ],
 	[ operations.power.symbol+'3',  [/(do)? sze[sś]cianu?/]         ],
-	[ operations.sinus.symbol,      (input) => {
-		let match = input.match(/sinus (\d+[.,]?\d*) stopni/);
-		return match ? `${input.substring(0, match.index)} sin(${match[1]}) ${
-			input.substr((match.index||0)+match[0].length)}` : input;
-	}                                                               ],
 	[ operations.cosinus.symbol,      (input) => {
 		let match = input.match(/cosinus (\d+[.,]?\d*) stopni/);
 		return match ? `${input.substring(0, match.index)} cos(${match[1]}) ${
+			input.substr((match.index||0)+match[0].length)}` : input;
+	}                                                               ],
+	[ operations.sinus.symbol,      (input) => {//sinus must be after cosinus because word "cosinus" contains "sinus"
+		let match = input.match(/sinus (\d+[.,]?\d*) stopni/);
+		return match ? `${input.substring(0, match.index)} sin(${match[1]}) ${
 			input.substr((match.index||0)+match[0].length)}` : input;
 	}                                                               ],
 	[ operations.tangent.symbol,      (input) => {
@@ -87,7 +87,7 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 ]);
 
 export class Calculate extends ProcedureBase {
-	static readonly regexp = /^oblicz \d+[.,]?\d*/i;
+	static readonly regexp = /^oblicz ([a-z]+ )?\d+[.,]?\d*/i;
 	
 	constructor(results: ResultSchema[]) {
 		super(results);
@@ -138,7 +138,8 @@ export class Calculate extends ProcedureBase {
 		};
 		this.answer = {
 			message: equation,
-			loud: true
+			loud: true,
+			loud_message: equation_sentence.result.replace(/^oblicz/, '') + ' = ' + result
 		};
 		this.finished = true;
 	}

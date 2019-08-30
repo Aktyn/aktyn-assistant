@@ -25,7 +25,7 @@ const sendMessage = (function() {
 			printAnswer(data.answer.message);
 			
 			if(data.answer.loud) {
-				//TODO: speech synthesis
+				RECOGNITION.speak(data.answer.loud_message || data.answer.message);
 			}
 		}
 		

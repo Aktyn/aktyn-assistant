@@ -1,10 +1,9 @@
 const Assistant = require('./lib');//it would be require('desktop-voice-assistant') in your project
-const { ProcedureBase } = require('./lib/procedures/procedure_base');
 
 const open = require('open');//only for case of this example
 
 //Example procedure which opens google.com page with search results
-class MyProcedureSearch extends ProcedureBase {//it's not necessary but recommended to extend your class
+class MyProcedureSearch extends Assistant.ProcedureBase {//it's not necessary but recommended to extend your class
 	/**
 	 @param {ResultSchema[]} results
 	 */
@@ -45,7 +44,7 @@ class MyProcedureSearch extends ProcedureBase {//it's not necessary but recommen
 		*******************************/
 	}
 }
-MyProcedureSearch.regexp = [/^search .+/i];//you say those words to trigger procedure
+MyProcedureSearch.regexp = [/^search .+/i];//you say anything that matches any of this regexps to trigger procedure
 
 /***********************************************************************************/
 

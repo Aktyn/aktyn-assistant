@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<link rel="shortcut icon" href="icon.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="icon.png">
+	<link rel="shortcut icon" href="img/icon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="img/icon.png">
 	<meta name="author" content="Aktyn">
 	<meta name="theme-color" content="#FF5722">
 	<meta name="application-name" content="Voice Listener">
@@ -21,10 +21,21 @@
 		</div>
 		<label class="input-holder">
 			<input type="text" placeholder="Type command" id="text-input" />
-			<button id="send-btn"/>
+			<button id="send-btn"> </button>
 		</label>
+		<div id="language-selector"></div>
+		<div id="volume-settings">
+			<div class="volume-panel">
+				<button id="mute-btn"> </button>
+				<button id="volume-down">-</button>
+				<div class="volume-bar-holder">
+					<span id="volume-bar"> </span>
+				</div>
+				<button id="volume-up">+</button>
+				<button id="volume-max-btn"> </button>
+			</div>
+		</div>
 	</main>
-	<div id="language-selector"></div>
 	<script type="text/javascript" src="main.js" async></script>
 </body>
 </html>
