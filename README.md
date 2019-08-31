@@ -1,6 +1,12 @@
 <h3>Desktop Voice Assistant</h3>
-Voice controlled assistant for desktop environment.
-Easily extensible by installing external procedures like regular NodeJS module.
+
+[![Current Version](https://img.shields.io/github/package-json/v/Aktyn/DesktopVoiceAssistant.svg)](https://github.com/Aktyn/DesktopVoiceAssistant)
+[![GitHub license](https://img.shields.io/github/license/Aktyn/DesktopVoiceAssistant.svg)](https://github.com/Aktyn/DesktopVoiceAssistant/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/Aktyn/DesktopVoiceAssistant.svg)](https://GitHub.com/Aktyn/DesktopVoiceAssistant/issues/)
+[![GitHub Stars](https://img.shields.io/github/stars/Aktyn/DesktopVoiceAssistant.svg)](https://github.com/Aktyn/DesktopVoiceAssistant/stargazers)
+
+<div>Voice controlled assistant for desktop environment.
+Easily extensible by installing external procedures like regular NodeJS module.</div>
 
 <h3>Install</h3>
 <pre>npm i desktop-voice-assistant</pre>
