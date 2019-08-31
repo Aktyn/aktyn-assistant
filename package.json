@@ -1,6 +1,6 @@
 {
 	"name": "desktop-voice-assistant",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Easily extensible voice controlled assistant",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
