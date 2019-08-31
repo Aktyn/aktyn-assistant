@@ -8,7 +8,7 @@ Easily extensible by installing external procedures like regular NodeJS module.
 <h3>Example usage</h3>
 
 ```javascript
-const Assistant = require('./lib');//it would be require('desktop-voice-assistant') in your project
+const Assistant = require('desktop-voice-assistant');
 
 const open = require('open');//only for matter of this example
 
