@@ -87,7 +87,9 @@ const keywords_replacements = new Map<string, ((input: string) => string) | RegE
 ]);
 
 export class Calculate extends ProcedureBase {
-	static readonly regexp = /^oblicz ([a-z]+ )?\d+[.,]?\d*/i;
+	static readonly regexp = {
+		'pl-PL': /^oblicz ([a-z]+ )?\d+[.,]?\d*/i
+	};
 	
 	constructor(results: ResultSchema[]) {
 		super(results);

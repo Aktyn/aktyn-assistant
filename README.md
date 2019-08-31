@@ -3,7 +3,7 @@ Voice controlled assistant for desktop environment.
 Easily extensible by installing external procedures like regular NodeJS module.
 
 <h3>Install</h3>
-<pre>TODO</pre>
+<pre>npm i desktop-voice-assistant</pre>
 
 <h3>Example usage</h3>
 
@@ -52,10 +52,15 @@ class MyProcedureSearch extends Assistant.ProcedureBase {//it's not necessary bu
 				loud: true
 			};
 		*******************************/
+		
+		// FOR MULTILINGUAL SUPPORT YOU CAN CHECK CHOSEN LANGUAGE WITH THIS FUNCTION
+		//Assistant.getLang();
 	}
 }
-MyProcedureSearch.regexp = [/^search .+/i];//you say anything that matches any of this regexps to trigger procedure
-
+//you say anything that matches regexp of chosen language to trigger this procedure
+MyProcedureSearch.regexp = {
+	'en-US': /^search .+/i
+};
 /***********************************************************************************/
 
 //procedures can be installed like any node package
@@ -64,7 +69,9 @@ Assistant.init([...Assistant.procedures, MyProcedureSearch], {
 	ws_port: 3456,//ws_port for websocket connection
 	express_port: 4567,//required for browser notifications to work or for listening from other location
 	//chrome_command: 'start chrome',//or absolute path to google chrome executable
-	use_native_notifications: false//if false - notifications will be handled by browser
+	use_native_notifications: false,//if false - notifications will be handled by browser
+	lang: 'pl-PL'   //for multilingual procedures you can specify which language to recognize
+					// check Assistant.langCodes for list of available webkit speech recognition codes
 }).catch(console.error);
 
 ```

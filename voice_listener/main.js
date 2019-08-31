@@ -1,5 +1,6 @@
 const url = new URL(location.href);
 const ws_port = url.searchParams.get('wsPort');
+const lang_from_url = url.searchParams.get('lang');
 
 const noop = function(){};
 
@@ -87,17 +88,19 @@ const sendMessage = (function() {
 	if( !('RECOGNITION' in window) )
 		return;
 	
-	let open = false;
+	RECOGNITION.init( lang_from_url );
+	selector.innerText = lang_from_url;
+	/*let open = false;
 	
-	/** @type {Map<string, string>} */
-	const languages = new Map([//first one is the default
-		['Polski', 'pl-PL'],
-		['English', 'en-US']
+	/** @type {Set<string>} *
+	const languages = new Set([//first one is the default
+		'pl-PL',
+		'en-US'
 	]);
 	const item_h = 16;
 	selector.style.height = `${item_h}px`;
 	
-	/** @param {Event} e */
+	/** @param {Event} e *
 	function switchView(e) {
 		open = !open;
 		if(open) {
@@ -113,35 +116,35 @@ const sendMessage = (function() {
 	
 	let selected = '';
 	
-	/** @param {string} language_name */
-	function select(language_name) {
-		if(language_name === selected)
+	/** @param {string} language_code *
+	function select(language_code) {
+		if(language_code === selected)
 			return;
-		selected = language_name;
+		selected = language_code;
 		
-		RECOGNITION.init( languages.get(language_name) );
+		RECOGNITION.init( language_code );
 		
 		selector.innerText = '';
-		for(let [name] of languages.entries()) {
+		for(let code of languages.values()) {
 			//console.log(name, code);
 			let item = document.createElement('div');
 			item.style.height = `${item_h}px`;
-			item.innerText = name;
+			item.innerText = code;
 			
-			if(name === language_name)
+			if(code === language_code)
 				selector.insertBefore(item, selector.firstChild);
 			else
 				selector.appendChild(item);
 			
-			item.onclick = (e) => {
+			item.onclick = (e) => {//disabled for now
 				if(!open)
-					select(name);
+					select(code);
 				switchView(e);
 			}
 		}
 	}
 	
-	select( languages.keys().next().value );
+	select( lang_from_url );*/
 })();
 
 const [addToPreview, printAnswer, markExecuted] = (function() {

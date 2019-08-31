@@ -1,3 +1,5 @@
+import {lang_code} from "./common/lang_codes";
+
 export const enum RESULT_TYPE {
 	INTERIM = 1,
 	FINAL,
@@ -21,7 +23,8 @@ export interface NotificationParams {
 }
 
 export abstract class ProcedureBase {
-	public static regexp: RegExp | RegExp[] = /.*/;//should be overwritten by child classes
+	//shall be overwritten by child classes
+	public static regexp: {[key in lang_code]?: RegExp} = {};
 	
 	protected results: ResultSchema[];
 	protected finished = false;

@@ -206,9 +206,13 @@ main {
     top: 0;
     left: 0;
     user-select: none;
-    background-color: #ff8a65;
-    box-shadow: 0 1px 4px #0004;
-    color: #fff;
+    /*background-color: #ff8a65;*/
+    /*box-shadow: 0 1px 4px #0004;*/
+    color: #fffc;
+
+    height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
 
     font-size: 12px;
     font-weight: bold;
@@ -219,12 +223,11 @@ main {
     overflow: hidden;
     /*background-color: #FFAB91;*/
     /*color: #BF360C;*/
-    border: 1px solid #FFAB91;
+    /*border: 1px solid #FFAB91;*/
     border-top: none;
     border-left: none;
-    border-bottom-right-radius: 4px;
-    cursor: pointer;
-    /*border-bottom-right-radius: 24px;*/
+    border-bottom-right-radius: 8px;
+    /*cursor: pointer;*/
 
     opacity: 0.5;
     transform-origin: 0 0;
@@ -233,18 +236,17 @@ main {
         transform 0.3s cubic-bezier(.36,.07,.19,.97);
 }
 
-#language-selector:hover, #language-selector.open {
+/*#language-selector:hover, #language-selector.open {
     transform: scale(1.25);
     opacity: 1;
 }
-
 #language-selector > * {
     padding: 0 16px;
     background-color: #fff0;
 }
-#language-selector > *:hover {
+/*#language-selector > *:hover {
     background-color: #FFAB91;
-}
+} DISABLED FOR NOW */
 
 #volume-settings {
     position: absolute;

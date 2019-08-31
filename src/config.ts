@@ -1,9 +1,12 @@
+import {lang_code} from "./procedures/common/lang_codes";
+
 export interface ConfigSchema {
 	ws_port: number;//websocket ws_port
 	express_port: number | null;
 	open_listener: boolean;
 	chrome_command: string;
 	use_native_notifications: boolean;
+	lang: lang_code;
 }
 
 export const CONFIG: ConfigSchema = {//NOTE: no undefined values
@@ -20,7 +23,8 @@ export const CONFIG: ConfigSchema = {//NOTE: no undefined values
 		}
 		return 'google-chrome';
 	})(process.platform),
-	"use_native_notifications": false
+	"use_native_notifications": false,
+	"lang": 'en-US'
 };
 
 type config_key = keyof typeof CONFIG;

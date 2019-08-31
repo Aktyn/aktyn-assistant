@@ -1,4 +1,5 @@
 import {ProcedureBase, ResultSchema} from "./procedures/procedure_base";
+import {CONFIG} from "./config";
 
 export type procedure = Function & typeof ProcedureBase;
 const PROCEDURES: procedure[] = [];
@@ -6,9 +7,7 @@ const PROCEDURES: procedure[] = [];
 export function useProcedures(procedures: procedure[]) {
 	for(let procedure of procedures) {
 		if( typeof procedure.regexp !== 'object' )
-			console.error(`Given procedure must be a class that contains static parameter "regexp" which is a single regular expression or array of regular expressions (${procedure.name})`);
-		else if( (<any>procedure.regexp).source === /.*/.source )
-			console.error(`"regexp" parameter must differ from the default one: /.*/ (${procedure.name})`);
+			console.error(`Given procedure must be a class that contains static parameter "regexp" which is an object with key representing language code and value as RegExp (${procedure.name})`);
 		else {
 			if( typeof procedure.prototype.isFinished !== 'function' ) {
 				console.warn(`Procedure class should contain method "isFinished" to ignore further results after procedure finishes (${procedure.name})`);
@@ -43,15 +42,10 @@ class ResultHolder {
 		}
 		else {
 			let matching_procedures = PROCEDURES.filter(p => {
-				if( Array.isArray(p.regexp) ) {
-					for(let regexp of p.regexp) {
-						//if( this.result.result.match(regexp) )
-						if( this.results.some(res => res.result.match(regexp)) )
-							return true;
-					}
-				}
-				//return this.result.result.match( <any>p.regexp );
-				return this.results.some(res => res.result.match(<any>p.regexp));
+				let regexp = p.regexp[CONFIG.lang];
+				if( regexp )
+					return this.results.some(res => res.result.match(<RegExp>regexp));
+				return false;
 			});
 			
 			if (matching_procedures.length < 1)//no procedure matches result

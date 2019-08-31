@@ -1,0 +1,9 @@
+example.js
+
+tsconfig.json
+
+src/
+.idea/
+
+LICENSE
+*.md
