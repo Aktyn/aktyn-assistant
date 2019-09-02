@@ -55,7 +55,7 @@ MyProcedureSearch.regexp = {
 
 //procedures can be installed like any node package
 Assistant.init([...Assistant.procedures, MyProcedureSearch], {
-	open_listener: true,
+	open_listener: false,
 	ws_port: 3456,//ws_port for websocket connection
 	express_port: 4567,//required for browser notifications to work or for listening from other location
 	//chrome_command: 'start chrome',//or absolute path to google chrome executable

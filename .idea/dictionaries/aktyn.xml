@@ -3,11 +3,15 @@
     <words>
       <w>aktyn</w>
       <w>beforeinstallprompt</w>
+      <w>convolutional</w>
       <w>cosinus</w>
+      <w>crossentropy</w>
       <w>khtml</w>
       <w>mozilla</w>
       <w>onresult</w>
       <w>polski</w>
+      <w>relu</w>
+      <w>softmax</w>
     </words>
   </dictionary>
 </component>

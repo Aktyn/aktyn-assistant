@@ -1,7 +1,6 @@
 import * as ExpressServer from './express_server';
 import * as WsServer from './ws_server';
 import {executeCommand} from "./procedures/common/utils";
-
 import {OpenUrl} from "./procedures/open_url";
 import {Calculate} from "./procedures/calculate";
 export {ProcedureBase} from "./procedures/procedure_base";
@@ -9,6 +8,8 @@ import {procedure, useProcedures} from "./result_parser";
 import * as ip from 'ip';
 import {CONFIG, ConfigSchema, setConfig} from "./config";
 export {langCodes} from "./procedures/common/lang_codes";
+import * as DesktopWatcher from './desktop_watcher';
+DesktopWatcher.watch().catch(console.error);
 
 /////////////////////////////////////////////////////////////////////////////////
 

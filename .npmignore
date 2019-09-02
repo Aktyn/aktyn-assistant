@@ -4,6 +4,7 @@ tsconfig.json
 
 src/
 .idea/
+dataset/
 
 LICENSE
 *.md
