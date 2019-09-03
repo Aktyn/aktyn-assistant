@@ -33,7 +33,6 @@
 	},
 	"dependencies": {
 		"@tensorflow/tfjs-node": "^1.2.8",
-		"@tensorflow/tfjs-node-gpu": "^1.2.8",
 		"@types/body-parser": "^1.17.1",
 		"@types/express": "^4.17.1",
 		"@types/ip": "^1.1.0",

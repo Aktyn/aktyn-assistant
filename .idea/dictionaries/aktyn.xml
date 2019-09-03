@@ -3,6 +3,7 @@
     <words>
       <w>aktyn</w>
       <w>beforeinstallprompt</w>
+      <w>conv</w>
       <w>convolutional</w>
       <w>cosinus</w>
       <w>crossentropy</w>
@@ -11,6 +12,7 @@
       <w>onresult</w>
       <w>polski</w>
       <w>relu</w>
+      <w>screenshot</w>
       <w>softmax</w>
     </words>
   </dictionary>
