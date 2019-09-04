@@ -9,7 +9,7 @@ export interface DataSchema {
 	labels: tf.Tensor<tf.Rank.R2>;
 }
 
-interface ImageInfo {
+interface ImageInfoSchema {
 	width: number;
 	height: number;
 	channels: number;
@@ -29,7 +29,7 @@ export async function loadModel(path: string) {
 }
 
 // noinspection JSUnusedGlobalSymbols
-export function buildModel(image_info: ImageInfo, output_size: number): tf.LayersModel {
+export function buildModel(image_info: ImageInfoSchema, output_size: number): tf.LayersModel {
 	const model = tf.sequential();
 	
 	//conv2d(K: 5, S: 1) => pool(F: 2, S: 2) => conv2d(K: 5, S: 1) => pool(F: 2, S: 2)
@@ -112,14 +112,14 @@ export function createShuffledIndices(elements: number) {
 	return tf.util.createShuffledIndices(elements);
 }
 
-export function getImageTensor(images_data: Float32Array, elements: number, image_info: ImageInfo) {
+export function getImageTensor(images_data: Float32Array, elements: number, image_info: ImageInfoSchema) {
 	const image_size = image_info.width * image_info.height * image_info.channels;
 	return tf.tensor2d(images_data, [elements, image_size])//TODO: shape properly in one step
 		.reshape([elements, image_info.width, image_info.height, image_info.channels]);
 }
 
 export function getDataTensors(images_data: Float32Array, labels_data: Uint8Array, elements: number,
-                               image_info: ImageInfo, classes: number): DataSchema
+                               image_info: ImageInfoSchema, classes: number): DataSchema
 {
     return {
     	pixels: getImageTensor(images_data, elements, image_info),

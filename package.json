@@ -8,9 +8,10 @@
 	"author": "Aktyn <Aktyn3@gmail.com>",
 	"license": "MIT",
 	"scripts": {
+		"publish": "rm -rf ./lib && NODE_ENV=prod tsc -p ./tsconfig.json",
 		"dev": "NODE_ENV=dev nodemon --watch src/ --exec 'tsc -p ./tsconfig.json && npm run example' -e ts",
 		"example": "node example.js",
-		"publish": "rm -rf ./lib && NODE_ENV=prod tsc -p ./tsconfig.json"
+		"train":  "npm run publish && node train.js"
 	},
 	"repository": {
 		"type": "git",

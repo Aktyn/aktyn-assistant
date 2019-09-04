@@ -9,7 +9,7 @@ import * as ip from 'ip';
 import {CONFIG, ConfigSchema, setConfig} from "./config";
 export {langCodes} from "./procedures/common/lang_codes";
 import * as DesktopWatcher from './desktop_watcher';
-DesktopWatcher.watch().catch(console.error);
+DesktopWatcher.watch();//.catch(console.error);
 
 /////////////////////////////////////////////////////////////////////////////////
 
