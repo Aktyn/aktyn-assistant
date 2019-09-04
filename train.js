@@ -1,4 +1,4 @@
-const CNN = require('./lib/CNN');
+const CNN = require('./lib/CNN/common');
 const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');

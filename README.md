@@ -6,7 +6,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/Aktyn/DesktopVoiceAssistant.svg)](https://github.com/Aktyn/DesktopVoiceAssistant/stargazers)
 
 <div>Voice controlled assistant for desktop environment.
-Easily extensible by installing external procedures like regular NodeJS module.</div>
+Easily extensible by installing external procedures like any node package.</div>
 
 <h3>Install</h3>
 <pre>npm i desktop-voice-assistant</pre>
@@ -36,14 +36,28 @@ class MyProcedureSearch extends Assistant.ProcedureBase {//it's not necessary bu
 	 @param {ResultSchema[]} results
 	 */
 	update(results) {
-		//you can wait for final speech recognition results to check alternative results
+		//you can wait for final recognition results to check alternative results
+		if( results.some(res => res.type === Assistant.RESULT_TYPE.INTERIM) )
+			return;
+		
 		results.sort((r1, r2) => r2.confidence - r1.confidence);
 		
-		for(let {result} of results) {//from most confident
+		for (let {result} of results) {//from most confident
 			let match = result.match(/search (.*)/i);
-			
-			if( match )
-				open('https://google.com/search?q=' + encodeURI(match[1].trim())).catch(console.error);
+				
+			if (match) {//found most confident final result
+				
+				Assistant.classifyDesktopContent().then(desktop_content => {
+				    // YOU CAN DECIDE WHAT TO DO DEPENDING ON YOUR CURRENT DESKTOP CONTENT
+					 
+					if( desktop_content.WEBSITE > 0.5 || desktop_content.TEXT > 0.5 )//if you are in text environment
+						this.searchForText( match[1] );
+					else
+						this.searchInGoogle( match[1] );
+				 }).catch(console.error);
+				
+				break;
+			}
 		}
 		
 		this.finished = true;
@@ -62,6 +76,19 @@ class MyProcedureSearch extends Assistant.ProcedureBase {//it's not necessary bu
 		// FOR MULTILINGUAL SUPPORT YOU CAN CHECK CHOSEN LANGUAGE WITH THIS FUNCTION
 		//Assistant.getLang();
 	}
+	
+	/** @param {string} text */
+	searchForText(text) {
+		//press ctrl + f remotely
+		Assistant.Robot.tapKey('f', 'control');
+		
+		setTimeout(() => Assistant.Robot.typeString(text));
+	}
+	
+	/** @param {string} text */
+	searchInGoogle(text) {
+		open('https://google.com/search?q=' + encodeURI(text.trim())).catch(console.error);
+	}
 }
 //you say anything that matches regexp of chosen language to trigger this procedure
 MyProcedureSearch.regexp = {
@@ -76,7 +103,7 @@ Assistant.init([...Assistant.procedures, MyProcedureSearch], {
 	express_port: 4567,//required for browser notifications to work or for listening from other location
 	//chrome_command: 'start chrome',//or absolute path to google chrome executable
 	use_native_notifications: false,//if false - notifications will be handled by browser
-	lang: 'pl-PL'   //for multilingual procedures you can specify which language to recognize
+	//lang: 'pl-PL'   //for multilingual procedures you can specify which language to recognize
 					// check Assistant.langCodes for list of available webkit speech recognition codes
 }).catch(console.error);
 
@@ -85,4 +112,6 @@ Assistant.init([...Assistant.procedures, MyProcedureSearch], {
 <h3>Usage information</h3>
 <ul>
     <li>Browser notifications works only in secure web context so if you are not mean to use this package locally - make sure to connect through https.</li>
+    <li>Function "classifyDesktopContent" takes desktop screenshot and uses tensorflow.js to classify it's content into several categories like Website, Game, App. You can use it to differently interpret commands as shown in example above.<br>
+    NOTE: convolutional neural network is not trained well yet. I am still extending dataset of screenshots for further training. Any help will be appreciated ;)</li>
 </ul>

@@ -114,7 +114,7 @@ export function createShuffledIndices(elements: number) {
 
 export function getImageTensor(images_data: Float32Array, elements: number, image_info: ImageInfoSchema) {
 	const image_size = image_info.width * image_info.height * image_info.channels;
-	return tf.tensor2d(images_data, [elements, image_size])//TODO: shape properly in one step
+	return tf.tensor2d(images_data, [elements, image_size])
 		.reshape([elements, image_info.width, image_info.height, image_info.channels]);
 }
 

@@ -1,6 +1,6 @@
 import {lang_code} from "./common/lang_codes";
 
-export const enum RESULT_TYPE {
+export enum RESULT_TYPE {
 	INTERIM = 1,
 	FINAL,
 	ALTERNATIVE

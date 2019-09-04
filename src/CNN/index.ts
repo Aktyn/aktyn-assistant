@@ -1,7 +1,7 @@
 import {LayersModel, loadModel, getImageTensor, predict} from './common';
 import * as path from 'path';
-import * as robot from 'robotjs';
 import * as sharp from 'sharp';
+import {getScreenshot} from "../robot";
 
 /*export const enum CATEGORIES {
 	DESKTOP,
@@ -14,7 +14,7 @@ import * as sharp from 'sharp';
 	COUNT//determines number of categories
 }*/
 
-const models_dir = path.join(__dirname, '..', 'models');
+const models_dir = path.join(__dirname, '..', '..', 'models');
 let model: LayersModel | null = null;
 
 const IMAGE_INFO = {
@@ -30,7 +30,7 @@ function assert(condition: boolean, error_msg: string) {
 
 export async function classifyDesktopContent() {
 	// SAVE SCREENSHOT AND CONVERT TO RGB BUFFER
-	let screenshot = robot.screen.capture();
+	let screenshot = getScreenshot();
 	let screenshot_buffer = Buffer.alloc(screenshot.width*screenshot.height * 3);
 	for(let i=0; i<screenshot.width*screenshot.height; i++) {
 		screenshot_buffer[i*3]   = screenshot.image[i*4+2];
@@ -47,7 +47,7 @@ export async function classifyDesktopContent() {
 
 	sharp(screenshot_buffer, opts)
 		.resize(IMAGE_INFO.width, IMAGE_INFO.height)
-		.toFile(path.join(__dirname, '..', 'screenshot.jpg'));
+		.toFile(path.join(__dirname, '..', '..', 'screenshot.jpg'));
 	
 	// CONVERT TO Float32Array FOR NEURAL NETWORK
 	let data = new Float32Array(IMAGE_SIZE);//RGB array
