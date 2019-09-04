@@ -8,8 +8,7 @@ import {procedure, useProcedures} from "./result_parser";
 import * as ip from 'ip';
 import {CONFIG, ConfigSchema, setConfig} from "./config";
 export {langCodes} from "./procedures/common/lang_codes";
-import * as DesktopWatcher from './desktop_watcher';
-DesktopWatcher.watch();//.catch(console.error);
+export {classifyDesktopContent} from './CNN';
 
 /////////////////////////////////////////////////////////////////////////////////
 

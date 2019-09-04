@@ -3,16 +3,15 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
-/*const enum CATEGORIES {
+/*
 	DESKTOP,
 	WEBSITE,
 	APP,
 	GAME,
 	MOVIE,
 	IMAGE,
-	TEXT,
-	COUNT//determines number of categories
-}*/
+	TEXT
+*/
 const CATEGORIES = 7;
 
 const IMAGE_INFO = {
@@ -186,7 +185,6 @@ async function train() {
 	// LOAD OR BUILD MODEL FOR TRAINING
 	//const model = CNN.buildModel(IMAGE_INFO, CATEGORIES);
 	const model = await CNN.loadModel( path.join(models_dir, 'screenshot_classification', 'model.json') );
-	
 	
 	// CALCULATE BATCH ACCORDING TO SOME MEMORY LIMIT
 	const max_memory_for_batch = 256 * 1024 * 1024;//256 MiB

@@ -11,7 +11,7 @@
 		"publish": "rm -rf ./lib && NODE_ENV=prod tsc -p ./tsconfig.json",
 		"dev": "NODE_ENV=dev nodemon --watch src/ --exec 'tsc -p ./tsconfig.json && npm run example' -e ts",
 		"example": "node example.js",
-		"train":  "npm run publish && node train.js"
+		"train": "npm run publish && node train.js"
 	},
 	"repository": {
 		"type": "git",
@@ -46,6 +46,7 @@
 		"ip": "^1.1.5",
 		"node-notifier": "^5.4.3",
 		"open": "^6.4.0",
+		"robotjs": "^0.5.1",
 		"ws": "^7.1.2"
 	}
 }
