@@ -21,7 +21,7 @@ const IMAGE_INFO = {
 };
 const IMAGE_SIZE = IMAGE_INFO.width * IMAGE_INFO.height * IMAGE_INFO.channels;
 
-const TRAIN_BATCH = 128;
+const TRAIN_BATCH = 64;
 
 const dataset_dir = path.join(__dirname, 'dataset');
 const models_dir = path.join(__dirname, 'models');
@@ -148,27 +148,7 @@ async function train() {
 	const train_elements = elements - test_elements;
 	console.log('train elements:', train_elements, '| test elements:', test_elements);
 	
-	// SHUFFLE DATASET, TODO: do not shuffle train data
-	const indices = CNN.createShuffledIndices(dataset.files.length);
-	assert(indices.length === dataset.files.length, 'Incorrect ');
-	
-	/** @type {string[]} */
-	let shuffled_files = new Array(dataset.files.length);
-	let shuffled_label_values = new Uint8Array(dataset.label_values.length);
-	for(let i=0; i<indices.length; i++) {
-		let idx = indices[i];
-		shuffled_files[i] = dataset.files[idx];
-		shuffled_label_values.set(
-			dataset.label_values.slice(CATEGORIES*idx, CATEGORIES*(idx+1)),
-			i*CATEGORIES
-		);
-	}
-	dataset = {
-		files: shuffled_files,
-		label_values: shuffled_label_values
-	};
-	
-	// PREPARE TEST DATA
+	// SEPARATE TEST DATA
 	const test_image_data = await loadImagesData( dataset.files.slice(train_elements) );
 	const test_label_values = dataset.label_values.slice(CATEGORIES*train_elements);
 	
@@ -181,6 +161,25 @@ async function train() {
 		test_image_data, test_label_values,
 		test_elements, IMAGE_INFO, CATEGORIES
 	);
+	
+	// SHUFFLE TRAINING DATASET
+	const indices = CNN.createShuffledIndices(train_elements);
+	
+	/** @type {string[]} */
+	let shuffled_files = new Array(train_elements);
+	let shuffled_label_values = new Uint8Array(train_elements*CATEGORIES);
+	for(let i=0; i<indices.length; i++) {
+		let idx = indices[i];
+		shuffled_files[i] = dataset.files[idx];
+		shuffled_label_values.set(
+			dataset.label_values.slice(CATEGORIES*idx, CATEGORIES*(idx+1)),
+			i*CATEGORIES
+		);
+	}
+	dataset = {
+		files: shuffled_files,
+		label_values: shuffled_label_values
+	};
 	
 	// LOAD OR BUILD MODEL FOR TRAINING
 	//const model = CNN.buildModel(IMAGE_INFO, CATEGORIES);
