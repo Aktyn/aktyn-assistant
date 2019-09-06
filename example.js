@@ -32,6 +32,7 @@ class MyProcedureSearch extends Assistant.ProcedureBase {//it's not necessary bu
 			if (match) {//found most confident final result
 				
 				Assistant.classifyDesktopContent().then(desktop_content => {
+					console.log(desktop_content);
 				    // YOU CAN DECIDE WHAT TO DO DEPENDING ON YOUR CURRENT DESKTOP CONTENT
 					 
 					if( desktop_content.WEBSITE > 0.5 || desktop_content.TEXT > 0.5 )//if you are in text environment
