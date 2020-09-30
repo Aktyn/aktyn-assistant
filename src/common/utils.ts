@@ -7,7 +7,7 @@ export function executeCommand(cmd: string, timeout = 1000 * 60 * 5): Promise<{ 
     setTimeout(() => {
       expired = true;
       reject('Command timeout');
-    }, timeout); //timeout after 5 minutes
+    }, timeout); //timeout after default 5 minutes
 
     exec(cmd, (err, stdout, stderr) => {
       if (err) return reject(err);

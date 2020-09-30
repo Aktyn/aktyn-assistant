@@ -1,0 +1,29 @@
+{
+  "extends": ["react-app", "plugin:prettier/recommended"],
+  "plugins": ["simple-import-sort", "prettier"],
+  "rules": {
+    "prefer-const": 2,
+    "sort-imports": "off",
+    "import/order": "off",
+    "simple-import-sort/sort": [
+      "error",
+      {
+        // Config examples: https://github.com/lydell/eslint-plugin-simple-import-sort/blob/master/examples/.eslintrc.js
+        "groups": [
+          // Packages. `@material-ui` related packages come second.
+          ["^(formik-material-ui|@material-ui)", "^@?\\w"],
+          // Packages. `@fuse` related packages come next.
+          ["^(@lodash|@fuse)", "^@?\\w"],
+          // Absolute path internal packages
+          ["^app", "^@?\\w"],
+          // Parent imports. Put `..` last.
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+          // Other relative imports. Put same-folder imports and `.` last.
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          // Style imports.
+          ["^.+\\.s?css$"]
+        ]
+      }
+    ]
+  }
+}

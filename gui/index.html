@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="shortcut icon" href="img/icon.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="img/icon.png">
+	<meta name="author" content="Aktyn">
+	<meta name="theme-color" content="#FF5722">
+	<meta name="application-name" content="Voice Listener">
+	<link href="style.css" rel="stylesheet">
+	<title>Aktyn Assistant</title>
+	<script type="text/javascript" src="speech-module.js"></script>
+</head>
+<body>
+	<main>
+		<div id="microphone"></div>
+		<div class="results-container">
+			<div class="hider"></div>
+			<div id="results-preview"></div>
+		</div>
+		<label class="input-holder">
+			<input type="text" placeholder="Type command" id="text-input" />
+			<button id="send-btn"> </button>
+		</label>
+		<div id="language-selector"></div>
+		<div id="volume-settings">
+			<div class="volume-panel">
+				<button id="mute-btn"> </button>
+				<button id="volume-down">-</button>
+				<div class="volume-bar-holder">
+					<span id="volume-bar"> </span>
+				</div>
+				<button id="volume-up">+</button>
+				<button id="volume-max-btn"> </button>
+			</div>
+		</div>
+	</main>
+	<div>
+		<video id="camera-preview" />
+	</div>
+	<script type="text/javascript" src="main.js" async></script>
+</body>
+</html>
