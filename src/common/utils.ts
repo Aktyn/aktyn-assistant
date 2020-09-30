@@ -18,3 +18,5 @@ export function executeCommand(cmd: string, timeout = 1000 * 60 * 5): Promise<{ 
     });
   });
 }
+
+export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

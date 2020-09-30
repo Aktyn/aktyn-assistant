@@ -388,6 +388,13 @@ main {
 
 /*****************************/
 
-#camera-preview {
+#preview-container {
 	border: 1px solid #fff4;
+	position: relative;
+}
+
+#preview-container > * {
+	position: absolute;
+	left: 0;
+	top: 0;
 }
