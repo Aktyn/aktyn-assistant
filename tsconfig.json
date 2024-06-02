@@ -1,34 +1,49 @@
 {
-	"include": [
-		"./src/index.ts"
-	],
-	"exclude": [
-		"./node_modules",
-		"./lib"
-	],
-	"compilerOptions": {
-		"target": "ES2019",                       
-		"module": "commonjs",   
-		"moduleResolution": "node",                  
-		"lib": ["es6", "dom"],
-		
-		"allowJs": true,
-		"declaration": true,
-		"outDir": "./lib",
-		"removeComments": true,
-		
-		"strict": true,                           
-		"noImplicitAny": true,
-		"strictFunctionTypes": true,           
-		"strictPropertyInitialization": true,
-		"alwaysStrict": true,
-		"noUnusedLocals": true,
-		"noImplicitReturns": true,             
-		"noFallthroughCasesInSwitch": true,
-		
-		"skipLibCheck": true,
-		"allowSyntheticDefaultImports": true,
-		"resolveJsonModule": true,
-		"esModuleInterop": true            
-	}
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "./node_modules",
+    "./dist"
+  ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "allowJs": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ]
+    },
+    "removeComments": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "compilerOptions": {
+      "rootDir": "./src"
+    }
+  }
 }
