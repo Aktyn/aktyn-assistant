@@ -7,6 +7,7 @@ import { requireEnvVariables } from '../../../utils/env'
 export * from './chat'
 export * from './models'
 
+//istanbul ignore next
 export const getOpenAiClient = once(() => {
   try {
     const requiredEnvs = requireEnvVariables([

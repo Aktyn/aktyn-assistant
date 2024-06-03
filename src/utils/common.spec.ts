@@ -1,4 +1,4 @@
-import { once } from './common'
+import { once, wait } from './common'
 
 describe('once', () => {
   it('should return value', () => {
@@ -22,5 +22,13 @@ describe('once', () => {
     expect(await onceFn()).toBe('test')
     expect(await onceFn()).toBe('test')
     expect(fn).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('wait', () => {
+  it('should wait for given time', async () => {
+    const startTime = Date.now()
+    await wait(100)
+    expect(Date.now() - startTime).toBeGreaterThanOrEqual(100)
   })
 })

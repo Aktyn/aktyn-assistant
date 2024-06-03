@@ -12,5 +12,5 @@ module.exports = {
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: 'src/' }),
   transform: {},
-  // setupFiles: ['./src/test-utils/mock.ts'], //TODO: use or remove
+  // setupFiles: ['./src/test-utils/setup.ts'],
 }

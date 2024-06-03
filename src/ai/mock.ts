@@ -2,7 +2,7 @@ import { wait } from '../utils/common'
 import { randomInt } from '../utils/random'
 
 //Array of mocked chat responses (long sentences about random topics)
-const mockedChatResponses = [
+export const MOCKED_CHAT_RESPONSES = [
   "  Crashing waves thunder on the shore, a symphony of nature's power.",
   'Need a recipe for the perfect souffle? I can help with that!',
   'Dreaming of distant galaxies? Space exploration continues to push the boundaries of human knowledge.',
@@ -31,7 +31,7 @@ const mockedChatResponses = [
   "The universe holds countless mysteries. Let's explore them together!",
 ]
 export const mockChatResponse = () => {
-  return mockedChatResponses[Math.floor(Math.random() * mockedChatResponses.length)]
+  return MOCKED_CHAT_RESPONSES[Math.floor(Math.random() * MOCKED_CHAT_RESPONSES.length)]
 }
 
 export function mockChatStream<ResponseType extends object | string>(
@@ -39,13 +39,18 @@ export function mockChatStream<ResponseType extends object | string>(
   length = randomInt(10, 20),
   delayBetweenMessages = () => randomInt(1000, 2000),
 ) {
+  const controller = new AbortController()
   return {
     async *[Symbol.asyncIterator]() {
       for (let i = 0; i < length; i++) {
+        if (controller.signal.aborted) {
+          return
+        }
+
         await wait(delayBetweenMessages())
         yield parser(mockChatResponse())
       }
     },
-    controller: new AbortController(),
+    controller,
   }
 }

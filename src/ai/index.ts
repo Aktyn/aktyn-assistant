@@ -29,6 +29,7 @@ class AI {
     this.mockPaidRequests = mock
   }
 
+  //istanbul ignore next
   async getAvailableModels() {
     switch (this.provider) {
       case AiProvider.OpenAI:

@@ -2,6 +2,7 @@ import { type OpenAI } from 'openai'
 
 import { getOpenAiClient } from '.'
 
+//istanbul ignore next
 export async function getAvailableModels(client = getOpenAiClient()) {
   const models: OpenAI.Models.Model[] = []
 
