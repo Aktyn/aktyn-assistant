@@ -1,4 +1,4 @@
-export function lazy<T>(fn: () => T): () => T {
+export function once<T>(fn: () => T): () => T {
   let result: T
   let executed = false
   return () => {

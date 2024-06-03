@@ -1,9 +1,9 @@
 import * as dotenv from 'dotenv'
 import { expand } from 'dotenv-expand'
 
-import { lazy } from './common'
+import { once } from './common'
 
-const sync = lazy(() => {
+const sync = once(() => {
   expand(dotenv.config())
 })
 
