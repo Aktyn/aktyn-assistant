@@ -13,3 +13,5 @@ export function once<T>(fn: () => T): () => T {
     return result
   }
 }
+
+export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
