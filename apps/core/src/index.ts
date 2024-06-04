@@ -1,11 +1,24 @@
-import { initializeTerminalInterface } from '@aktyn-assistant/terminal-interface'
+import { selectAiProvider, showWelcomeMessage } from '@aktyn-assistant/terminal-interface'
 
-import { getAiClient, notifyAiError } from './ai'
-//
-;(async (ai = getAiClient()) => {
+import { AiProvider, getAiClient } from './ai'
+import { getUserConfigValue } from './utils/user-config'
+
+showWelcomeMessage()
+
+//TODO: no hoist packages like terminal-kit
+
+async function run() {
+  const aiProvider = getUserConfigValue('selectedAiProvider')
+  if (!aiProvider) {
+    console.log(await selectAiProvider(Object.values(AiProvider)))
+    return
+  }
+}
+
+run().catch(console.error)
+
+async function start(ai = getAiClient()) {
   ai.setMockPaidRequests(true)
-
-  initializeTerminalInterface()
 
   //TODO: option for selecting rectangular part of screen when performing operation requires screen capture
   const models = await ai.getAvailableModels()
@@ -21,4 +34,6 @@ import { getAiClient, notifyAiError } from './ai'
   }
 
   //TODO: implement electron based user interface
-})().catch(notifyAiError)
+}
+
+// start().catch(notifyAiError)

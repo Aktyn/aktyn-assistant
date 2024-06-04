@@ -11,7 +11,7 @@ import * as OpenAiAPI from './api/openai'
 import { ChatStream } from './common'
 import { mockChatStream } from './mock'
 
-enum AiProvider {
+export enum AiProvider {
   OpenAI = 'openai',
 }
 
@@ -73,7 +73,6 @@ class AI {
 }
 
 export const getAiClient = once(() => {
-  // Support for more AI providers can be added here
   return new AI(AiProvider.OpenAI)
 })
 

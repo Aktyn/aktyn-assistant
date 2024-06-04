@@ -6,7 +6,7 @@
 	"types": "./lib/index.d.ts",
 	"scripts": {
 		"build": "tsc -p ./tsconfig.json",
-		"dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start || exit 1\" -e ts",
+		"dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build\" -e ts",
 		"test": "jest",
 		"test:ci": "jest --collectCoverage -ci",
 		"test:watch": "jest --watch",
@@ -19,6 +19,7 @@
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
+		"@types/terminal-kit": "^2.5.6",
 		"@typescript-eslint/eslint-plugin": "^7.12.0",
 		"@typescript-eslint/parser": "^7.12.0",
 		"cross-env": "^7.0.3",

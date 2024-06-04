@@ -1,3 +1,2 @@
-export function initializeTerminalInterface() {
-  console.log('@@@@@@@@@@@@@')
-}
+export * from './select'
+export * from './welcome'
