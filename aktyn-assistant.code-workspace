@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "Core",
+			"path": "./apps/core"
+		},
+	],
+	"settings": {
+		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",
+		"typescript.preferences.includePackageJsonAutoImports": "on",
+		"testing.automaticallyOpenPeekView": "never",
+		"jest.disabledWorkspaceFolders": [
+			"aktyn-assistant"
+		],
+		"jest.monitorLongRun": 30000,
+		"jest.runMode": "watch"
+	}
+}
