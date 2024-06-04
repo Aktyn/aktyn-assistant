@@ -11,20 +11,29 @@
     "url": "https://github.com/Aktyn/aktyn-assistant/issues"
   },
   "homepage": "https://github.com/Aktyn/aktyn-assistants#readme",
-  "workspaces": [
-    "./apps/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "apps/*"
+    ]
+  },
   "scripts": {
-    "build": "npm run build --workspaces",
-    "dev": "npm run dev --workspaces",
-    "test": "npm run test --workspaces",
-    "test:ci": "npm run test:ci --workspaces",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "test:ci": "turbo run test:ci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "lint": "npm run lint --workspaces",
-    "env": "npm run env --workspaces",
-    "typecheck": "npm run typecheck --workspaces"
+    "lint": "turbo run lint",
+    "env": "turbo run env",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "prettier": "^3.2.5"
-  }
+    "prettier": "^3.2.5",
+    "turbo": "^2.0.1"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=16.0.0"
+  },
+  "packageManager": "yarn@1.22.19"
 }

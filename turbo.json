@@ -1,0 +1,73 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": []
+    },
+    "dist": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": []
+    },
+    "dev": {
+      "cache": false
+    },
+    "db:generate": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "db:generate:reset": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "db:seed": {
+      "dependsOn": [
+        "db:generate:reset"
+      ],
+      "cache": false
+    },
+    "db:studio": {
+      "cache": false
+    },
+    "test": {
+      "dependsOn": [
+        "^build",
+        "build"
+      ],
+      "outputs": []
+    },
+    "test:ci": {
+      "dependsOn": [
+        "^build",
+        "build"
+      ],
+      "outputs": []
+    },
+    "format": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false
+    },
+    "env": {
+      "cache": false
+    },
+    "typecheck": {
+      "cache": false
+    }
+  }
+}

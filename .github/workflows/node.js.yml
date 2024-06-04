@@ -20,18 +20,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          cache: "yarn"
 
       - name: Install dependencies
-        run: npm install --workspaces
+        run: yarn install
 
       - name: Check code with linter
-        run: npm run lint
+        run: yarn run lint
 
       - name: Build all projects
-        run: npm run build
+        run: yarn run build
 
       - name: Run all tests
-        run: npm run test:ci
+        run: yarn run test:ci
         env:
           CI: true

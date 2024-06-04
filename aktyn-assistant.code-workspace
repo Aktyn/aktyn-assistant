@@ -7,6 +7,10 @@
 			"name": "Core",
 			"path": "./apps/core"
 		},
+		{
+			"name": "Terminal interface",
+			"path": "./packages/terminal-interface"
+		}
 	],
 	"settings": {
 		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",

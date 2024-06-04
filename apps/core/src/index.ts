@@ -1,7 +1,11 @@
+import { initializeTerminalInterface } from '@aktyn-assistant/terminal-interface'
+
 import { getAiClient, notifyAiError } from './ai'
 //
 ;(async (ai = getAiClient()) => {
   ai.setMockPaidRequests(true)
+
+  initializeTerminalInterface()
 
   //TODO: option for selecting rectangular part of screen when performing operation requires screen capture
   const models = await ai.getAvailableModels()
