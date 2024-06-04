@@ -23,7 +23,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --workspaces
 
       - name: Check code with linter
         run: npm run lint
