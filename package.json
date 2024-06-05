@@ -13,13 +13,13 @@
   "homepage": "https://github.com/Aktyn/aktyn-assistants#readme",
   "workspaces": {
     "packages": [
-      "packages/*",
-      "apps/*"
+      "packages/**",
+      "apps/**"
     ]
   },
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --continue",
+    "dev": "turbo run dev --continue --parallel",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -28,8 +28,8 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
-    "turbo": "^1.13.3"
+    "prettier": "^3.3.0",
+    "turbo": "^2.0.1"
   },
   "engines": {
     "npm": ">=7.0.0",

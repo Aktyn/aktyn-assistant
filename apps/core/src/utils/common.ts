@@ -14,4 +14,6 @@ export function once<T>(fn: () => T): () => T {
   }
 }
 
+export const isDev = once(() => process.env.NODE_ENV?.toLowerCase() === 'dev')
+
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))

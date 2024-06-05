@@ -3,9 +3,10 @@
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
 
+import { printError } from '@aktyn-assistant/terminal-interface'
 import { notify } from 'node-notifier'
 
-import { once } from '../utils/common'
+import { isDev } from '../utils/common'
 
 import * as OpenAiAPI from './api/openai'
 import { ChatStream } from './common'
@@ -20,10 +21,40 @@ function throwUnsupportedProviderError(provider: AiProvider) {
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-class AI {
+export class AI {
+  private static instance: AI | null = null
+
   private mockPaidRequests = false
 
-  constructor(private readonly provider: AiProvider) {}
+  private constructor(private readonly provider: AiProvider) {}
+
+  public static async client(provider?: AiProvider): Promise<AI> {
+    if (!provider) {
+      if (AI.instance) {
+        return AI.instance
+      } else {
+        throw new Error(
+          'No AI provider selected. First call to this method should specify desired provider.',
+        )
+      }
+    }
+
+    if (AI.instance && AI.instance.provider === provider) {
+      return AI.instance
+    }
+
+    AI.instance = new AI(provider)
+
+    switch (provider) {
+      case AiProvider.OpenAI:
+        await OpenAiAPI.getOpenAiClient()
+        break
+      default:
+        throw throwUnsupportedProviderError(provider)
+    }
+
+    return AI.instance
+  }
 
   setMockPaidRequests(mock: boolean) {
     this.mockPaidRequests = mock
@@ -63,19 +94,16 @@ class AI {
     }
   }
 
-  static notifyError(error: unknown) {
-    console.error(error)
-    notify({
-      title: 'AI error',
+  static notifyError(error: unknown, provider?: AiProvider) {
+    if (isDev()) {
+      console.error(error)
+    }
+
+    const errorObject = {
+      title: provider ? `AI error (${provider})` : 'AI error',
       message: error instanceof Error ? error.message : undefined,
-    })
+    }
+    printError(errorObject)
+    notify(errorObject)
   }
-}
-
-export const getAiClient = once(() => {
-  return new AI(AiProvider.OpenAI)
-})
-
-export function notifyAiError(error: unknown) {
-  AI.notifyError(error)
 }

@@ -1,4 +1,4 @@
-import { getAiClient, notifyAiError } from '.'
+import { AI, AiProvider } from '.'
 import { MOCKED_CHAT_RESPONSES } from './mock'
 
 import '../test-utils/extend'
@@ -6,17 +6,34 @@ import '../test-utils/extend'
 jest.mock('node-notifier', () => ({
   notify: jest.fn(),
 }))
+jest.mock('fs', () => ({
+  writeFileSync: jest.fn(),
+  mkdirSync: jest.fn(),
+  existsSync: jest.fn(),
+  unlinkSync: jest.fn(),
+  readFileSync: () => 'mock file content',
+}))
+jest.mock('openai', () => ({
+  __esModule: true,
+  OpenAI: class OpenAiMock {
+    constructor(_: any) {}
+    models = {
+      list: jest.fn(),
+    }
+  },
+}))
+jest.mock('@aktyn-assistant/terminal-interface', () => ({
+  printError: jest.fn(),
+  requestApiKey: () => Promise.resolve('mock api key'),
+}))
 
 describe('AI class', () => {
-  const ai = getAiClient()
-
-  beforeEach(() => {
-    ai.setMockPaidRequests(true)
-  })
-
   it(
     'should perform chat query',
     async () => {
+      const ai = await AI.client(AiProvider.OpenAI)
+      ai.setMockPaidRequests(true)
+
       const now = Date.now()
       const chatStream = await ai.performChatQuery('Example query')
       let i = 3
@@ -47,7 +64,8 @@ describe('notifyAiError', () => {
 
   it('should notify error', () => {
     const error = new Error('Test error')
-    notifyAiError(error)
+    process.env.NODE_ENV = 'dev'
+    AI.notifyError(error)
     expect(console.error).toHaveBeenCalledWith(error)
   })
 })

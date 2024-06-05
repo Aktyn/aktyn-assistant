@@ -2,6 +2,7 @@ import { terminal } from 'terminal-kit'
 
 export function showWelcomeMessage() {
   terminal.windowTitle('Aktyn Assistant')
+  terminal.clear()
   terminal(productNameAsciiArt)
 }
 
