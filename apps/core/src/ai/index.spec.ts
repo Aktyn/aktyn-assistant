@@ -35,7 +35,7 @@ describe('AI class', () => {
       ai.setMockPaidRequests(true)
 
       const now = Date.now()
-      const chatStream = await ai.performChatQuery('Example query')
+      const chatStream = await ai.performChatQuery('Example query', 'gpt-3.5-turbo')
       let i = 3
       for await (const chunk of chatStream) {
         //@ts-expect-error method is extended and therefore not typed

@@ -1,4 +1,6 @@
+export * from './common'
 export * from './error'
 export * from './select'
 export * from './welcome'
 export * from './input'
+export * from './loading'

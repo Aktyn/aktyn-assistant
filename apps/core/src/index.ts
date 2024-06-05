@@ -1,4 +1,9 @@
-import { selectAiProvider, showWelcomeMessage } from '@aktyn-assistant/terminal-interface'
+import {
+  selectOption,
+  showSpinner,
+  showWelcomeMessage,
+  toggleTerminateOnCtrlC,
+} from '@aktyn-assistant/terminal-interface'
 
 import { AI, AiProvider } from './ai'
 import { getUserConfigValue, setUserConfigValue } from './utils/user-config'
@@ -7,30 +12,45 @@ import { getUserConfigValue, setUserConfigValue } from './utils/user-config'
 //TODO: implement electron based user interface
 //TODO: option for selecting rectangular part of screen when performing operation requires screen capture
 
-showWelcomeMessage()
-
 async function run() {
+  toggleTerminateOnCtrlC(true)
+  showWelcomeMessage()
+
   let aiProvider = getUserConfigValue('selectedAiProvider')
   if (!aiProvider) {
-    try {
-      aiProvider = (await selectAiProvider(Object.values(AiProvider))) as AiProvider
-      setUserConfigValue('selectedAiProvider', aiProvider)
-      console.info(`Selected ${aiProvider} as your AI provider`)
-    } catch (error) {
-      console.error(error)
-      process.exit(1)
-    }
+    aiProvider = (await selectOption(
+      Object.values(AiProvider),
+      'Select AI provider you want to use:',
+    )) as AiProvider
+    setUserConfigValue('selectedAiProvider', aiProvider)
+    console.info(`Selected ${aiProvider} as your AI provider`)
   }
 
   try {
     const ai = await AI.client(aiProvider)
-    ai.setMockPaidRequests(true)
 
-    // const models = await ai.getAvailableModels()
-    // console.log(models.filter((name) => name.startsWith('gpt')).join(', '))
-    //... do more stuff
+    let chatModel = getUserConfigValue('selectedChatModel')
+    const spinner = await showSpinner('Loading available models...')
+    const availableModels = await ai.getAvailableModels()
+    spinner.stop()
+    if (!chatModel || !availableModels.includes(chatModel)) {
+      chatModel = await selectOption(
+        availableModels.sort(),
+        'Select model you want to use for chat:',
+      )
+      setUserConfigValue('selectedChatModel', chatModel)
+      console.info(`Selected ${chatModel} as your AI chat model`)
+    }
+
+    //... do more real stuff instead of mocked behavior
+    ai.setMockPaidRequests(true)
+    //TODO: allow user to abort stream
+    const chatStream = await ai.performChatQuery('Say "Hello" and count to 10 backwards', chatModel)
+    for await (const chunk of chatStream) {
+      console.log(chunk)
+    }
   } catch (error) {
-    AI.notifyError(error)
+    AI.notifyError(error, 'Setup error')
     process.exit(1)
   }
 
@@ -38,18 +58,3 @@ async function run() {
 }
 
 run().catch(console.error)
-
-// async function startAi(ai = getAiClient()) {
-//   ai.setMockPaidRequests(true)
-
-//   // await ai.initialize()
-
-//   const chatStream = await ai.performChatQuery('Say "Hello" and count to 10 backwards')
-
-//   //TODO: allow to abort stream
-//   // chatStream.controller.abort('Reason message')
-
-//   for await (const chunk of chatStream) {
-//     console.log(chunk)
-//   }
-// }

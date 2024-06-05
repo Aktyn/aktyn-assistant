@@ -14,6 +14,7 @@ import { once } from './common'
  */
 const USER_CONFIG = {
   selectedAiProvider: null as AiProvider | null,
+  selectedChatModel: null as string | null,
 }
 
 export const getConfigDirectory = once(() => getAppDataPath('aktyn-assistant'))

@@ -72,14 +72,14 @@ export class AI {
     }
   }
 
-  async performChatQuery(query: string) {
+  async performChatQuery(query: string, model: string) {
     switch (this.provider) {
       case AiProvider.OpenAI: {
         const stream = this.mockPaidRequests
           ? mockChatStream((content) => ({
               choices: [{ delta: { content } }],
             }))
-          : await OpenAiAPI.performChatQuery(query)
+          : await OpenAiAPI.performChatQuery(query, model)
         return new ChatStream(async function* transformStream() {
           for await (const chunk of stream) {
             const content = chunk.choices[0]?.delta.content
@@ -94,13 +94,13 @@ export class AI {
     }
   }
 
-  static notifyError(error: unknown, provider?: AiProvider) {
+  static notifyError(error: unknown, title = 'AI error') {
     if (isDev()) {
       console.error(error)
     }
 
     const errorObject = {
-      title: provider ? `AI error (${provider})` : 'AI error',
+      title,
       message: error instanceof Error ? error.message : undefined,
     }
     printError(errorObject)

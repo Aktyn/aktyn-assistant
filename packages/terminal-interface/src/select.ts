@@ -1,6 +1,6 @@
 import { terminal } from 'terminal-kit'
 
-export function selectAiProvider(items: string[]): Promise<string> {
+export function selectOption(items: string[], title?: string): Promise<string> {
   if (items.length < 1) {
     return Promise.reject('No items to select')
   }
@@ -9,7 +9,9 @@ export function selectAiProvider(items: string[]): Promise<string> {
     return Promise.resolve(items[0])
   }
 
-  terminal.bold('Select AI provider you want to use:\n')
+  if (title) {
+    terminal.bold(`${title}\n`)
+  }
 
   const { promise } = terminal.singleColumnMenu(items, { continueOnSubmit: false })
   return promise.then((response) => response.selectedText)
