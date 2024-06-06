@@ -8,7 +8,7 @@
 		"build": "tsc -p ./tsconfig.json",
 		"dev": "nodemon --watch ./src --exec \"yarn run build\" --ignore lib/ -e ts",
 		"test": "jest",
-		"test:ci": "jest --collectCoverage -ci",
+		"test:ci": "jest --collectCoverage -ci --passWithNoTests",
 		"test:watch": "jest --watch",
 		"format": "prettier --write src/**/*{.ts,.tsx}",
 		"lint": "eslint src/**/*.ts --fix",
