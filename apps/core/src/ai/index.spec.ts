@@ -1,4 +1,6 @@
-import { AI, AiProvider } from '.'
+import { AiProvider } from '@aktyn-assistant/common'
+
+import { AI } from '.'
 import { MOCKED_CHAT_RESPONSES } from './mock'
 
 import '../test-utils/extend'

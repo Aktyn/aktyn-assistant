@@ -1,9 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import type { UserConfigType } from '@aktyn-assistant/common'
 import { getAppDataPath } from 'appdata-path'
-
-import type { AiProvider } from '../ai'
 
 import { once } from './common'
 
@@ -12,9 +11,10 @@ import { once } from './common'
  ** User should access it through `getUserConfigValue()` function
  * @see {@link getUserConfigValue}
  */
-const USER_CONFIG = {
-  selectedAiProvider: null as AiProvider | null,
-  selectedChatModel: null as string | null,
+const USER_CONFIG: UserConfigType = {
+  selectedAiProvider: null,
+  selectedChatModel: null,
+  mockPaidRequests: null,
 }
 
 export const getConfigDirectory = once(() => getAppDataPath('aktyn-assistant'))
@@ -26,7 +26,7 @@ const lazyLoadConfig = once(() => {
     const data = JSON.parse(fs.readFileSync(getConfigPath(), 'utf8'))
     for (const key in USER_CONFIG) {
       if (key in data) {
-        USER_CONFIG[key as keyof typeof USER_CONFIG] = data[key]
+        USER_CONFIG[key as keyof UserConfigType] = data[key] as never
       }
     }
   } catch {
@@ -34,17 +34,17 @@ const lazyLoadConfig = once(() => {
   }
 })
 
-export function getUserConfigValue<Key extends keyof typeof USER_CONFIG>(
+export function getUserConfigValue<Key extends keyof UserConfigType>(
   key: Key,
-): (typeof USER_CONFIG)[Key] {
+): UserConfigType[Key] {
   lazyLoadConfig()
 
   return USER_CONFIG[key]
 }
 
-export function setUserConfigValue<Key extends keyof typeof USER_CONFIG>(
+export function setUserConfigValue<Key extends keyof UserConfigType>(
   key: Key,
-  value: (typeof USER_CONFIG)[Key],
+  value: UserConfigType[Key],
 ) {
   USER_CONFIG[key] = value
   const configPath = getConfigPath()

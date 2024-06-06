@@ -36,9 +36,6 @@
       ],
       "cache": false
     },
-    "env": {
-      "cache": false
-    },
     "typecheck": {
       "cache": false
     }

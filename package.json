@@ -18,16 +18,15 @@
     ]
   },
   "scripts": {
-    "build": "turbo run build",
-    "start": "node ./apps/core/dist/index.js",
-    "dev": "turbo run dev --continue --parallel",
+    "build:all": "turbo run build",
+    "start:core": "turbo run start --filter='./apps/core'",
+    "dev:all": "turbo run dev --continue --parallel",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "lint": "turbo run lint",
-    "env": "turbo run env",
-    "typecheck": "turbo run typecheck"
+    "lint:all": "turbo run lint --single-package",
+    "typecheck:all": "turbo run typecheck --single-package"
   },
   "devDependencies": {
     "prettier": "^3.3.0",

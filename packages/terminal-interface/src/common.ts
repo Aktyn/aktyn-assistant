@@ -13,3 +13,15 @@ export function toggleTerminateOnCtrlC(enable: boolean) {
     terminal.off('key', terminateOnCtrlC)
   }
 }
+
+export function printCentered(text: string) {
+  const lines = text.split('\n')
+  const maxLineLength = Math.max(...lines.map((line) => line.length))
+  const padding = Math.floor((terminal.width - maxLineLength) / 2)
+  if (padding < 0) {
+    return
+  }
+  for (const line of lines) {
+    terminal(`${' '.repeat(padding)}${line}\n`)
+  }
+}

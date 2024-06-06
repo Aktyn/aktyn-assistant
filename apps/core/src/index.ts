@@ -1,12 +1,15 @@
+import { AiProvider } from '@aktyn-assistant/common'
 import {
   TerminalInterface,
   selectOption,
+  selectYesOrNo,
   showSpinner,
   showWelcomeMessage,
   toggleTerminateOnCtrlC,
 } from '@aktyn-assistant/terminal-interface'
 
-import { AI, AiProvider } from './ai'
+import { AI } from './ai'
+import { getInterfaceAPI } from './interfaceAPI'
 import { wait } from './utils/common'
 import { getUserConfigValue, setUserConfigValue } from './utils/user-config'
 
@@ -44,18 +47,20 @@ async function run() {
       console.info(`Selected ${chatModel} as your AI chat model`)
     }
 
-    ai.setMockPaidRequests(true) //TODO: allow to toggle this from settings interface
+    let mockPaidRequests = getUserConfigValue('mockPaidRequests')
+    if (mockPaidRequests === null) {
+      mockPaidRequests = await selectYesOrNo('Do you want to mock paid requests to AI provider?')
+      setUserConfigValue('mockPaidRequests', mockPaidRequests)
+    }
+    if (mockPaidRequests) {
+      console.info(`Paid requests to AI provider are mocked`)
+    }
+    ai.setMockPaidRequests(mockPaidRequests)
 
-    const terminalInterface = new TerminalInterface({
-      onChatMessage: async (message) => {
-        try {
-          return await ai.performChatQuery(message, chatModel)
-        } catch (error) {
-          AI.notifyError(error, 'Performing chat query error')
-          throw error
-        }
-      },
-    })
+    console.info("Initial setup doesn't require any further work. Initializing menu interface...")
+
+    const terminalInterface = new TerminalInterface(getInterfaceAPI(ai))
+
     terminalInterface.showInterface()
     await wait(1 << 20) //TODO: remove
   } catch (error) {

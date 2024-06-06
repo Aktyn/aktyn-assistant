@@ -1,9 +1,11 @@
 import { type OpenAI } from 'openai'
 
+import { once } from '../../../utils/common'
+
 import { getOpenAiClient } from '.'
 
 //istanbul ignore next
-export async function getAvailableModels(client?: OpenAI) {
+export const getAvailableModels = once(async (client?: OpenAI) => {
   client ??= await getOpenAiClient()
   const models: OpenAI.Models.Model[] = []
 
@@ -16,4 +18,4 @@ export async function getAvailableModels(client?: OpenAI) {
   }
 
   return models
-}
+})
