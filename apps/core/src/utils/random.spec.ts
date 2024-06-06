@@ -1,6 +1,6 @@
 import { randomInt } from './random'
 
-describe('randomInt', () => {
+describe(randomInt.name, () => {
   it('should return random integer between min and max', () => {
     const min = 0
     const max = 10

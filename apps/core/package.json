@@ -8,7 +8,7 @@
 		"dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start\" -e ts",
 		"start": "node ./dist/index.js",
 		"test": "jest",
-		"test:ci": "jest --collectCoverage -ci",
+		"test:ci": "jest --collectCoverage",
 		"test:watch": "jest --watch",
 		"format": "prettier --write src/**/*{.ts,.tsx}",
 		"lint": "eslint src/**/*.ts --fix",

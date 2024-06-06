@@ -16,12 +16,16 @@ jest.mock('terminal-kit', () => ({
     processExit,
     on,
     off,
+    width: 64,
+    defaultColor: jest.fn(),
   },
 }))
 
-import { toggleTerminateOnCtrlC } from './common'
+import { terminal } from 'terminal-kit'
 
-describe('toggleTerminateOnCtrlC', () => {
+import { printCentered, toggleTerminateOnCtrlC } from './common'
+
+describe(toggleTerminateOnCtrlC.name, () => {
   afterEach(() => {
     processExit.mockClear()
     on.mockClear()
@@ -38,5 +42,22 @@ describe('toggleTerminateOnCtrlC', () => {
     toggleTerminateOnCtrlC(false)
     keyEvents.forEach(({ callback }) => callback('CTRL_C'))
     expect(processExit).not.toHaveBeenCalled()
+  })
+})
+
+describe(printCentered.name, () => {
+  it('should print centered text', () => {
+    const text = 'Test text (first line)\nAnother line'
+    terminal.width = 32
+    printCentered(text)
+    expect(terminal.defaultColor).toHaveBeenCalledWith('     Test text (first line)\n')
+    expect(terminal.defaultColor).toHaveBeenCalledWith('     Another line\n')
+  })
+
+  it('should not print centered text if terminal width is too small', () => {
+    const text = 'Test text (first line)\nAnother line'
+    terminal.width = 16
+    printCentered(text)
+    expect(terminal.defaultColor).not.toHaveBeenCalled()
   })
 })

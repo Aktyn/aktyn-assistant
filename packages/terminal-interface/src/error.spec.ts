@@ -1,6 +1,6 @@
 import { printError } from './error'
 
-describe('printError', () => {
+describe(printError.name, () => {
   it('should print error', () => {
     const stdoutWrite = process.stdout.write
     const stderrWrite = process.stderr.write

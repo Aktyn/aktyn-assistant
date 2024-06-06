@@ -53,7 +53,7 @@ describe('AI class', () => {
   )
 })
 
-describe('notifyAiError', () => {
+describe(AI.notifyError.name, () => {
   const errorLog = console.error
 
   beforeAll(() => {

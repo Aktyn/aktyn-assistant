@@ -22,6 +22,6 @@ export function printCentered(text: string) {
     return
   }
   for (const line of lines) {
-    terminal(`${' '.repeat(padding)}${line}\n`)
+    terminal.defaultColor(`${' '.repeat(padding)}${line}\n`)
   }
 }

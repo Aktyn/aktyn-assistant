@@ -1,6 +1,6 @@
 import { requireEnvVariables } from './env'
 
-describe('requireEnvVariables', () => {
+describe(requireEnvVariables.name, () => {
   it('should throw error if env variable is not set', () => {
     const env = process.env
     process.env = {}

@@ -1,6 +1,6 @@
 import { once, wait } from './common'
 
-describe('once', () => {
+describe(once.name, () => {
   it('should return value', () => {
     const fn = jest.fn(() => 'test')
     const onceFn = once(fn)
@@ -25,7 +25,7 @@ describe('once', () => {
   })
 })
 
-describe('wait', () => {
+describe(wait.name, () => {
   it('should wait for given time', async () => {
     const startTime = Date.now()
     await wait(100)
