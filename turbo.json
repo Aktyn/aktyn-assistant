@@ -7,12 +7,6 @@
       ],
       "outputs": []
     },
-    "dist": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": []
-    },
     "dev": {
       "cache": false
     },

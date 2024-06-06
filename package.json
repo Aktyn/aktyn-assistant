@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "start": "node ./apps/core/dist/index.js",
     "dev": "turbo run dev --continue --parallel",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
     "test": "turbo run test",
