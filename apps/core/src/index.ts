@@ -1,4 +1,5 @@
 import {
+  TerminalInterface,
   selectOption,
   showSpinner,
   showWelcomeMessage,
@@ -6,6 +7,7 @@ import {
 } from '@aktyn-assistant/terminal-interface'
 
 import { AI, AiProvider } from './ai'
+import { wait } from './utils/common'
 import { getUserConfigValue, setUserConfigValue } from './utils/user-config'
 
 //TODO: no hoist packages like terminal-kit
@@ -44,17 +46,29 @@ async function run() {
 
     //... do more real stuff instead of mocked behavior
     ai.setMockPaidRequests(true)
+
+    const terminalInterface = new TerminalInterface({
+      onChatMessage: async (message) => {
+        try {
+          return await ai.performChatQuery(message, chatModel)
+        } catch (error) {
+          AI.notifyError(error, 'Performing chat query error')
+          throw error
+        }
+      },
+    })
+    terminalInterface.showInterface()
+    await wait(1 << 20) //TODO: remove
+
     //TODO: allow user to abort stream
-    const chatStream = await ai.performChatQuery('Say "Hello" and count to 10 backwards', chatModel)
-    for await (const chunk of chatStream) {
-      console.log(chunk)
-    }
+    // const chatStream = await ai.performChatQuery('Say "Hello" and count to 10 backwards', chatModel)
+    // for await (const chunk of chatStream) {
+    //   console.log(chunk)
+    // }
   } catch (error) {
     AI.notifyError(error, 'Setup error')
     process.exit(1)
   }
-
-  process.exit(0)
 }
 
 run().catch(console.error)

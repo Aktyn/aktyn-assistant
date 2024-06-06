@@ -1,3 +1,5 @@
+import type { ChatResponse } from './chat'
+
 class Stream<Item> implements AsyncIterable<Item> {
   controller: AbortController
 
@@ -13,4 +15,4 @@ class Stream<Item> implements AsyncIterable<Item> {
   }
 }
 
-export const ChatStream = Stream<{ content: string; timestamp: number }>
+export const ChatStream = Stream<ChatResponse>

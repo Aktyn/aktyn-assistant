@@ -3,7 +3,7 @@ import { randomInt } from '../utils/random'
 
 //Array of mocked chat responses (long sentences about random topics)
 export const MOCKED_CHAT_RESPONSES = [
-  "  Crashing waves thunder on the shore, a symphony of nature's power.",
+  "Crashing waves thunder on the shore, a symphony of nature's power.",
   'Need a recipe for the perfect souffle? I can help with that!',
   'Dreaming of distant galaxies? Space exploration continues to push the boundaries of human knowledge.',
   'Just finished composing a delightful haiku about springtime.',

@@ -3,13 +3,13 @@
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
 
+import { ChatStream } from '@aktyn-assistant/common'
 import { printError } from '@aktyn-assistant/terminal-interface'
 import { notify } from 'node-notifier'
 
 import { isDev } from '../utils/common'
 
 import * as OpenAiAPI from './api/openai'
-import { ChatStream } from './common'
 import { mockChatStream } from './mock'
 
 export enum AiProvider {

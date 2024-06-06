@@ -20,6 +20,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --continue --parallel",
+    "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -35,5 +36,5 @@
     "npm": ">=7.0.0",
     "node": ">=16.0.0"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@4.2.2"
 }

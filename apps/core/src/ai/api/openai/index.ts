@@ -12,7 +12,7 @@ export * from './chat'
 export * from './models'
 
 async function setup() {
-  const keyFilePath = path.join(getConfigDirectory(), 'openai-keys.json')
+  const keyFilePath = path.join(getConfigDirectory(), 'openai-key.json')
   let apiKey = loadApiKey(keyFilePath)
   while (!apiKey) {
     apiKey = (await requestApiKey('OpenAI')) ?? ''

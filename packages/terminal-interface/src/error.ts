@@ -1,8 +1,8 @@
 import { terminal } from 'terminal-kit'
 
 export function printError(error: { title: string; message?: string }) {
-  terminal.bold.red(`\n${error.title}\n`)
+  terminal.bold.red.error(`\n${error.title}\n`)
   if (error.message) {
-    terminal.red(`${error.message}\n`)
+    terminal.red.error(`${error.message}\n`)
   }
 }
