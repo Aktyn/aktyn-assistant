@@ -95,6 +95,10 @@ export class TerminalInterface {
     })
   }
 
+  private addNewLine() {
+    terminal.moveTo(1, this.height - 1).defaultColor('\n')
+  }
+
   showInterface() {
     if (!this.shown) {
       terminal.on('key', this.keyListener)
@@ -194,7 +198,7 @@ export class TerminalInterface {
     const { abort } = terminal.inputField(
       {
         cancelable: true,
-        maxLength: this.width - messageInfo.length,
+        maxLength: 1024, //this.width - messageInfo.length,
       },
       (error, value) => {
         if (error) {
@@ -205,7 +209,10 @@ export class TerminalInterface {
         value = value?.trim() ?? ''
         this.abortChatMessageInput = null
         if (value) {
-          this.handleMessageInput(value).catch(() => process.exit(1))
+          this.handleMessageInput(value).catch((error) => {
+            console.error(error)
+            process.exit(1)
+          })
         } else {
           terminal.eraseLine()
           this.requestChatMessage()
@@ -216,25 +223,50 @@ export class TerminalInterface {
   }
 
   private async handleMessageInput(message: string) {
-    terminal.moveTo(1, this.height - 1).defaultColor('\n')
+    this.addNewLine()
     this.showEscapeToReturnToMenuInfo()
-    terminal.moveTo(1, this.height - 2).eraseLine()
-    this.spinner = await terminal.gray('Awaiting response ').spinner()
+
+    const startSpinner = () => {
+      terminal.moveTo(1, this.height - 2).eraseLine()
+      return terminal.gray('Processing ').spinner('impulse')
+    }
 
     try {
+      this.spinner = await startSpinner()
       const stream = (this.chatStream = await this.listeners.onChatMessage(message))
       for await (const chunk of stream) {
         if (stream.controller.signal.aborted) {
           break
         }
-        console.log(chunk.content) //TODO: print dynamically
+
+        this.spinner?.animate(false)
+        terminal.moveTo(1, this.height - 2).eraseLine()
+        terminal.grey
+          .bold('Chat response:')
+          .grey(`\t(${new Date(chunk.timestamp).toLocaleTimeString()})\n`)
+          .eraseLine()
+          .defaultColor(`${chunk.content}\n`)
+
+        if (!chunk.finished) {
+          this.addNewLine()
+          this.showEscapeToReturnToMenuInfo()
+          this.spinner = await startSpinner()
+        } else {
+          terminal.brightGreen.bold('Response completed ✓')
+        }
       }
       this.chatStream = null
+
+      this.spinner?.animate(false)
+      this.spinner = null
+      for (let i = 0; i < 3; i++) {
+        this.addNewLine()
+      }
+      this.requestChatMessage()
     } catch (error) {
       this.handleError(error)
     }
 
-    this.spinner.animate(false)
     this.spinner = null
   }
 }

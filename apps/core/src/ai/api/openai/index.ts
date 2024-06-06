@@ -51,11 +51,11 @@ export const getOpenAiClient = once(async () => {
   try {
     return await setup()
   } catch (error) {
-    console.error(error)
     notify({
       title: 'OpenAI setup fatal error',
       message: error instanceof Error ? error.message : undefined,
     })
+    console.error(error)
     process.exit(1)
   }
 })

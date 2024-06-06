@@ -76,15 +76,15 @@ export class AI {
     switch (this.provider) {
       case AiProvider.OpenAI: {
         const stream = this.mockPaidRequests
-          ? mockChatStream((content) => ({
-              choices: [{ delta: { content } }],
+          ? mockChatStream((content, isLast) => ({
+              choices: [{ delta: { content }, finish_reason: isLast ? 'stop' : null }],
             }))
           : await OpenAiAPI.performChatQuery(query, model)
         return new ChatStream(async function* transformStream() {
           for await (const chunk of stream) {
             const content = chunk.choices[0]?.delta.content
-            if (content) {
-              yield { content, timestamp: Date.now() }
+            if (content && !stream.controller.signal.aborted) {
+              yield { content, timestamp: Date.now(), finished: !!chunk.choices[0]?.finish_reason }
             }
           }
         }, stream.controller)

@@ -35,7 +35,7 @@ export const mockChatResponse = () => {
 }
 
 export function mockChatStream<ResponseType extends object | string>(
-  parser: (content: string) => ResponseType,
+  parser: (content: string, isLast: boolean) => ResponseType,
   length = randomInt(10, 20),
   delayBetweenMessages = () => randomInt(1000, 2000),
 ) {
@@ -48,7 +48,7 @@ export function mockChatStream<ResponseType extends object | string>(
         }
 
         await wait(delayBetweenMessages())
-        yield parser(mockChatResponse())
+        yield parser(mockChatResponse(), i === length - 1)
       }
     },
     controller,

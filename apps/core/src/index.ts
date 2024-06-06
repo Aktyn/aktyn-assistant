@@ -44,8 +44,7 @@ async function run() {
       console.info(`Selected ${chatModel} as your AI chat model`)
     }
 
-    //... do more real stuff instead of mocked behavior
-    ai.setMockPaidRequests(true)
+    ai.setMockPaidRequests(true) //TODO: allow to toggle this from settings interface
 
     const terminalInterface = new TerminalInterface({
       onChatMessage: async (message) => {
@@ -59,14 +58,9 @@ async function run() {
     })
     terminalInterface.showInterface()
     await wait(1 << 20) //TODO: remove
-
-    //TODO: allow user to abort stream
-    // const chatStream = await ai.performChatQuery('Say "Hello" and count to 10 backwards', chatModel)
-    // for await (const chunk of chatStream) {
-    //   console.log(chunk)
-    // }
   } catch (error) {
     AI.notifyError(error, 'Setup error')
+    console.error(error)
     process.exit(1)
   }
 }
