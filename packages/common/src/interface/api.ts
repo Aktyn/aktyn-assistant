@@ -1,5 +1,6 @@
-import type { ChatStream } from '../ai'
+import type { ChatResponse } from '../ai'
 import type { UserConfigType } from '../types'
+import type { Stream } from '../utils/stream'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type InterfaceAPI = {
@@ -8,7 +9,7 @@ export type InterfaceAPI = {
     set: <Key extends keyof UserConfigType>(key: Key, value: UserConfigType[Key]) => void
   }
   ai: {
-    sendChatMessage: (message: string) => Promise<InstanceType<typeof ChatStream>>
+    sendChatMessage: (message: string) => Promise<InstanceType<typeof Stream<ChatResponse>>>
     requestChatModels: () => Promise<string[]>
   }
 }

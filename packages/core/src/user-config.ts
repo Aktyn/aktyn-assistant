@@ -1,10 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
-import type { UserConfigType } from '@aktyn-assistant/common'
+import { type UserConfigType, once } from '@aktyn-assistant/common'
 import { getAppDataPath } from 'appdata-path'
-
-import { once } from './common'
 
 /**
  ** Do not export this object

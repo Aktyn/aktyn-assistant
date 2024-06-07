@@ -6,7 +6,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['./src'],
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testPathIgnorePatterns: ['/node_modules/', '/lib/'],
   restoreMocks: true,
   clearMocks: true,
   modulePaths: [compilerOptions.baseUrl],

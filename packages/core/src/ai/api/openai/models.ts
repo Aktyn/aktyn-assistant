@@ -1,6 +1,5 @@
+import { once } from '@aktyn-assistant/common'
 import { type OpenAI } from 'openai'
-
-import { once } from '../../../utils/common'
 
 import { getOpenAiClient } from '.'
 

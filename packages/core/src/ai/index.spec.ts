@@ -1,7 +1,7 @@
 import { AiProvider } from '@aktyn-assistant/common'
 
 import { AI } from '.'
-import { MOCKED_CHAT_RESPONSES } from './mock'
+import { LOREM_IPSUM_WORDS } from './mock'
 
 import '../test-utils/extend'
 
@@ -33,11 +33,11 @@ jest.mock('openai', () => ({
     }
   },
 }))
-jest.mock('@aktyn-assistant/terminal-interface', () => ({
-  printError: jest.fn(),
-  requestApiKey: () => Promise.resolve('mock api key'),
-}))
-jest.mock('')
+//TODO
+// jest.mock('@aktyn-assistant/terminal-interface', () => ({
+//   printError: jest.fn(),
+//   requestApiKey: () => Promise.resolve('mock api key'),
+// }))
 
 describe('AI class', () => {
   it(
@@ -47,10 +47,10 @@ describe('AI class', () => {
 
       const now = Date.now()
       const chatStream = await ai.performChatQuery('Example query', 'gpt-3.5-turbo')
-      let i = 3
+      let i = 30
       for await (const chunk of chatStream) {
         //@ts-expect-error method is extended and therefore not typed
-        expect(chunk.content).toBeIn(MOCKED_CHAT_RESPONSES)
+        expect(chunk.content).toBeIn(LOREM_IPSUM_WORDS)
         expect(chunk.timestamp).toBeGreaterThanOrEqual(now)
 
         if (--i === 0) {
@@ -58,7 +58,7 @@ describe('AI class', () => {
         }
       }
     },
-    3 * 2000,
+    30 * 200,
   )
 })
 

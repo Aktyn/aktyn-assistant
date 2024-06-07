@@ -3,13 +3,11 @@
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
 
-import { AiProvider, ChatStream, assert, type ChatResponse } from '@aktyn-assistant/common'
-import { printError } from '@aktyn-assistant/terminal-interface'
+import { AiProvider, Stream, assert, isDev, type ChatResponse } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
 import type { ChatCompletionChunk } from 'openai/resources/index.mjs'
 
-import { isDev } from '../utils/common'
-import { getUserConfigValue } from '../utils/user-config'
+import { getUserConfigValue } from '../user-config'
 
 import * as OpenAiAPI from './api/openai'
 import { mockChatStream } from './mock'
@@ -91,7 +89,11 @@ export class AI {
               }),
             )
           : await OpenAiAPI.performChatQuery(query, model)
-        return new ChatStream(async function* transformStream() {
+
+        const timeout = setTimeout(() => {
+          stream.controller.abort('Timeout')
+        }, 60_000)
+        return new Stream<ChatResponse>(async function* transformStream() {
           for await (const chunk of stream) {
             const choice = chunk.choices.at(0)
             if (choice && !stream.controller.signal.aborted) {
@@ -103,6 +105,7 @@ export class AI {
               } satisfies ChatResponse
             }
           }
+          clearTimeout(timeout)
         }, stream.controller)
       }
       default:
@@ -119,7 +122,6 @@ export class AI {
       title,
       message: error instanceof Error ? error.message : undefined,
     }
-    printError(errorObject)
     notify(errorObject)
   }
 }

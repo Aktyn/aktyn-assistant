@@ -4,12 +4,12 @@
 			"path": "."
 		},
 		{
-			"name": "Core",
-			"path": "./apps/core"
+			"name": "Terminal",
+			"path": "./apps/terminal"
 		},
 		{
-			"name": "Terminal interface",
-			"path": "./packages/terminal-interface"
+			"name": "Core",
+			"path": "./packages/core"
 		},
 		{
 			"name": "Common",

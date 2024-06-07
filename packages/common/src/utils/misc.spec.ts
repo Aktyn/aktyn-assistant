@@ -1,4 +1,4 @@
-import { once, wait } from './common'
+import { once, wait } from './misc'
 
 describe(once.name, () => {
   it('should return value', () => {

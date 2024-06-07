@@ -2,19 +2,20 @@
   "include": [
     "./src"
   ],
+  "exclude": [
+    "./node_modules",
+    "./dist"
+  ],
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "declaration": true,
-    "declarationMap": true,
     "skipLibCheck": true,
     "lib": [
-      "es6",
-      "dom"
+      "ESNext"
     ],
     "allowJs": false,
-    "outDir": "./lib",
+    "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {

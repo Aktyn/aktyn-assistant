@@ -19,8 +19,8 @@
   },
   "scripts": {
     "build:all": "turbo run build",
-    "start:core": "turbo run start --filter='./apps/core'",
-    "dev:all": "turbo run dev --continue --parallel",
+    "start:terminal": "yarn --cwd apps/terminal start",
+    "dev:terminal": "yarn --cwd apps/terminal dev",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",

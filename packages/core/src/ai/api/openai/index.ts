@@ -1,27 +1,23 @@
-import fs from 'fs'
-import path from 'path'
-
-import { printError, requestApiKey } from '@aktyn-assistant/terminal-interface'
+import { isDev, once } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
 import { OpenAI } from 'openai'
 
-import { isDev, once } from '../../../utils/common'
-import { getConfigDirectory } from '../../../utils/user-config'
+import { loadProviderApiKey, removeProviderApiKey, saveProviderApiKey } from '../common'
 
 export * from './chat'
 export * from './models'
 
+const keyFileName = 'openai-key.json'
+
 async function setup() {
-  const keyFilePath = path.join(getConfigDirectory(), 'openai-key.json')
-  let apiKey = loadApiKey(keyFilePath)
+  let apiKey = loadProviderApiKey(keyFileName)
   while (!apiKey) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore //TODO
     apiKey = (await requestApiKey('OpenAI')) ?? ''
   }
 
-  if (!fs.existsSync(path.dirname(keyFilePath))) {
-    fs.mkdirSync(path.dirname(keyFilePath), { recursive: true })
-  }
-  fs.writeFileSync(keyFilePath, apiKey, 'utf8')
+  saveProviderApiKey(keyFileName, apiKey)
 
   try {
     const client = new OpenAI({
@@ -33,12 +29,12 @@ async function setup() {
     if (isDev()) {
       console.error(error)
     }
-    printError({
-      title: `Invalid OpenAI API key: "${apiKey}"`,
-      message: 'Please try again or press CTRL+C to exit',
-    })
+    // printError({ //TODO
+    //   title: `Invalid OpenAI API key: "${apiKey}"`,
+    //   message: 'Please try again or press CTRL+C to exit',
+    // })
     try {
-      fs.unlinkSync(keyFilePath)
+      removeProviderApiKey(keyFileName)
     } catch (error) {
       console.error(error)
       process.exit(1)
@@ -59,11 +55,3 @@ export const getOpenAiClient = once(async () => {
     process.exit(1)
   }
 })
-
-function loadApiKey(path: string) {
-  try {
-    return fs.readFileSync(path, 'utf8')
-  } catch {
-    return null
-  }
-}

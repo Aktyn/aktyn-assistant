@@ -1,13 +1,15 @@
-import type { ChatStream } from '@aktyn-assistant/common'
+import type { ChatResponse, Stream } from '@aktyn-assistant/common'
 import { terminal } from 'terminal-kit'
 import type { AnimatedText } from 'terminal-kit/Terminal'
+
+import { printError } from '../error'
 
 import { addNewLine, getRoleColor, showEscapeToReturnToMenuInfo } from './common'
 import { View } from './view'
 
 export class ChatView extends View {
   private spinner: AnimatedText | null = null
-  private chatStream: InstanceType<typeof ChatStream> | null = null
+  private chatStream: InstanceType<typeof Stream<ChatResponse>> | null = null
   private abortChatMessageInput: (() => void) | null = null
 
   abortAsynchronousActions() {
@@ -90,6 +92,7 @@ export class ChatView extends View {
 
         if (first) {
           this.spinner?.animate(false)
+          terminal.moveTo(1, terminal.height - 1).eraseLine()
           terminal.moveTo(1, terminal.height - 2).eraseLine()
           terminal.grey
             .bold('Chat response:')
@@ -107,6 +110,21 @@ export class ChatView extends View {
       }
 
       if (stream.controller.signal.aborted || !this.chatStream) {
+        if (this.chatStream && this.chatStream.controller.signal.reason === 'Timeout') {
+          this.spinner?.animate(false)
+          this.spinner = null
+
+          terminal.moveTo(1, terminal.height - 1).eraseLine()
+          printError({
+            title: 'Chat response timeout',
+            message: 'Chat response took too long to complete. Please try again.',
+          })
+
+          for (let i = 0; i < 2; i++) {
+            addNewLine()
+          }
+          this.requestChatMessage()
+        }
         return
       }
 

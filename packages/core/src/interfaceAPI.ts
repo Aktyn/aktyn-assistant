@@ -1,7 +1,7 @@
-import { type InterfaceAPI, assert } from '@aktyn-assistant/common'
+import { assert, type InterfaceAPI } from '@aktyn-assistant/common'
 
 import { AI } from './ai'
-import { getUserConfigValue, setUserConfigValue } from './utils/user-config'
+import { getUserConfigValue, setUserConfigValue } from './user-config'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function getInterfaceAPI(ai: AI): InterfaceAPI {

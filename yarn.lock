@@ -27,49 +27,43 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@aktyn-assistant/core@workspace:apps/core":
+"@aktyn-assistant/core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@aktyn-assistant/core@workspace:apps/core"
+  resolution: "@aktyn-assistant/core@workspace:packages/core"
   dependencies:
     "@aktyn-assistant/common": "npm:^0.1.0"
-    "@aktyn-assistant/terminal-interface": "npm:^0.1.0"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.14.2"
     "@types/node-notifier": "npm:^8.0.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.12.0"
     "@typescript-eslint/parser": "npm:^7.12.0"
     appdata-path: "npm:^1.0.0"
-    cross-env: "npm:^7.0.3"
-    dotenv: "npm:^16.4.5"
-    dotenv-expand: "npm:^11.0.6"
     eslint: "npm:^8.57.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-import-resolver-typescript: "npm:^3.6.1"
     eslint-plugin-import: "npm:^2.29.1"
     eslint-plugin-prettier: "npm:^5.1.3"
     jest: "npm:^29.7.0"
-    jest-mock-extended: "npm:^3.0.7"
     node-notifier: "npm:^10.0.1"
     nodemon: "npm:^3.1.3"
     openai: "npm:^4.47.3"
     prettier: "npm:^3.3.0"
     prettier-eslint: "npm:^16.3.0"
-    shx: "npm:^0.3.4"
     ts-jest: "npm:^29.1.4"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.4.5"
   languageName: unknown
   linkType: soft
 
-"@aktyn-assistant/terminal-interface@npm:^0.1.0, @aktyn-assistant/terminal-interface@workspace:packages/terminal-interface":
+"@aktyn-assistant/terminal@workspace:apps/terminal":
   version: 0.0.0-use.local
-  resolution: "@aktyn-assistant/terminal-interface@workspace:packages/terminal-interface"
+  resolution: "@aktyn-assistant/terminal@workspace:apps/terminal"
   dependencies:
     "@aktyn-assistant/common": "npm:^0.1.0"
     "@types/jest": "npm:^29.5.12"
     "@types/terminal-kit": "npm:^2.5.6"
     "@typescript-eslint/eslint-plugin": "npm:^7.12.0"
     "@typescript-eslint/parser": "npm:^7.12.0"
+    cross-env: "npm:^7.0.3"
     eslint: "npm:^8.57.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-import-resolver-typescript: "npm:^3.6.1"
@@ -1133,7 +1127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.14.2":
+"@types/node@npm:*":
   version: 20.14.2
   resolution: "@types/node@npm:20.14.2"
   dependencies:
@@ -2292,22 +2286,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-expand@npm:^11.0.6":
-  version: 11.0.6
-  resolution: "dotenv-expand@npm:11.0.6"
-  dependencies:
-    dotenv: "npm:^16.4.4"
-  checksum: 10c0/e22891ec72cb926d46d9a26290ef77f9cc9ddcba92d2f83d5e6f3a803d1590887be68e25b559415d080053000441b6f63f5b36093a565bb8c5c994b992ae49f2
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^16.4.4, dotenv@npm:^16.4.5":
-  version: 16.4.5
-  resolution: "dotenv@npm:16.4.5"
-  checksum: 10c0/48d92870076832af0418b13acd6e5a5a3e83bb00df690d9812e94b24aff62b88ade955ac99a05501305b8dc8f1b0ee7638b18493deb6fe93d680e5220936292f
-  languageName: node
-  linkType: hard
-
 "eastasianwidth@npm:^0.2.0":
   version: 0.2.0
   resolution: "eastasianwidth@npm:0.2.0"
@@ -2316,9 +2294,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.668":
-  version: 1.4.793
-  resolution: "electron-to-chromium@npm:1.4.793"
-  checksum: 10c0/d20ed4a66131afe3c5d2e18cb38885c0a865f22316ef2b1d938b3dea0294254c661153ee01a08acf4c8f7c0a04a527c4e8ec9efc89af2af4c2f8b23a4c805217
+  version: 1.4.795
+  resolution: "electron-to-chromium@npm:1.4.795"
+  checksum: 10c0/7a26fe5a0144085a90234d532560763d988ae3175514ffd18e3b6882096d8f877f71198180a8a7fe15858e485bb57406611c91e2c6b3bf4e8da446dc39a88a4f
   languageName: node
   linkType: hard
 
@@ -3117,7 +3095,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.0, glob@npm:^7.1.3, glob@npm:^7.1.4":
+"glob@npm:^7.1.3, glob@npm:^7.1.4":
   version: 7.2.3
   resolution: "glob@npm:7.2.3"
   dependencies:
@@ -3406,13 +3384,6 @@ __metadata:
     hasown: "npm:^2.0.0"
     side-channel: "npm:^1.0.4"
   checksum: 10c0/f8b294a4e6ea3855fc59551bbf35f2b832cf01fd5e6e2a97f5c201a071cc09b49048f856e484b67a6c721da5e55736c5b6ddafaf19e2dbeb4a3ff1821680de6c
-  languageName: node
-  linkType: hard
-
-"interpret@npm:^1.0.0":
-  version: 1.4.0
-  resolution: "interpret@npm:1.4.0"
-  checksum: 10c0/08c5ad30032edeec638485bc3f6db7d0094d9b3e85e0f950866600af3c52e9fd69715416d29564731c479d9f4d43ff3e4d302a178196bdc0e6837ec147640450
   languageName: node
   linkType: hard
 
@@ -3985,18 +3956,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock-extended@npm:^3.0.7":
-  version: 3.0.7
-  resolution: "jest-mock-extended@npm:3.0.7"
-  dependencies:
-    ts-essentials: "npm:^10.0.0"
-  peerDependencies:
-    jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0 || ^28.0.0 || ^29.0.0
-    typescript: ^3.0.0 || ^4.0.0 || ^5.0.0
-  checksum: 10c0/17d2e816eae8e95933817102987ba9f700890c4b1223495012bca2ec76644cd203336843a4c381a662e03bde0b637767ad8e2c13b490e9a5eaeb87d211994647
-  languageName: node
-  linkType: hard
-
 "jest-mock@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-mock@npm:29.7.0"
@@ -4555,7 +4514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.0, minimist@npm:^1.2.3, minimist@npm:^1.2.6":
+"minimist@npm:^1.2.0, minimist@npm:^1.2.6":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 10c0/19d3fcdca050087b84c2029841a093691a91259a47def2f18222f41e7645a0b7c44ef4b40e88a1e58a40c84d2ef0ee6047c55594d298146d0eb3f6b737c20ce6
@@ -4919,8 +4878,8 @@ __metadata:
   linkType: hard
 
 "openai@npm:^4.47.3":
-  version: 4.49.0
-  resolution: "openai@npm:4.49.0"
+  version: 4.49.1
+  resolution: "openai@npm:4.49.1"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -4932,7 +4891,7 @@ __metadata:
     web-streams-polyfill: "npm:^3.2.1"
   bin:
     openai: bin/cli
-  checksum: 10c0/a8436fe58bb4c4237a6bea84e076fae57d51bfecd6408f1148f245ef0d6f4441aad3b8a80f2e474cc83c36cdda1d1183f0d948bfef7ee998bafbd7e59aff3e4e
+  checksum: 10c0/486e46b8806866336ec3e934405acba5c8bce7b88b54c4b725d3dc0866c9800a85fc04d70e4b8482aeecfdf63bb5f6ae2649c8365b0613794da91126d4801309
   languageName: node
   linkType: hard
 
@@ -5254,15 +5213,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rechoir@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "rechoir@npm:0.6.2"
-  dependencies:
-    resolve: "npm:^1.1.6"
-  checksum: 10c0/22c4bb32f4934a9468468b608417194f7e3ceba9a508512125b16082c64f161915a28467562368eeb15dc16058eb5b7c13a20b9eb29ff9927d1ebb3b5aa83e84
-  languageName: node
-  linkType: hard
-
 "regexp.prototype.flags@npm:^1.5.2":
   version: 1.5.2
   resolution: "regexp.prototype.flags@npm:1.5.2"
@@ -5326,7 +5276,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.6, resolve@npm:^1.20.0, resolve@npm:^1.22.4":
+"resolve@npm:^1.20.0, resolve@npm:^1.22.4":
   version: 1.22.8
   resolution: "resolve@npm:1.22.8"
   dependencies:
@@ -5339,7 +5289,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A^1.1.6#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>":
   version: 1.22.8
   resolution: "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>::version=1.22.8&hash=c3c19d"
   dependencies:
@@ -5492,35 +5442,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shelljs@npm:^0.8.5":
-  version: 0.8.5
-  resolution: "shelljs@npm:0.8.5"
-  dependencies:
-    glob: "npm:^7.0.0"
-    interpret: "npm:^1.0.0"
-    rechoir: "npm:^0.6.2"
-  bin:
-    shjs: bin/shjs
-  checksum: 10c0/feb25289a12e4bcd04c40ddfab51aff98a3729f5c2602d5b1a1b95f6819ec7804ac8147ebd8d9a85dfab69d501bcf92d7acef03247320f51c1552cec8d8e2382
-  languageName: node
-  linkType: hard
-
 "shellwords@npm:^0.1.1":
   version: 0.1.1
   resolution: "shellwords@npm:0.1.1"
   checksum: 10c0/7d66b28927e0b524b71b2e185651fcd88a70473a077dd230fbf86188380e948ffb36cea00832d78fc13c93cd15f6f52286fb05f2746b7580623ca1ec619eb004
-  languageName: node
-  linkType: hard
-
-"shx@npm:^0.3.4":
-  version: 0.3.4
-  resolution: "shx@npm:0.3.4"
-  dependencies:
-    minimist: "npm:^1.2.3"
-    shelljs: "npm:^0.8.5"
-  bin:
-    shx: lib/cli.js
-  checksum: 10c0/83251fb09314682f5a192f0249a4be68c755933313a41b5152b11c19fc0a68311954d3ca971a0cbae05815786a893c59b82f356484d8eeb009c84f4066b3fa31
   languageName: node
   linkType: hard
 
@@ -5936,18 +5861,6 @@ __metadata:
   peerDependencies:
     typescript: ">=4.2.0"
   checksum: 10c0/f54a0ba9ed56ce66baea90a3fa087a484002e807f28a8ccb2d070c75e76bde64bd0f6dce98b3802834156306050871b67eec325cb4e918015a360a3f0868c77c
-  languageName: node
-  linkType: hard
-
-"ts-essentials@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "ts-essentials@npm:10.0.0"
-  peerDependencies:
-    typescript: ">=4.5.0"
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 10c0/8c9c0bbf582c7f78550b0862dda25452fb810e589a72fd97b0df55fe3c02d4211ad99a2dc11d686a7f6541188cfc3cb7f9078719fc43042471b3c17ea7ee74e8
   languageName: node
   linkType: hard
 
