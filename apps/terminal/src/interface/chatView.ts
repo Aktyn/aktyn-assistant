@@ -83,7 +83,7 @@ export class ChatView extends View {
         this.chatStream.controller.abort('Stream replaced')
         this.chatStream = null
       }
-      const stream = (this.chatStream = await this.api.ai.sendChatMessage(message))
+      const stream = (this.chatStream = await this.sendChatMessage(message))
       let first = true
       for await (const chunk of stream) {
         if (stream.controller.signal.aborted || !this.chatStream) {

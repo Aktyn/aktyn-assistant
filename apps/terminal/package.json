@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc -p ./tsconfig.json",
 		"start": "node ./dist/index.js",
-		"dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start\" -e ts",
+		"dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start || exit 1\" -e ts",
 		"test": "jest",
 		"test:ci": "jest --collectCoverage",
 		"test:watch": "jest --watch",
@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@aktyn-assistant/common": "^0.1.0",
+		"@aktyn-assistant/core": "^0.1.0",
 		"terminal-kit": "^3.1.1"
 	},
 	"devDependencies": {

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { getConfigDirectory } from '../../user-config'
+import { getConfigDirectory } from '../../user/user-config'
 
 const getKeyFilePath = (fileName: string) => path.join(getConfigDirectory(), fileName)
 

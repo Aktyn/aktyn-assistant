@@ -1,2 +1,2 @@
 export * from './ai'
-export * from './user-config'
+export * from './user'

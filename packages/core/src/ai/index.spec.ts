@@ -1,6 +1,4 @@
-import { AiProvider } from '@aktyn-assistant/common'
-
-import { AI } from '.'
+import { AI, AiProvider } from '.'
 import { LOREM_IPSUM_WORDS } from './mock'
 
 import '../test-utils/extend'

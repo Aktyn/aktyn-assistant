@@ -2,18 +2,21 @@
  * This file specifies the general interface for the AI client.
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
-
-import { AiProvider, Stream, assert, isDev, type ChatResponse } from '@aktyn-assistant/common'
+import { Stream, assert, isDev, type ChatResponse } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
 import type { ChatCompletionChunk } from 'openai/resources/index.mjs'
 
-import { getUserConfigValue } from '../user-config'
+import { getUserConfigValue } from '../user/user-config'
 
 import * as OpenAiAPI from './api/openai'
 import { mockChatStream } from './mock'
 
 function throwUnsupportedProviderError(provider: AiProvider) {
   throw new Error(`Unsupported AI provider: ${provider}`)
+}
+
+export enum AiProvider {
+  OpenAI = 'openai',
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -111,6 +114,10 @@ export class AI {
       default:
         throw throwUnsupportedProviderError(this.provider)
     }
+  }
+
+  notifyError(error: unknown, title = `AI error (${this.provider}`) {
+    AI.notifyError(error, title)
   }
 
   static notifyError(error: unknown, title = 'AI error') {

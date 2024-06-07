@@ -7,9 +7,9 @@
 	"scripts": {
 		"build": "tsc -p ./tsconfig.json",
 		"dev": "nodemon --watch ./src --exec \"yarn run build\" --ignore lib/ -e ts",
-		"test": "jest --passWithNoTests",
-		"test:ci": "jest --collectCoverage --passWithNoTests",
-		"test:watch": "jest --watch --passWithNoTests",
+		"test": "jest",
+		"test:ci": "jest --collectCoverage",
+		"test:watch": "jest --watch",
 		"format": "prettier --write src/**/*{.ts,.tsx}",
 		"lint": "eslint src/**/*.ts --fix",
 		"typecheck": "tsc --noEmit --skipLibCheck"

@@ -1,4 +1,4 @@
-import type { InterfaceAPI } from '@aktyn-assistant/common'
+import type { AI } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 import { ChatView } from './chatView'
@@ -24,7 +24,7 @@ export class TerminalInterface {
 
   private keyListener = this.onKey.bind(this)
 
-  constructor(private readonly listeners: InterfaceAPI) {
+  constructor(private readonly ai: AI) {
     terminal.on('resize', (width: number, height: number) => {
       this.width = width
       this.height = height
@@ -123,14 +123,14 @@ export class TerminalInterface {
           const viewType = items[response.selectedIndex].type
           switch (viewType) {
             case INTERFACE_VIEW.Chat:
-              this.view = new ChatView(viewType, this.handleError.bind(this), noop, this.listeners)
+              this.view = new ChatView(viewType, this.handleError.bind(this), noop, this.ai)
               break
             case INTERFACE_VIEW.Settings:
               this.view = new SettingsView(
                 viewType,
                 this.handleError.bind(this),
                 this.closeView.bind(this),
-                this.listeners,
+                this.ai,
               )
               break
           }

@@ -1,19 +1,23 @@
 import fs from 'fs'
 import path from 'path'
 
-import { type UserConfigType, once } from '@aktyn-assistant/common'
+import { once } from '@aktyn-assistant/common'
 import { getAppDataPath } from 'appdata-path'
+
+import type { AiProvider } from '../ai'
 
 /**
  ** Do not export this object
  ** User should access it through `getUserConfigValue()` function
  * @see {@link getUserConfigValue}
  */
-const USER_CONFIG: UserConfigType = {
-  selectedAiProvider: null,
-  selectedChatModel: null,
-  mockPaidRequests: null,
+const USER_CONFIG = {
+  selectedAiProvider: null as AiProvider | null,
+  selectedChatModel: null as string | null,
+  mockPaidRequests: null as boolean | null,
 }
+
+export type UserConfigType = typeof USER_CONFIG
 
 export const getConfigDirectory = once(() => getAppDataPath('aktyn-assistant'))
 

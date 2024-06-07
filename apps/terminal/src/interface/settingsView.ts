@@ -1,3 +1,4 @@
+import { getUserConfigValue, setUserConfigValue } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 import { selectOption, selectYesOrNo } from '../select'
@@ -71,24 +72,22 @@ export class SettingsView extends View {
     if (this.aborted) {
       return
     }
-    this.api.settings.set('mockPaidRequests', mock)
+    setUserConfigValue('mockPaidRequests', mock)
     this.showSettings()
   }
 
   private async selectChatModel() {
     terminal.clear()
 
-    const models = await this.api.ai.requestChatModels()
+    const models = await this.ai.getAvailableModels()
     terminal.moveTo(1, terminal.height - 2 - models.length)
 
-    terminal('Current chat model: ').brightCyan.bold(
-      this.api.settings.get('selectedChatModel') + '\n',
-    )
+    terminal('Current chat model: ').brightCyan.bold(getUserConfigValue('selectedChatModel') + '\n')
     const selectedModel = await selectOption(models.sort(), 'Select chat model:')
     if (this.aborted) {
       return
     }
-    this.api.settings.set('selectedChatModel', selectedModel)
+    setUserConfigValue('selectedChatModel', selectedModel)
     this.showSettings()
   }
 }
