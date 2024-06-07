@@ -20,6 +20,10 @@ jest.mock('terminal-kit', () => ({
     defaultColor: jest.fn(),
   },
 }))
+// jest.mock('@aktyn-assistant/terminal-interface', () => ({
+//   printError: jest.fn(),
+//   requestApiKey: () => Promise.resolve('mock api key'),
+// }))
 
 import { terminal } from 'terminal-kit'
 

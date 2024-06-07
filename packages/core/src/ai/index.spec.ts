@@ -1,10 +1,7 @@
-import { AI, AiProvider } from '.'
-import { LOREM_IPSUM_WORDS } from './mock'
-
-import '../test-utils/extend'
+const notifyMock = jest.fn()
 
 jest.mock('node-notifier', () => ({
-  notify: jest.fn(),
+  notify: notifyMock,
 }))
 jest.mock('fs', () => ({
   writeFileSync: jest.fn(),
@@ -31,11 +28,11 @@ jest.mock('openai', () => ({
     }
   },
 }))
-//TODO
-// jest.mock('@aktyn-assistant/terminal-interface', () => ({
-//   printError: jest.fn(),
-//   requestApiKey: () => Promise.resolve('mock api key'),
-// }))
+
+import { AI, AiProvider } from '.'
+import { LOREM_IPSUM_WORDS } from './mock'
+
+import '../test-utils/extend'
 
 describe('AI class', () => {
   it(
@@ -75,6 +72,9 @@ describe(AI.notifyError.name, () => {
     const error = new Error('Test error')
     process.env.NODE_ENV = 'dev'
     AI.notifyError(error)
-    expect(console.error).toHaveBeenCalledWith(error)
+    expect(notifyMock).toHaveBeenCalledWith({
+      title: 'AI error',
+      message: 'Test error',
+    })
   })
 })
