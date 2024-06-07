@@ -3,11 +3,13 @@
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
 
-import { AiProvider, ChatStream } from '@aktyn-assistant/common'
+import { AiProvider, ChatStream, assert, type ChatResponse } from '@aktyn-assistant/common'
 import { printError } from '@aktyn-assistant/terminal-interface'
 import { notify } from 'node-notifier'
+import type { ChatCompletionChunk } from 'openai/resources/index.mjs'
 
 import { isDev } from '../utils/common'
+import { getUserConfigValue } from '../utils/user-config'
 
 import * as OpenAiAPI from './api/openai'
 import { mockChatStream } from './mock'
@@ -19,8 +21,6 @@ function throwUnsupportedProviderError(provider: AiProvider) {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export class AI {
   private static instance: AI | null = null
-
-  private mockPaidRequests = false
 
   private constructor(private readonly provider: AiProvider) {}
 
@@ -52,10 +52,6 @@ export class AI {
     return AI.instance
   }
 
-  setMockPaidRequests(mock: boolean) {
-    this.mockPaidRequests = mock
-  }
-
   //istanbul ignore next
   async getAvailableModels() {
     switch (this.provider) {
@@ -69,18 +65,42 @@ export class AI {
   }
 
   async performChatQuery(query: string, model: string) {
+    const mockPaidRequests = getUserConfigValue('mockPaidRequests')
+    assert(typeof mockPaidRequests === 'boolean', 'Mock paid requests is not set')
+
     switch (this.provider) {
       case AiProvider.OpenAI: {
-        const stream = this.mockPaidRequests
-          ? mockChatStream((content, isLast) => ({
-              choices: [{ delta: { content }, finish_reason: isLast ? 'stop' : null }],
-            }))
+        const stream = mockPaidRequests
+          ? mockChatStream(
+              (content, isLast): ChatCompletionChunk => ({
+                id: Math.random().toString(36).substring(2),
+                choices: [
+                  {
+                    index: 0,
+                    delta: {
+                      content,
+                      role: 'assistant',
+                      //tool_calls: []
+                    },
+                    finish_reason: isLast ? 'stop' : null,
+                  },
+                ],
+                created: Date.now(),
+                model,
+                object: 'chat.completion.chunk',
+              }),
+            )
           : await OpenAiAPI.performChatQuery(query, model)
         return new ChatStream(async function* transformStream() {
           for await (const chunk of stream) {
-            const content = chunk.choices[0]?.delta.content
-            if (content && !stream.controller.signal.aborted) {
-              yield { content, timestamp: Date.now(), finished: !!chunk.choices[0]?.finish_reason }
+            const choice = chunk.choices.at(0)
+            if (choice && !stream.controller.signal.aborted) {
+              yield {
+                content: choice.delta.content ?? '',
+                timestamp: Date.now(),
+                finished: !!choice.finish_reason,
+                role: choice.delta.role ?? null,
+              } satisfies ChatResponse
             }
           }
         }, stream.controller)

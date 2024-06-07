@@ -79,9 +79,11 @@ export class SettingsView extends View {
     terminal.clear()
 
     const models = await this.api.ai.requestChatModels()
-    terminal.moveTo(1, terminal.height - 1 - models.length)
+    terminal.moveTo(1, terminal.height - 2 - models.length)
 
-    terminal('Current chat model: ').bold(this.api.settings.get('selectedChatModel'))
+    terminal('Current chat model: ').brightCyan.bold(
+      this.api.settings.get('selectedChatModel') + '\n',
+    )
     const selectedModel = await selectOption(models.sort(), 'Select chat model:')
     if (this.aborted) {
       return

@@ -13,7 +13,16 @@ jest.mock('fs', () => ({
   mkdirSync: jest.fn(),
   existsSync: jest.fn(),
   unlinkSync: jest.fn(),
-  readFileSync: () => 'mock file content',
+  readFileSync: (filePath: string) => {
+    if (filePath.endsWith('config.json')) {
+      return JSON.stringify({
+        selectedAiProvider: 'openai',
+        selectedChatModel: 'gpt-3.5-turbo',
+        mockPaidRequests: true,
+      })
+    }
+    return 'mock file content'
+  },
 }))
 jest.mock('openai', () => ({
   __esModule: true,
@@ -28,13 +37,13 @@ jest.mock('@aktyn-assistant/terminal-interface', () => ({
   printError: jest.fn(),
   requestApiKey: () => Promise.resolve('mock api key'),
 }))
+jest.mock('')
 
 describe('AI class', () => {
   it(
     'should perform chat query',
     async () => {
       const ai = await AI.client(AiProvider.OpenAI)
-      ai.setMockPaidRequests(true)
 
       const now = Date.now()
       const chatStream = await ai.performChatQuery('Example query', 'gpt-3.5-turbo')

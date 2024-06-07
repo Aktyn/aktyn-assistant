@@ -21,7 +21,6 @@ __metadata:
     nodemon: "npm:^3.1.3"
     prettier: "npm:^3.3.0"
     prettier-eslint: "npm:^16.3.0"
-    terminal-kit: "npm:^3.1.1"
     ts-jest: "npm:^29.1.4"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.4.5"
@@ -35,6 +34,7 @@ __metadata:
     "@aktyn-assistant/common": "npm:^0.1.0"
     "@aktyn-assistant/terminal-interface": "npm:^0.1.0"
     "@types/jest": "npm:^29.5.12"
+    "@types/node": "npm:^20.14.2"
     "@types/node-notifier": "npm:^8.0.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.12.0"
     "@typescript-eslint/parser": "npm:^7.12.0"
@@ -1133,7 +1133,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:^20.14.2":
   version: 20.14.2
   resolution: "@types/node@npm:20.14.2"
   dependencies:
@@ -1884,9 +1884,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001587":
-  version: 1.0.30001628
-  resolution: "caniuse-lite@npm:1.0.30001628"
-  checksum: 10c0/7f3e198d30220e02d54ea9de1562725d65e89e4318e16b5addd550a8cd6d240de4d42eecb97506c5eafdf5193ad39624729e12b6385fc63b2a2b8e8c430cbcb1
+  version: 1.0.30001629
+  resolution: "caniuse-lite@npm:1.0.30001629"
+  checksum: 10c0/e95136a423c0c5e7f9d026ef3f9be8d06cadc4c83ad65eedfaeaba6b5eb814489ea186e90bae1085f3be7348577e25f8fe436b384c2f983324ad8dea4a7dfe1d
   languageName: node
   linkType: hard
 
@@ -2316,9 +2316,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.668":
-  version: 1.4.790
-  resolution: "electron-to-chromium@npm:1.4.790"
-  checksum: 10c0/2af48c4fef7009c0dea272ce5878a3655e7f6ed0b2e63f3e38f3ef59b21eaa3fbacd7c33c9e120b90e6d6543ef2587daf38daf1fd75cb22bd18c9fda79d4ca81
+  version: 1.4.793
+  resolution: "electron-to-chromium@npm:1.4.793"
+  checksum: 10c0/d20ed4a66131afe3c5d2e18cb38885c0a865f22316ef2b1d938b3dea0294254c661153ee01a08acf4c8f7c0a04a527c4e8ec9efc89af2af4c2f8b23a4c805217
   languageName: node
   linkType: hard
 
@@ -4919,8 +4919,8 @@ __metadata:
   linkType: hard
 
 "openai@npm:^4.47.3":
-  version: 4.48.2
-  resolution: "openai@npm:4.48.2"
+  version: 4.49.0
+  resolution: "openai@npm:4.49.0"
   dependencies:
     "@types/node": "npm:^18.11.18"
     "@types/node-fetch": "npm:^2.6.4"
@@ -4932,7 +4932,7 @@ __metadata:
     web-streams-polyfill: "npm:^3.2.1"
   bin:
     openai: bin/cli
-  checksum: 10c0/16db4f8201c4c3f19bfc68ad68eb91a3d359800b652d25b5d374461a46e5c3b506674f2e04c46e944287c12e205626af21a77b30d5539f17177e5485713174c0
+  checksum: 10c0/a8436fe58bb4c4237a6bea84e076fae57d51bfecd6408f1148f245ef0d6f4441aad3b8a80f2e474cc83c36cdda1d1183f0d948bfef7ee998bafbd7e59aff3e4e
   languageName: node
   linkType: hard
 
@@ -5651,9 +5651,9 @@ __metadata:
   linkType: hard
 
 "string-kit@npm:^0.18.1":
-  version: 0.18.2
-  resolution: "string-kit@npm:0.18.2"
-  checksum: 10c0/c2cd7ef10aa107d7ca757b5673d0d47598c66bc8a32d0ae5daad66576351b83ed49b2b6f5d09aef05ad9922a5b02fc121d4b5523e5e39f6336167631eb898e8a
+  version: 0.18.3
+  resolution: "string-kit@npm:0.18.3"
+  checksum: 10c0/285bae05f5534d6b17a4cd7318aa65e2a4cb7a2535f7276041b30a3e0e4b7af2b1ba58fc999a9891a994bd78ddd9b13a508152634ae66f0672566bc5c403dbb7
   languageName: node
   linkType: hard
 
@@ -6044,58 +6044,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:2.0.1":
-  version: 2.0.1
-  resolution: "turbo-darwin-64@npm:2.0.1"
+"turbo-darwin-64@npm:2.0.3":
+  version: 2.0.3
+  resolution: "turbo-darwin-64@npm:2.0.3"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:2.0.1":
-  version: 2.0.1
-  resolution: "turbo-darwin-arm64@npm:2.0.1"
+"turbo-darwin-arm64@npm:2.0.3":
+  version: 2.0.3
+  resolution: "turbo-darwin-arm64@npm:2.0.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:2.0.1":
-  version: 2.0.1
-  resolution: "turbo-linux-64@npm:2.0.1"
+"turbo-linux-64@npm:2.0.3":
+  version: 2.0.3
+  resolution: "turbo-linux-64@npm:2.0.3"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:2.0.1":
-  version: 2.0.1
-  resolution: "turbo-linux-arm64@npm:2.0.1"
+"turbo-linux-arm64@npm:2.0.3":
+  version: 2.0.3
+  resolution: "turbo-linux-arm64@npm:2.0.3"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:2.0.1":
-  version: 2.0.1
-  resolution: "turbo-windows-64@npm:2.0.1"
+"turbo-windows-64@npm:2.0.3":
+  version: 2.0.3
+  resolution: "turbo-windows-64@npm:2.0.3"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:2.0.1":
-  version: 2.0.1
-  resolution: "turbo-windows-arm64@npm:2.0.1"
+"turbo-windows-arm64@npm:2.0.3":
+  version: 2.0.3
+  resolution: "turbo-windows-arm64@npm:2.0.3"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
 "turbo@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "turbo@npm:2.0.1"
+  version: 2.0.3
+  resolution: "turbo@npm:2.0.3"
   dependencies:
-    turbo-darwin-64: "npm:2.0.1"
-    turbo-darwin-arm64: "npm:2.0.1"
-    turbo-linux-64: "npm:2.0.1"
-    turbo-linux-arm64: "npm:2.0.1"
-    turbo-windows-64: "npm:2.0.1"
-    turbo-windows-arm64: "npm:2.0.1"
+    turbo-darwin-64: "npm:2.0.3"
+    turbo-darwin-arm64: "npm:2.0.3"
+    turbo-linux-64: "npm:2.0.3"
+    turbo-linux-arm64: "npm:2.0.3"
+    turbo-windows-64: "npm:2.0.3"
+    turbo-windows-arm64: "npm:2.0.3"
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -6111,7 +6111,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 10c0/9a90a4b0e85a8b340f8e55852666f20284ac7aac3063264a72cfef89668c71a937178e66546a1a6141fcea23d54cfa8b21bc1d47535be8888af172feb4f62d9d
+  checksum: 10c0/154f2fab8ce2faa66444a32950171e3cb520576d07f20c58f13052442997a80bf31146e5826ce4e05abddfe99d71c68f309b7efab84cad05ee984352ef1f2621
   languageName: node
   linkType: hard
 

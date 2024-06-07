@@ -13,7 +13,6 @@ import { getInterfaceAPI } from './interfaceAPI'
 import { wait } from './utils/common'
 import { getUserConfigValue, setUserConfigValue } from './utils/user-config'
 
-//TODO: no hoist packages like terminal-kit
 //TODO: implement electron based user interface
 //TODO: option for selecting rectangular part of screen when performing operation requires screen capture
 
@@ -55,7 +54,6 @@ async function run() {
     if (mockPaidRequests) {
       console.info(`Paid requests to AI provider are mocked`)
     }
-    ai.setMockPaidRequests(mockPaidRequests)
 
     console.info("Initial setup doesn't require any further work. Initializing menu interface...")
 

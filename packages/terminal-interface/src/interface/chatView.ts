@@ -2,7 +2,7 @@ import type { ChatStream } from '@aktyn-assistant/common'
 import { terminal } from 'terminal-kit'
 import type { AnimatedText } from 'terminal-kit/Terminal'
 
-import { addNewLine, showEscapeToReturnToMenuInfo } from './common'
+import { addNewLine, getRoleColor, showEscapeToReturnToMenuInfo } from './common'
 import { View } from './view'
 
 export class ChatView extends View {
@@ -82,25 +82,27 @@ export class ChatView extends View {
         this.chatStream = null
       }
       const stream = (this.chatStream = await this.api.ai.sendChatMessage(message))
+      let first = true
       for await (const chunk of stream) {
         if (stream.controller.signal.aborted || !this.chatStream) {
           break
         }
 
-        this.spinner?.animate(false)
-        terminal.moveTo(1, terminal.height - 2).eraseLine()
-        terminal.grey
-          .bold('Chat response:')
-          .grey(`\t(${new Date(chunk.timestamp).toLocaleTimeString()})\n`)
-          .eraseLine()
-          .defaultColor(`${chunk.content}\n`)
+        if (first) {
+          this.spinner?.animate(false)
+          terminal.moveTo(1, terminal.height - 2).eraseLine()
+          terminal.grey
+            .bold('Chat response:')
+            .grey(`\t(${new Date().toLocaleTimeString()})\t`)
+            .yellow.bold('Press ESC to return to menu\n')
+          first = false
+        }
 
-        if (!chunk.finished) {
-          addNewLine()
-          showEscapeToReturnToMenuInfo()
-          this.spinner = await startSpinner()
-        } else {
-          terminal.brightGreen.bold('Response completed ✓')
+        terminal.color(getRoleColor(chunk.role), chunk.content)
+
+        //TODO: adjust to real responses which seem to never finish
+        if (chunk.finished) {
+          terminal.brightGreen.bold('\nResponse completed ✓')
         }
       }
 
