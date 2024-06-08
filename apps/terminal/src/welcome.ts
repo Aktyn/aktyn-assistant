@@ -22,7 +22,6 @@ export function showWelcomeMessage() {
   }
 }
 
-//TODO: variants for smaller console width
 const productNameAsciiArt = [
   `
  █████  ██   ██ ████████ ██    ██ ███    ██

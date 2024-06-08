@@ -1,11 +1,7 @@
-import { once } from '@aktyn-assistant/common'
 import { type OpenAI } from 'openai'
 
-import { getOpenAiClient } from '.'
-
 //istanbul ignore next
-export const getAvailableModels = once(async (client?: OpenAI) => {
-  client ??= await getOpenAiClient()
+export async function getAvailableModels(client: OpenAI) {
   const models: OpenAI.Models.Model[] = []
 
   const list = await client.models.list()
@@ -17,4 +13,4 @@ export const getAvailableModels = once(async (client?: OpenAI) => {
   }
 
   return models
-})
+}

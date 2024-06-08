@@ -29,7 +29,7 @@ jest.mock('openai', () => ({
   },
 }))
 
-import { AI, AiProvider } from '.'
+import { AI, AiProviderType } from '.'
 import { LOREM_IPSUM_WORDS } from './mock'
 
 import '../test-utils/extend'
@@ -38,7 +38,10 @@ describe('AI class', () => {
   it(
     'should perform chat query',
     async () => {
-      const ai = await AI.client(AiProvider.OpenAI)
+      const ai = await AI.client({
+        providerType: AiProviderType.openai,
+        requestApiKey: async () => 'mock api key',
+      })
 
       const now = Date.now()
       const chatStream = await ai.performChatQuery('Example query', 'gpt-3.5-turbo')

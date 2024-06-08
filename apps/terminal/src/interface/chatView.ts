@@ -103,7 +103,6 @@ export class ChatView extends View {
 
         terminal.color(getRoleColor(chunk.role), chunk.content)
 
-        //TODO: adjust to real responses which seem to never finish
         if (chunk.finished) {
           terminal.brightGreen.bold('\nResponse completed ✓')
         }

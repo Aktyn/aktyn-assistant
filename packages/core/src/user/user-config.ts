@@ -4,7 +4,7 @@ import path from 'path'
 import { once } from '@aktyn-assistant/common'
 import { getAppDataPath } from 'appdata-path'
 
-import type { AiProvider } from '../ai'
+import type { AiProviderType } from '../ai'
 
 /**
  ** Do not export this object
@@ -12,7 +12,7 @@ import type { AiProvider } from '../ai'
  * @see {@link getUserConfigValue}
  */
 const USER_CONFIG = {
-  selectedAiProvider: null as AiProvider | null,
+  selectedAiProvider: null as AiProviderType | null,
   selectedChatModel: null as string | null,
   mockPaidRequests: null as boolean | null,
 }

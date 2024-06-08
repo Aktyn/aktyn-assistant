@@ -3,14 +3,23 @@ import path from 'path'
 
 import { getConfigDirectory } from '../../user/user-config'
 
-const getKeyFilePath = (fileName: string) => path.join(getConfigDirectory(), fileName)
-
-export function loadProviderApiKey(fileName: string) {
-  return loadApiKey(getKeyFilePath(fileName))
+export enum AiProviderType {
+  openai = 'OpenAI',
 }
 
-export function saveProviderApiKey(fileName: string, apiKey: string) {
-  const keyFilePath = getKeyFilePath(fileName)
+const AiProviderApiKeyFileNames: { [key in AiProviderType]: string } = {
+  [AiProviderType.openai]: 'openai-key.json',
+}
+
+const getKeyFilePath = (providerType: AiProviderType) =>
+  path.join(getConfigDirectory(), AiProviderApiKeyFileNames[providerType])
+
+export function loadProviderApiKey(providerType: AiProviderType) {
+  return loadApiKey(getKeyFilePath(providerType))
+}
+
+export function saveProviderApiKey(providerType: AiProviderType, apiKey: string) {
+  const keyFilePath = getKeyFilePath(providerType)
 
   if (!fs.existsSync(path.dirname(keyFilePath))) {
     fs.mkdirSync(path.dirname(keyFilePath), { recursive: true })
@@ -18,8 +27,8 @@ export function saveProviderApiKey(fileName: string, apiKey: string) {
   fs.writeFileSync(keyFilePath, apiKey, 'utf8')
 }
 
-export function removeProviderApiKey(fileName: string) {
-  const keyFilePath = getKeyFilePath(fileName)
+export function removeProviderApiKey(providerType: AiProviderType) {
+  const keyFilePath = getKeyFilePath(providerType)
   if (fs.existsSync(keyFilePath)) {
     fs.unlinkSync(keyFilePath)
   }

@@ -1,4 +1,4 @@
-import type { AI } from '@aktyn-assistant/core'
+import { type AI } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 import { ChatView } from './chatView'

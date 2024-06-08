@@ -2,31 +2,104 @@
  * This file specifies the general interface for the AI client.
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
-import { Stream, assert, isDev, type ChatResponse } from '@aktyn-assistant/common'
+import { Stream, assert, isDev, once, type ChatResponse } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
+import { OpenAI } from 'openai'
 import type { ChatCompletionChunk } from 'openai/resources/index.mjs'
 
 import { getUserConfigValue } from '../user/user-config'
 
+import {
+  AiProviderType,
+  loadProviderApiKey,
+  removeProviderApiKey,
+  saveProviderApiKey,
+} from './api/common'
 import * as OpenAiAPI from './api/openai'
 import { mockChatStream } from './mock'
 
-function throwUnsupportedProviderError(provider: AiProvider) {
-  throw new Error(`Unsupported AI provider: ${provider}`)
+export { AiProviderType } from './api/common'
+
+class UnsupportedProviderError extends Error {
+  constructor(providerType: AiProviderType) {
+    super(`Unsupported AI provider: ${providerType}`)
+  }
 }
 
-export enum AiProvider {
-  OpenAI = 'openai',
+function throwUnsupportedProviderError(provider: AiProviderType) {
+  throw new UnsupportedProviderError(provider)
+}
+
+const AiProviderClass = {
+  [AiProviderType.openai]: OpenAI,
+} as const satisfies {
+  [key in AiProviderType]: InstanceType<ObjectConstructor>
+}
+
+type GetProviderClass<ProviderType extends AiProviderType> = InstanceType<
+  (typeof AiProviderClass)[ProviderType]
+>
+
+type InitType<ProviderType extends AiProviderType> = {
+  providerType: ProviderType
+  requestApiKey: (providerType: ProviderType, reason?: 'validation-failed') => Promise<string>
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export class AI {
+export class AI<ProviderType extends AiProviderType = AiProviderType> {
   private static instance: AI | null = null
 
-  private constructor(private readonly provider: AiProvider) {}
+  private constructor(
+    private readonly providerType: ProviderType,
+    private readonly providerClient: GetProviderClass<ProviderType>,
+  ) {}
 
-  public static async client(provider?: AiProvider): Promise<AI> {
-    if (!provider) {
+  private static async getProviderClient<ProviderType extends AiProviderType>(
+    init: InitType<ProviderType>,
+    previousAttemptFailed = false,
+  ): Promise<GetProviderClass<ProviderType>> {
+    try {
+      let apiKey = loadProviderApiKey(init.providerType)
+      while (!apiKey) {
+        apiKey =
+          (await init.requestApiKey(
+            init.providerType,
+            previousAttemptFailed ? 'validation-failed' : undefined,
+          )) ?? ''
+      }
+      saveProviderApiKey(init.providerType, apiKey)
+
+      try {
+        switch (init.providerType) {
+          case AiProviderType.openai:
+            //@ts-expect-error Typescript reports type mismatch between return type of OpenAiAPI.getOpenAiClient and this function
+            return await OpenAiAPI.getOpenAiClient(apiKey)
+          default:
+            throw throwUnsupportedProviderError(init.providerType)
+        }
+      } catch (error) {
+        if (error instanceof UnsupportedProviderError) {
+          throw error
+        }
+
+        if (isDev()) {
+          console.error(error)
+        }
+        removeProviderApiKey(init.providerType)
+        return await AI.getProviderClient(init, true)
+      }
+    } catch (error) {
+      notify({
+        title: 'OpenAI setup fatal error',
+        message: error instanceof Error ? error.message : undefined,
+      })
+      console.error(error)
+      process.exit(1)
+    }
+  }
+
+  public static async client<ProviderType extends AiProviderType>(init?: InitType<ProviderType>) {
+    if (!init) {
       if (AI.instance) {
         return AI.instance
       } else {
@@ -36,41 +109,34 @@ export class AI {
       }
     }
 
-    if (AI.instance && AI.instance.provider === provider) {
+    if (AI.instance && AI.instance.providerType === init.providerType) {
       return AI.instance
     }
 
-    AI.instance = new AI(provider)
-
-    switch (provider) {
-      case AiProvider.OpenAI:
-        await OpenAiAPI.getOpenAiClient()
-        break
-      default:
-        throw throwUnsupportedProviderError(provider)
-    }
+    const client = await AI.getProviderClient<ProviderType>(init)
+    AI.instance = new AI<ProviderType>(init.providerType, client)
 
     return AI.instance
   }
 
   //istanbul ignore next
-  async getAvailableModels() {
-    switch (this.provider) {
-      case AiProvider.OpenAI:
-        return await OpenAiAPI.getAvailableModels().then((models) =>
+  getAvailableModels = once(async () => {
+    switch (this.providerType) {
+      case AiProviderType.openai:
+        return await OpenAiAPI.getAvailableModels(this.providerClient).then((models) =>
           models.map((model) => model.id),
         )
       default:
-        throw throwUnsupportedProviderError(this.provider)
+        throw throwUnsupportedProviderError(this.providerType)
     }
-  }
+  })
 
   async performChatQuery(query: string, model: string) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
     assert(typeof mockPaidRequests === 'boolean', 'Mock paid requests is not set')
 
-    switch (this.provider) {
-      case AiProvider.OpenAI: {
+    switch (this.providerType) {
+      case AiProviderType.openai: {
         const stream = mockPaidRequests
           ? mockChatStream(
               (content, isLast): ChatCompletionChunk => ({
@@ -91,7 +157,7 @@ export class AI {
                 object: 'chat.completion.chunk',
               }),
             )
-          : await OpenAiAPI.performChatQuery(query, model)
+          : await OpenAiAPI.performChatQuery(this.providerClient, query, model)
 
         const timeout = setTimeout(() => {
           stream.controller.abort('Timeout')
@@ -112,11 +178,11 @@ export class AI {
         }, stream.controller)
       }
       default:
-        throw throwUnsupportedProviderError(this.provider)
+        throw throwUnsupportedProviderError(this.providerType)
     }
   }
 
-  notifyError(error: unknown, title = `AI error (${this.provider}`) {
+  notifyError(error: unknown, title = `AI error (${this.providerType}`) {
     AI.notifyError(error, title)
   }
 
