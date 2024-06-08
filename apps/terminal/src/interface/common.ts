@@ -1,4 +1,4 @@
-import { type ChatResponse } from '@aktyn-assistant/common'
+import type { ChatResponse } from '@aktyn-assistant/common'
 import { terminal } from 'terminal-kit'
 
 export function showEscapeToReturnToMenuInfo() {

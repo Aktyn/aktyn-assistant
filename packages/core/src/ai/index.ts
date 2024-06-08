@@ -5,7 +5,6 @@
 import { Stream, assert, isDev, once, type ChatResponse } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
 import { OpenAI } from 'openai'
-import type { ChatCompletionChunk } from 'openai/resources/index.mjs'
 
 import { getUserConfigValue } from '../user/user-config'
 
@@ -139,22 +138,14 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
       case AiProviderType.openai: {
         const stream = mockPaidRequests
           ? mockChatStream(
-              (content, isLast): ChatCompletionChunk => ({
-                id: Math.random().toString(36).substring(2),
-                choices: [
-                  {
-                    index: 0,
-                    delta: {
-                      content,
-                      role: 'assistant',
-                      //tool_calls: []
-                    },
-                    finish_reason: isLast ? 'stop' : null,
-                  },
-                ],
-                created: Date.now(),
-                model,
-                object: 'chat.completion.chunk',
+              (content, isLast): OpenAI.ChatCompletionChunk.Choice => ({
+                index: 0,
+                delta: {
+                  content,
+                  role: 'assistant',
+                  //tool_calls: []
+                },
+                finish_reason: isLast ? 'stop' : null,
               }),
             )
           : await OpenAiAPI.performChatQuery(this.providerClient, query, model)
@@ -163,16 +154,17 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           stream.controller.abort('Timeout')
         }, 60_000)
         return new Stream<ChatResponse>(async function* transformStream() {
-          for await (const chunk of stream) {
-            const choice = chunk.choices.at(0)
-            if (choice && !stream.controller.signal.aborted) {
-              yield {
-                content: choice.delta.content ?? '',
-                timestamp: Date.now(),
-                finished: !!choice.finish_reason,
-                role: choice.delta.role ?? null,
-              } satisfies ChatResponse
+          for await (const choice of stream) {
+            if (stream.controller.signal.aborted) {
+              break
             }
+
+            yield {
+              content: choice?.delta.content ?? '',
+              timestamp: Date.now(),
+              finished: !!choice?.finish_reason,
+              role: choice?.delta.role ?? null,
+            } satisfies ChatResponse
           }
           clearTimeout(timeout)
         }, stream.controller)

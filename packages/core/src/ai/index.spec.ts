@@ -46,10 +46,10 @@ describe('AI class', () => {
       const now = Date.now()
       const chatStream = await ai.performChatQuery('Example query', 'gpt-3.5-turbo')
       let i = 30
-      for await (const chunk of chatStream) {
+      for await (const response of chatStream) {
         //@ts-expect-error method is extended and therefore not typed
-        expect(chunk.content).toBeIn(LOREM_IPSUM_WORDS)
-        expect(chunk.timestamp).toBeGreaterThanOrEqual(now)
+        expect(response.content).toBeIn(LOREM_IPSUM_WORDS)
+        expect(response.timestamp).toBeGreaterThanOrEqual(now)
 
         if (--i === 0) {
           chatStream.controller.abort('Reason message')
