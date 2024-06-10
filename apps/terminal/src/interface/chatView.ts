@@ -44,7 +44,7 @@ export class ChatView extends View {
     const { abort } = terminal.inputField(
       {
         cancelable: true,
-        maxLength: 1024,
+        maxLength: 16777216,
       },
       (error, value) => {
         if (error) {
