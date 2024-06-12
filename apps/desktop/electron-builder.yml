@@ -1,0 +1,37 @@
+productName: "Aktyn Assistant"
+appId: "aktyn.aktyn-assistant"
+executableName: "Aktyn Assistant"
+copyright: "Copyright © 2024 Radosław Krajewski (Aktyn)"
+
+win:
+  target:
+    - target: "portable"
+      arch:
+        - "x64"
+  icon: "icon.ico"
+  publisherName: "Radosław Krajewski (Aktyn)"
+
+nsis:
+  perMachine: false
+  oneClick: false
+  allowToChangeInstallationDirectory: false
+
+linux:
+  category: Development
+  target:
+    - "AppImage"
+  executableName: "Aktyn Assistant"
+  artifactName: "${productName}-${version}.${ext}"
+
+files:
+  - "dist-app/"
+  - "dist-ui/"
+  - "package.json"
+
+asar: true
+asarUnpack: "**\\*.{node,dll}"
+nodeGypRebuild: false
+npmRebuild: false
+
+directories:
+  output: "release"

@@ -1,4 +1,4 @@
-import { type AiProviderType } from '@aktyn-assistant/core'
+import type { AiProviderType } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 export async function requestApiKey(aiProviderType: AiProviderType) {

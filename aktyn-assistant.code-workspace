@@ -4,17 +4,21 @@
 			"path": "."
 		},
 		{
-			"name": "Terminal",
-			"path": "./apps/terminal"
+			"name": "Common",
+			"path": "./packages/common"
 		},
 		{
 			"name": "Core",
 			"path": "./packages/core"
 		},
 		{
-			"name": "Common",
-			"path": "./packages/common"
-		}
+			"name": "Terminal",
+			"path": "./apps/terminal"
+		},
+		{
+			"name": "Desktop",
+			"path": "./apps/desktop"
+		},
 	],
 	"settings": {
 		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",

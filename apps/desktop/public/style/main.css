@@ -1,0 +1,89 @@
+@font-face {
+  font-family: 'AI';
+  src: url('./Ai.ttf');
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+
+  background-color: #000712;
+  /* background: linear-gradient(160deg, #1b2327, #263238); */
+  /* background: linear-gradient(-20deg, #00ff80, #FF007F); */
+  color: #ECEFF1;
+
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#bg, #gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+#bg {
+  background: url('../img/bg1.webp');
+  background-size: 100vw 61.8vw;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  filter: blur(10px);
+}
+
+#gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #000712, #00071240 30rem);
+}
+
+header.title {
+  text-align: center;
+  font-weight: 100;
+  font-size: 8rem;
+  padding-inline: 1rem;
+  padding-block: 2rem;
+
+  width: min-content;
+  margin-inline: auto;
+
+  color: #fff;
+  background: linear-gradient(160deg, #00ff80, #FF007F);
+  background-clip: text;
+}
+
+main {
+  flex-grow: 1;
+}
+
+footer {
+  display: flex;
+  justify-content: flex-end;
+  font-weight: 200;
+  font-size: 0.75rem;
+  gap: 0.5rem;
+  opacity: 0.5;
+}
+
+footer b {
+  font-weight: 400;
+}
+
+
+.ai-font {
+  font-family: 'AI', 'Montserrat', sans-serif;
+}
+
+.separator.vertical {
+  width: 1px;
+  align-self: stretch;
+  background-color: #37474F;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' wss:;
+    style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+    script-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+    font-src 'self' data: https://fonts.gstatic.com">
+
+  <title>Aktyn Assistant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./style/normalize.css">
+  <link rel="stylesheet" href="./style/main.css">
+  <link rel="stylesheet" href="./style/scrollbars.css">
+</head>
+
+<body>
+  <div id="bg"></div>
+  <div id="gradient-bg"></div>
+
+  <header class="ai-font title">Aktyn Assistant</header>
+  <main>todo</main>
+  <footer>
+    <div>Node.js version: <b id="node-version"></b></div>
+    <span class="separator vertical"></span>
+    <div>Chromium version: <b id="chrome-version"></b></div>
+    <span class="separator vertical"></span>
+    <div>Electron version: <b id="electron-version"></b></div>
+  </footer>
+
+  <script type="application/javascript">
+    const require = () => { }
+    const exports = {}
+    Object.defineProperty(window, 'define', {
+      value: (name, deps, factory) => {
+        const args = deps.map((dep) => dep === 'require' ? require : exports)
+        factory.apply(null, args)
+      },
+    })
+  </script>
+  <script src="../dist-ui/renderer.js"></script>
+</body>
+
+</html>

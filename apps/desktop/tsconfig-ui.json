@@ -1,0 +1,50 @@
+{
+  "include": [
+    "./src/ui"
+  ],
+  "exclude": [
+    "./node_modules",
+    "./dist-app",
+    "./dist-ui"
+  ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "amd",
+    "skipLibCheck": true,
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "allowJs": false,
+    "outFile": "./dist-ui/renderer.js",
+    "rootDir": "./src/ui",
+    "baseUrl": "./src/ui",
+    "paths": {
+      "~/*": [
+        "./src/ui/*"
+      ]
+    },
+    "removeComments": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "declaration": false,
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "compilerOptions": {
+      "rootDir": "./src/ui"
+    }
+  }
+}
