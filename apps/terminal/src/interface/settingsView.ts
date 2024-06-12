@@ -11,6 +11,15 @@ enum SETTINGS_ITEM {
   // ClearApiKeys = 'Clear API keys', //TODO: implement
 }
 
+function getConfigValueBySettingItem(item: SETTINGS_ITEM) {
+  switch (item) {
+    case SETTINGS_ITEM.MockPaidRequests:
+      return getUserConfigValue('mockPaidRequests')
+    case SETTINGS_ITEM.SelectChatModel:
+      return getUserConfigValue('selectedChatModel')
+  }
+}
+
 export class SettingsView extends View {
   private aborted = false
 
@@ -29,17 +38,18 @@ export class SettingsView extends View {
     terminal.bold('Which settings do you want to change?')
 
     const items = Object.values(SETTINGS_ITEM)
-    terminal.gridMenu(
-      [...items, 'Return to menu'],
+    terminal.singleColumnMenu(
+      [...items.map((item) => `${item}: (${getConfigValueBySettingItem(item)})`), 'Return to menu'],
       {
-        leftPadding: ' ',
-        rightPadding: ' ',
         exitOnUnexpectedKey: true,
         selectedStyle: terminal.brightCyan.bold.inverse,
+        selectedIndex: items.length,
+        continueOnSubmit: false,
+        cancelable: true,
       },
       (error, response) => {
         if (this.aborted) {
-          return
+          this.onReturnToMenu()
         }
 
         if (error) {
@@ -47,7 +57,7 @@ export class SettingsView extends View {
           return
         }
 
-        if (response.selectedIndex === items.length || typeof response.selectedIndex !== 'number') {
+        if (typeof response.selectedIndex !== 'number' || response.selectedIndex === items.length) {
           this.onReturnToMenu()
         } else {
           const item = items[response.selectedIndex]
@@ -79,11 +89,17 @@ export class SettingsView extends View {
   private async selectChatModel() {
     terminal.clear()
 
-    const models = await this.ai.getAvailableModels()
+    const models = (await this.ai.getAvailableModels()).sort()
     terminal.moveTo(1, terminal.height - 2 - models.length)
 
-    terminal('Current chat model: ').brightCyan.bold(getUserConfigValue('selectedChatModel') + '\n')
-    const selectedModel = await selectOption(models.sort(), 'Select chat model:')
+    const currentModel = getUserConfigValue('selectedChatModel')
+    terminal('Current chat model: ').brightCyan.bold(currentModel + '\n')
+    const selectedModel = await selectOption(
+      models,
+      'Select chat model:',
+      'vertical',
+      currentModel ? models.indexOf(currentModel) : undefined,
+    )
     if (this.aborted) {
       return
     }

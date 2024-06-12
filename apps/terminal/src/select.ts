@@ -5,6 +5,7 @@ export function selectOption(
   items: string[],
   title?: string,
   orientation: 'vertical' | 'horizontal' = 'vertical',
+  autoSelectIndex?: number,
 ): Promise<string> {
   if (items.length < 1) {
     return Promise.reject('No items to select')
@@ -21,6 +22,7 @@ export function selectOption(
   const commonOptions = {
     cancelable: false,
     exitOnUnexpectedKey: false,
+    selectedIndex: autoSelectIndex,
   } satisfies Partial<SingleColumnMenuOptions & SingleLineMenuResponse>
 
   const { promise } =

@@ -19,7 +19,7 @@ async function run() {
   showWelcomeMessage()
 
   let aiProvider = getUserConfigValue('selectedAiProvider')
-  if (!aiProvider) {
+  if (!aiProvider || !Object.values(AiProviderType).includes(aiProvider)) {
     aiProvider = (await selectOption(
       Object.values(AiProviderType),
       'Select AI provider you want to use:',
