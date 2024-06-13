@@ -3,6 +3,10 @@
   src: url('./Ai.ttf');
 }
 
+.ai-font {
+  font-family: 'AI', 'Montserrat', sans-serif;
+}
+
 body {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
@@ -10,8 +14,6 @@ body {
   font-style: normal;
 
   background-color: #000712;
-  /* background: linear-gradient(160deg, #1b2327, #263238); */
-  /* background: linear-gradient(-20deg, #00ff80, #FF007F); */
   color: #ECEFF1;
 
   height: 100vh;
@@ -19,7 +21,7 @@ body {
   flex-direction: column;
 }
 
-#bg, #gradient-bg {
+#bg, #pattern-bg, #gradient-bg, #dark-gradient-bg {
   position: fixed;
   top: 0;
   left: 0;
@@ -30,19 +32,40 @@ body {
 
 #bg {
   background: url('../img/bg1.webp');
-  background-size: 100vw 61.8vw;
+  background-size: 100vw 61.64vw;
   background-repeat: no-repeat;
   background-position: center bottom;
-  filter: blur(10px);
+  filter: blur(8px);
+}
+
+#pattern-bg {
+  background: rgb(144, 194, 197);
+  background: radial-gradient(circle, rgb(144, 194, 197) 0%, rgba(0, 7, 18, 0) 80%);
+  background-clip: text;
+  opacity: 0.1;
+  color: transparent;
+
+  left: -8rem;
+  width: calc(100% + 16rem);
+  word-wrap: break-word;
+  text-align: center;
+  font-size: 32rem;
+  letter-spacing: -3rem;
+  line-height: 24.5rem;
 }
 
 #gradient-bg {
+  background: linear-gradient(340deg, #00ff80, #FF007F);
+  opacity: 0.25;
+}
+
+#dark-gradient-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, #000712, #00071240 30rem);
+  background: linear-gradient(to bottom, #000712, #000712b0 20rem, #00071200 36rem, #00071200);
 }
 
 header.title {
@@ -58,10 +81,84 @@ header.title {
   color: #fff;
   background: linear-gradient(160deg, #00ff80, #FF007F);
   background-clip: text;
+
+  animation: flicker 30s ease-in-out infinite;
+  animation-delay: 30s;
+}
+
+@keyframes flicker {
+  0% {
+    color: #fff0
+  }
+
+  1% {
+    color: #fff;
+  }
+
+  2% {
+    color: #fff8;
+  }
+
+  3% {
+    color: #fff3;
+  }
+
+  4% {
+    color: #fffe;
+  }
+
+  5% {
+    color: #fff9;
+  }
+
+  6% {
+    color: #fff4;
+  }
+
+  7% {
+    color: #fff7;
+  }
+
+  8% {
+    color: #fff2;
+  }
+
+  9% {
+    color: #fffc;
+  }
+
+  10% {
+    color: #fff5;
+  }
+
+  11% {
+    color: #fff6;
+  }
+
+  12% {
+    color: #fff1;
+  }
+
+  13% {
+    color: #fffb;
+  }
+
+  14% {
+    color: #fff8;
+  }
+
+  15% {
+    color: #fff3;
+  }
+
+  16% {
+    color: #fff;
+  }
 }
 
 main {
   flex-grow: 1;
+  text-align: center;
 }
 
 footer {
@@ -71,16 +168,13 @@ footer {
   font-size: 0.75rem;
   gap: 0.5rem;
   opacity: 0.5;
+  padding: 0.25rem;
 }
 
 footer b {
   font-weight: 400;
 }
 
-
-.ai-font {
-  font-family: 'AI', 'Montserrat', sans-serif;
-}
 
 .separator.vertical {
   width: 1px;

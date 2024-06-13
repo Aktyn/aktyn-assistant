@@ -24,9 +24,16 @@ If you already have an OpenAI account, you can generate an API key [here](https:
 
 ## Development setup
 
-- **`yarn install`**
+#### Prerequisites
+- **`yarn install`** - yarn 4.2.2 or newer is required
+  
+#### Terminal app
 - **`yarn build:all`** and **`yarn start:terminal`** to run the application with terminal interface
 - Some console features doesn't work inside turbo which handles the development run.<br />To make sure the console features work while you develop terminal app you can run **`yarn dev:packages`** to watch changes only in _packages/_ and then **`yarn run build && npx cross-env NODE_ENV=dev yarn start`** from _apps/terminal_ directory
+
+#### Desktop app
+- **`yarn build:all`** and **`yarn start:desktop`** to run the application with desktop interface
+- **`yarn dev:packages`** to watch changes only in _packages/_ and then **`yarn dev:desktop`**
 
 ---
 

@@ -20,6 +20,7 @@
   "scripts": {
     "build:all": "turbo run build",
     "start:terminal": "yarn --cwd apps/terminal start",
+    "start:desktop": "yarn --cwd apps/desktop start",
     "dev:terminal": "yarn --cwd apps/terminal dev",
     "dev:desktop": "yarn --cwd apps/desktop dev",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
