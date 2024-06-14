@@ -69,6 +69,7 @@ __metadata:
   dependencies:
     "@aktyn-assistant/common": "npm:^0.1.0"
     "@aktyn-assistant/core": "npm:^0.1.0"
+    "@types/animejs": "npm:^3.1.12"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^7.12.0"
@@ -1174,6 +1175,13 @@ __metadata:
   version: 1.0.4
   resolution: "@tsconfig/node16@npm:1.0.4"
   checksum: 10c0/05f8f2734e266fb1839eb1d57290df1664fe2aa3b0fdd685a9035806daa635f7519bf6d5d9b33f6e69dd545b8c46bd6e2b5c79acb2b1f146e885f7f11a42a5bb
+  languageName: node
+  linkType: hard
+
+"@types/animejs@npm:^3.1.12":
+  version: 3.1.12
+  resolution: "@types/animejs@npm:3.1.12"
+  checksum: 10c0/21d10ed4fbaa99572e252b4d6e666b62a19089f63b13b0e9f8edf5fb0b708afc2b38c3055c52f6a4771bc71793d7a7aec83754c16d0e5606a0ad92b34778ba61
   languageName: node
   linkType: hard
 

@@ -4,16 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' wss:;
-    style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
-    script-src 'self' https://fonts.googleapis.com 'unsafe-inline';
-    font-src 'self' data: https://fonts.gstatic.com">
+    style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net 'unsafe-inline';
+    script-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net 'unsafe-inline';
+    font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net">
 
   <title>Aktyn Assistant</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-    rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="./style/normalize.css">
   <link rel="stylesheet" href="./style/main.css">
   <link rel="stylesheet" href="./style/scrollbars.css">
@@ -24,9 +25,10 @@
   <div id="pattern-bg" class="ai-font"></div>
   <div id="gradient-bg" class="ai-font"></div>
   <div id="dark-gradient-bg"></div>
+  <div id="dim-bg"></div>
 
-  <header class="ai-font title">Aktyn Assistant</header>
-  <main>TODO</main>
+  <header id="title-header" class="ai-font title">Aktyn Assistant</header>
+  <main></main>
   <footer>
     <div>Node.js version: <b id="node-version"></b></div>
     <span class="separator vertical"></span>
@@ -45,6 +47,7 @@
       },
     })
   </script>
+  <script src="./lib/anime.min.js"></script>
   <script src="../dist-ui/renderer.js"></script>
 </body>
 

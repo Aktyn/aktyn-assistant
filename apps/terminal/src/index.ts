@@ -9,7 +9,6 @@ import { showSpinner } from './loading'
 import { selectOption, selectYesOrNo } from './select'
 import { showWelcomeMessage } from './welcome'
 
-//TODO: implement electron based user interface
 //TODO: option for selecting rectangular part of screen when performing operation requires screen capture
 
 async function run() {
