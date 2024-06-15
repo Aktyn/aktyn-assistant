@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 
 const createWindow = () => {
   const publicPath = path.join(__dirname, '..', 'public')
@@ -23,6 +23,11 @@ const createWindow = () => {
   if (openDevTools) {
     win.webContents.openDevTools()
   }
+
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url).catch(console.error)
+    return { action: 'deny' }
+  })
 }
 
 app

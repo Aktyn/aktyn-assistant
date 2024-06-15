@@ -1,0 +1,37 @@
+hr {
+  border-color: #fff2;
+  width: 100%;
+}
+
+a {
+  color: #81D4FA;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: #E1F5FE;
+}
+
+.content-container {
+  border: 1px solid #fff2;
+  border-radius: 1rem;
+  background-color: #fff2;
+}
+
+.values-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
+  justify-content: center;
+}
+
+.values-list>*:nth-child(odd) {
+  text-align: right;
+}
+
+.values-list>*:nth-child(even) {
+  text-align: left;
+  font-weight: bold;
+}

@@ -1,31 +1,40 @@
 import { createElement } from './domUtils'
+import { InfoView } from './views/info'
+import { SettingsView } from './views/settings'
+import { type ViewBase } from './views/viewBase'
 
-enum ViewType {
+export enum ViewType {
   Chat = 'chat',
   Settings = 'settings',
   Info = 'info',
 }
 
-const viewsProperties: { [key in ViewType]: { title: string; icon: string } } = {
+const viewsProperties: {
+  [key in ViewType]: { title: string; icon: string; createView: () => ViewBase }
+} = {
   [ViewType.Chat]: {
     title: 'Chat',
     icon: 'chat',
+    createView: () => new InfoView(), //TODO: implement
   },
   [ViewType.Settings]: {
     title: 'Settings',
     icon: 'cog',
+    createView: () => new SettingsView(),
   },
   [ViewType.Info]: {
     title: 'Info',
     icon: 'information-box',
+    createView: () => new InfoView(),
   },
 }
 
 class ViewItem {
   public readonly handleElement: HTMLDivElement
+  public readonly contentContainer: HTMLDivElement
 
   constructor(public readonly viewType: ViewType) {
-    const { title, icon } = viewsProperties[viewType]
+    const { title, icon, createView } = viewsProperties[viewType]
     const iconElement = createElement('span', { className: `mdi mdi-${icon}` })
     const textElement = createElement('div', { content: title })
 
@@ -34,33 +43,17 @@ class ViewItem {
     })
     this.handleElement.appendChild(iconElement)
     this.handleElement.appendChild(textElement)
-  }
 
-  activate() {
-    this.handleElement.classList.add('active')
-
-    //TODO: smoothly move to top and show exit button
-    // const box = this.handleElement.getBoundingClientRect()
-    // this.handleElement.style.position = 'fixed'
-    // this.handleElement.style.top = `${box.top}px`
-    // this.handleElement.style.left = `${box.left}px`
-  }
-
-  deactivate() {
-    this.handleElement.classList.remove('active')
-    this.handleElement.classList.add('disabled')
-
-    anime({
-      targets: this.handleElement,
-      easing: 'easeInOutCubic',
-      opacity: 0,
-      scale: 0.618,
+    this.contentContainer = createElement('div', {
+      className: 'view-content-container',
+      content: createView().content,
     })
   }
 }
 
 export class Menu {
   private readonly menuContainer: HTMLDivElement
+  private readonly viewsContainer: HTMLDivElement
   private readonly viewItems = Object.values(ViewType).map((viewType) => new ViewItem(viewType))
 
   private view: ViewType | null = null
@@ -74,23 +67,90 @@ export class Menu {
     this.menuContainer = createElement('div', { className: 'menu-container' })
     main.appendChild(this.menuContainer)
 
+    this.viewsContainer = createElement('div', { className: 'views-container' })
+    main.appendChild(this.viewsContainer)
+
     for (const viewItem of this.viewItems) {
       this.menuContainer.appendChild(viewItem.handleElement)
 
       viewItem.handleElement.onclick = () => {
-        if (this.view) {
+        if (this.view === viewItem.viewType) {
           return
         }
-        this.view = viewItem.viewType
-        viewItem.activate()
-        for (const otherViewItem of this.viewItems) {
-          if (otherViewItem.viewType !== this.view) {
-            otherViewItem.deactivate()
-          }
-        }
-        this.listeners.onViewEnter()
+        this.enterView(viewItem.viewType)
       }
     }
+  }
+
+  public enterView(viewType: ViewType) {
+    this.view = viewType
+
+    for (const viewItem of this.viewItems) {
+      if (viewItem.viewType === this.view) {
+        viewItem.handleElement.classList.add('active')
+      } else {
+        viewItem.handleElement.classList.remove('active')
+      }
+    }
+
+    this.focusView(viewType, 'smooth')
+
+    if (this.menuContainer.classList.contains('active')) {
+      return
+    }
+
+    this.menuContainer.classList.add('active')
+
+    if (this.menuContainer.style.position !== 'fixed') {
+      const box = this.menuContainer.getBoundingClientRect()
+      this.menuContainer.style.top = `${box.top}px`
+      this.menuContainer.style.width = `${box.width}px`
+
+      setTimeout(() => {
+        this.menuContainer.style.position = 'fixed'
+        this.menuContainer.style.marginInline = 'auto'
+      }, 1)
+    }
+
+    if (this.menuContainer.style.top !== '0px') {
+      anime({
+        targets: this.menuContainer,
+        easing: 'easeInOutSine',
+        top: '0px',
+        delay: anime.stagger(200, { from: 'center' }),
+        complete: () => {
+          this.initViews(viewType)
+        },
+      })
+    }
+
+    this.listeners.onViewEnter()
+  }
+
+  private initViews(focusView: ViewType) {
+    this.viewsContainer.style.paddingTop = this.menuContainer.getBoundingClientRect().height + 'px'
+    this.viewsContainer.style.opacity = '0'
+
+    anime({
+      targets: this.viewsContainer,
+      easing: 'easeInOutCirc',
+      duration: 800,
+      opacity: 1,
+    })
+
+    for (const viewItem of this.viewItems) {
+      this.viewsContainer.appendChild(viewItem.contentContainer)
+    }
+    this.focusView(focusView)
+  }
+
+  private focusView(viewType: ViewType, behavior: ScrollBehavior = 'instant') {
+    this.viewItems
+      .find((item) => item.viewType === viewType)
+      ?.contentContainer.scrollIntoView({
+        inline: 'center',
+        behavior,
+      })
   }
 
   async init() {

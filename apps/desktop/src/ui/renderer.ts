@@ -1,4 +1,4 @@
-import { Menu } from './circularMenu'
+import { Menu, ViewType } from './circularMenu'
 import { TitleHeader } from './titleHeader'
 
 function generatePatternBackground() {
@@ -15,6 +15,9 @@ function generatePatternBackground() {
 
 async function init() {
   const header = new TitleHeader()
+
+  await new Promise((resolve) => setTimeout(resolve, 16))
+
   const menu = new Menu({
     onViewEnter: () => {
       header.hide().catch(console.error)
@@ -35,14 +38,10 @@ async function init() {
     opacity: 0,
   })
 
-  await header.enter() //TODO: restore await
-  await menu.init()
+  void header.enter() //TODO: restore await
+  void menu.init() //TODO: restore await
 
-  console.log('Renderer initialized')
-
-  // await header.hide()
-
-  // <span class="mdi mdi-ab-testing"></span><span class="mdi mdi-loading mdi-spin">Processing</span>
+  menu.enterView(ViewType.Settings) //TODO: remove
 }
 
 init().catch(console.error)

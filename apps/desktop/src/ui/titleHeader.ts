@@ -26,7 +26,7 @@ export class TitleHeader {
 
       anime({
         targets: this.header.childNodes,
-        easing: 'easeInOutCubic',
+        easing: 'easeInOutSine',
         duration: 800,
         delay: anime.stagger(200, { from: 'last' }),
         translateY: [-(this.header.getBoundingClientRect().height ?? 0), 0],

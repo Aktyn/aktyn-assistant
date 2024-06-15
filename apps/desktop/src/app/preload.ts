@@ -1,12 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-  const replaceText = (selector: string, text?: string) => {
-    const element = document.getElementById(selector)
-    if (element && text) {
-      element.innerText = text
-    }
-  }
-
-  for (const dependency of ['chrome', 'node', 'electron']) {
-    replaceText(`${dependency}-version`, process.versions[dependency])
-  }
+  const keys = ['chrome', 'node', 'electron']
+  const versions = Object.entries(process.versions).filter(([key]) => keys.includes(key))
+  document.body.setAttribute('versions', JSON.stringify(Object.fromEntries(versions)))
 })
