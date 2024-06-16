@@ -20,16 +20,7 @@
   <link rel="stylesheet" href="./style/scrollbars.css">
 </head>
 
-<body style="background-color: var(--background-main)">
-  <div id="bg"></div>
-  <div id="pattern-bg" class="ai-font"></div>
-  <div id="gradient-bg" class="ai-font"></div>
-  <div id="dark-gradient-bg"></div>
-  <div id="dim-bg"></div>
-
-  <header id="title-header" class="ai-font title">Aktyn Assistant</header>
-  <main></main>
-
+<body class="quick-chat">
   <script type="application/javascript">
     const require = () => { }
     const exports = {}
@@ -43,10 +34,10 @@
   <script src="./lib/anime.min.js"></script>
   <script src="../dist-ui/renderer.js"></script>
   <script>
-    if (!('initMain' in window)) {
-      throw new Error('initMain not found in window')
+    if (!('initQuickChat' in window)) {
+      throw new Error('initQuickChat not found in window')
     }
-    window.initMain().catch(console.error)
+    window.initQuickChat().catch(console.error)
   </script>
 </body>
 

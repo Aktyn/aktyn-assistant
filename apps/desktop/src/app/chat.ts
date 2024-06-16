@@ -1,9 +1,9 @@
 import type { AI } from '@aktyn-assistant/core'
-import type { BrowserWindow } from 'electron'
+import type { WebContents } from 'electron'
 
 export async function performChatQuery(
   ai: AI,
-  win: BrowserWindow,
+  webContents: WebContents,
   message: string,
   model: string,
   messageId: string,
@@ -14,11 +14,10 @@ export async function performChatQuery(
     if (stream.controller.signal.aborted) {
       break
     }
-
-    win.webContents.send('chatResponse', messageId, chunk)
+    webContents.send('chatResponse', messageId, chunk)
   }
 
   if (stream.controller.signal.aborted) {
-    win.webContents.send('chatResponse', messageId, { finished: true })
+    webContents.send('chatResponse', messageId, { finished: true })
   }
 }

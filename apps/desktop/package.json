@@ -23,7 +23,8 @@
   "dependencies": {
     "@aktyn-assistant/common": "^0.1.0",
     "@aktyn-assistant/core": "^0.1.0",
-    "electron": "^31.0.0"
+    "electron": "^31.0.0",
+    "electron-store": "^10.0.0"
   },
   "devDependencies": {
     "@types/animejs": "^3.1.12",

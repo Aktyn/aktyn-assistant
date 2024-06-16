@@ -3,6 +3,7 @@ import { Dialog } from './components/dialog'
 import { Notifications } from './components/notifications'
 import { createElement } from './domUtils'
 import { TitleHeader } from './titleHeader'
+import { ChatView } from './views/chat'
 
 function generatePatternBackground() {
   const div = document.getElementById('pattern-bg')
@@ -16,7 +17,7 @@ function generatePatternBackground() {
     .join('')
 }
 
-async function init() {
+async function initMain() {
   window.electronAPI.onError((title, message) => {
     Notifications.provider.showNotification(Notifications.type.Error, {
       title,
@@ -141,15 +142,15 @@ async function init() {
 
   const isReady = await window.electronAPI.isReady()
   if (isReady) {
-    await postInit(header)
+    await postInitMain(header)
   } else {
     window.electronAPI.onReady(() => {
-      postInit(header).catch(console.error)
+      postInitMain(header).catch(console.error)
     })
   }
 }
 
-async function postInit(header: TitleHeader) {
+async function postInitMain(header: TitleHeader) {
   const menu = new Menu({
     onViewEnter: () => {
       header.hide().catch(console.error)
@@ -163,4 +164,10 @@ async function postInit(header: TitleHeader) {
   // menu.enterView(ViewType.Chat) //TODO: remove
 }
 
-init().catch(console.error)
+async function initQuickChat() {
+  const view = new ChatView()
+  document.body.appendChild(view.content)
+}
+
+Object.defineProperty(window, 'initMain', { value: initMain })
+Object.defineProperty(window, 'initQuickChat', { value: initQuickChat })

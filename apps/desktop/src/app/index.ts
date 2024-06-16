@@ -5,28 +5,33 @@ import {
   setUserConfigValue,
   type UserConfigType,
 } from '@aktyn-assistant/core'
-import { BrowserWindow, app, ipcMain, type IpcMainEvent } from 'electron'
+import { BrowserWindow, app, globalShortcut, ipcMain, type IpcMainEvent } from 'electron'
 
 import { performChatQuery } from './chat'
-import { createWindow } from './window'
+import { forceSingleInstance } from './lock'
+import { createChatWindow, createMainWindow, setupTray } from './window'
 
 function handleFatalError(error: unknown) {
   console.error(error)
   process.exit(1)
 }
 
-app
-  .whenReady()
-  .then(() => {
-    main().catch(handleFatalError)
+if (forceSingleInstance()) {
+  app
+    .whenReady()
+    .then(() => {
+      init().catch(handleFatalError)
 
-    app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) {
-        main().catch(handleFatalError)
-      }
+      app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+          init().catch(handleFatalError)
+        }
+      })
     })
-  })
-  .catch(console.error)
+    .catch(console.error)
+} else {
+  app.exit(0)
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -34,7 +39,7 @@ app.on('window-all-closed', () => {
   }
 })
 
-async function main() {
+async function init() {
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
   ipcMain.handle('getUserConfigValue', (_, key: keyof UserConfigType) => getUserConfigValue(key))
@@ -45,7 +50,14 @@ async function main() {
   )
   ipcMain.handle('getAvailableModels', () => ai.getAvailableModels())
 
-  const win = await createWindow()
+  const win = await createMainWindow()
+
+  app.on('second-instance', () => {
+    if (win) {
+      if (win.isMinimized()) win.restore()
+      win.focus()
+    }
+  })
 
   let aiProvider = getUserConfigValue('selectedAiProvider')
   if (!aiProvider || !Object.values(AiProviderType).includes(aiProvider)) {
@@ -71,10 +83,34 @@ async function main() {
     },
   })
 
-  ipcMain.on('performChatQuery', async (_, message: string, model: string, messageId: string) =>
-    performChatQuery(ai, win, message, model, messageId).catch(console.error),
+  ipcMain.on('performChatQuery', async (event, message: string, model: string, messageId: string) =>
+    performChatQuery(ai, event.sender, message, model, messageId).catch(console.error),
   )
 
   ready = true
   win.webContents.send('ready')
+
+  await postInit(win)
+}
+
+async function postInit(mainWindow: BrowserWindow) {
+  let quickChatWindow: BrowserWindow | null = null
+
+  const toggleQuickChat = async () => {
+    if (quickChatWindow) {
+      quickChatWindow.close()
+      quickChatWindow = null
+    } else {
+      quickChatWindow = await createChatWindow()
+      quickChatWindow.on('close', () => {
+        quickChatWindow = null
+      })
+    }
+  }
+
+  globalShortcut.register('Alt+Q', async () => {
+    toggleQuickChat().catch(console.error)
+  })
+
+  setupTray(mainWindow, toggleQuickChat)
 }

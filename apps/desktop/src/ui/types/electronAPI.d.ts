@@ -34,6 +34,8 @@ declare global {
         ) => void,
       ) => void
     }
+    initMain: () => Promise<void>
+    initQuickChat: () => Promise<void>
   }
 }
 

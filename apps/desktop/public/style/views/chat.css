@@ -1,3 +1,45 @@
+body.quick-chat>.chat-view {
+  background-color: color-mix(in srgb, #546E7A 80%, transparent);
+  padding-top: 2rem;
+  width: 100%;
+  max-width: unset;
+  max-height: unset;
+  height: 100%;
+  text-shadow: 0 0 1px #0004;
+}
+
+body.quick-chat>.chat-view>.handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-secondary);
+  font-size: 1.5rem;
+  height: 2rem;
+  width: 61.8%;
+  background-color: #37474F;
+  box-shadow: 0 0 0.5rem #fff2 inset;
+  border: 1px solid #fff4;
+  border-radius: 1rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+body.quick-chat>.chat-view>.handle:hover {
+  background-color: #546E7A;
+}
+
+body.quick-chat>.chat-view>.handle:active {
+  cursor: grabbing;
+}
+
 .chat-view {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -14,6 +56,10 @@
   overflow: hidden;
 
   position: relative;
+}
+
+.chat-view>.handle {
+  display: none;
 }
 
 .chat-view>.chat-spinner {

@@ -32,7 +32,12 @@ export class ChatView extends ViewBase {
     super(
       createElement('div', {
         className: 'chat-view content-container',
-        content: [messagesContainer, input, spinner],
+        content: [
+          messagesContainer,
+          input,
+          spinner,
+          createElement('div', { className: 'handle', content: createMdiIcon('cursor-move') }),
+        ],
       }),
     )
 
@@ -48,6 +53,10 @@ export class ChatView extends ViewBase {
         input.value = ''
       }
     }
+
+    setTimeout(() => {
+      input.focus()
+    }, 16)
 
     this.messagesContainer = messagesContainer
     this.input = input
