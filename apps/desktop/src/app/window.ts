@@ -8,7 +8,7 @@ export async function createWindow() {
   const openDevTools = false
 
   const win = new BrowserWindow({
-    width: 1024,
+    width: 1080,
     height: 640 + (openDevTools ? 450 : 0),
     autoHideMenuBar: true,
     title: 'Aktyn Assistant',

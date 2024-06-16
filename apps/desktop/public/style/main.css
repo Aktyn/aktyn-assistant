@@ -4,8 +4,9 @@
 @import './components/select.css';
 @import './components/dialog.css';
 @import './components/notifications.css';
-@import './views/info.css';
+@import './views/chat.css';
 @import './views/settings.css';
+@import './views/info.css';
 
 /** Script for refreshing styles without reloading page:
   document.querySelectorAll("link[rel=stylesheet]").forEach(link => link.href = link.href.replace(/\?.*|$/, "?" + Date.now()))
@@ -226,12 +227,16 @@ main {
   margin-block: auto;
   width: 100vw;
   max-height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
+  /* overflow-x: hidden; */
+  /* overflow-y: auto; */
+  overflow: hidden;
 
-  display: block;
-  white-space: nowrap;
-  align-self: center;
+  opacity: 0;
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  justify-content: flex-start;
 }
 
 .views-container>.view-content-container {
@@ -239,5 +244,7 @@ main {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   white-space: normal;
+  overflow: hidden;
 }

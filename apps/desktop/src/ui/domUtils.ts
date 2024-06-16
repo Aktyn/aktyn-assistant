@@ -38,9 +38,13 @@ export function createElement<TagName extends keyof HTMLElementTagNameMap>(
   return element
 }
 
-export function createMdiIcon(name: string) {
+type IconProps = {
+  spin?: boolean
+}
+
+export function createMdiIcon(name: string, props: IconProps = {}) {
   return createElement('span', {
-    className: 'mdi mdi-' + name,
+    className: clsx('mdi', `mdi-${name}`, props.spin && 'mdi-spin'),
   })
 }
 

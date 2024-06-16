@@ -1,4 +1,4 @@
-import { Menu, ViewType } from './circularMenu'
+import { Menu } from './circularMenu'
 import { Dialog } from './components/dialog'
 import { Notifications } from './components/notifications'
 import { createElement } from './domUtils'
@@ -137,7 +137,7 @@ async function init() {
     opacity: 0,
   })
 
-  void header.enter() //TODO: restore await
+  await header.enter() //TODO: restore await
 
   const isReady = await window.electronAPI.isReady()
   if (isReady) {
@@ -158,9 +158,9 @@ async function postInit(header: TitleHeader) {
       header.enter().catch(console.error)
     },
   })
-  void menu.init() //TODO: restore await
+  await menu.init() //TODO: restore await
 
-  menu.enterView(ViewType.Settings) //TODO: remove
+  // menu.enterView(ViewType.Chat) //TODO: remove
 }
 
 init().catch(console.error)

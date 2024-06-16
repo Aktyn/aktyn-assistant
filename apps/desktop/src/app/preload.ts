@@ -1,3 +1,4 @@
+import type { ChatResponse } from '@aktyn-assistant/common'
 import type { AiProviderType } from '@aktyn-assistant/core'
 import { contextBridge, ipcRenderer } from 'electron'
 
@@ -17,6 +18,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   promptAiProviderCallback: (provider: AiProviderType) =>
     ipcRenderer.send('promptAiProviderCallback', provider),
   promptApiKeyCallback: (key: string) => ipcRenderer.send('promptApiKeyCallback', key),
+  performChatQuery: (message: string, model: string, messageId: string) =>
+    ipcRenderer.send('performChatQuery', message, model, messageId),
 
   // Main to renderer
   onReady: (callback: () => void) => ipcRenderer.on('ready', (_event) => callback()),
@@ -26,4 +29,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('promptForApiKey', (_, providerType: AiProviderType) => callback(providerType)),
   onError: (callback: (title: string, message: string) => void) =>
     ipcRenderer.on('showError', (_, title: string, message: string) => callback(title, message)),
+  onChatResponse: (
+    callback: (messageId: string, chunk: ChatResponse | { finished: true }) => void,
+  ) =>
+    ipcRenderer.on(
+      'chatResponse',
+      (_, messageId: string, chunk: ChatResponse | { finished: true }) =>
+        callback(messageId, chunk),
+    ),
 })

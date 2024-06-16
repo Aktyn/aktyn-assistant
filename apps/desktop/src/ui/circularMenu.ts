@@ -1,4 +1,5 @@
 import { createElement } from './domUtils'
+import { ChatView } from './views/chat'
 import { InfoView } from './views/info'
 import { SettingsView } from './views/settings'
 import { type ViewBase } from './views/viewBase'
@@ -15,7 +16,7 @@ const viewsProperties: {
   [ViewType.Chat]: {
     title: 'Chat',
     icon: 'chat',
-    createView: () => new InfoView(), //TODO: implement
+    createView: () => new ChatView(),
   },
   [ViewType.Settings]: {
     title: 'Settings',

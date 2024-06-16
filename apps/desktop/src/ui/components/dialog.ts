@@ -1,7 +1,8 @@
 import { clsx, createElement } from '../domUtils'
 
 export class Dialog {
-  public readonly element: HTMLDivElement
+  private readonly container: HTMLDivElement
+  private readonly dialog: HTMLDivElement
   private readonly confirmButton: HTMLButtonElement
 
   constructor(
@@ -24,7 +25,7 @@ export class Dialog {
       },
     })
 
-    const dialog = createElement('div', {
+    this.dialog = createElement('div', {
       className: 'content-container',
       content: [
         createElement('div', { className: 'dialog-title', content: title }),
@@ -48,11 +49,9 @@ export class Dialog {
       ],
     })
 
-    //TODO: entry animation for dialog element
-
-    this.element = createElement('div', {
+    this.container = createElement('div', {
       className: 'dialog-container',
-      content: dialog,
+      content: this.dialog,
     })
   }
 
@@ -64,10 +63,36 @@ export class Dialog {
   }
 
   open() {
-    document.body.appendChild(this.element)
+    document.body.appendChild(this.container)
+
+    anime({
+      targets: this.container,
+      easing: 'easeInOutSine',
+      duration: 800,
+      opacity: [0, 1],
+    })
+    anime({
+      targets: this.dialog,
+      easing: 'spring(1, 80, 10, 0)',
+      translateY: ['-8rem', '0rem'],
+      scale: [0.618, 1],
+    })
   }
   close() {
-    this.element.remove()
-    //TODO: smooth close animation
+    anime({
+      targets: this.container,
+      easing: 'easeInOutSine',
+      duration: 800,
+      opacity: 0,
+    })
+    anime({
+      targets: this.dialog,
+      easing: 'spring(1, 80, 10, 0)',
+      translateY: ['0rem', '-8rem'],
+      scale: [1, 0.618],
+      complete: () => {
+        this.container.remove()
+      },
+    })
   }
 }

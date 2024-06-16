@@ -7,6 +7,7 @@ import {
 } from '@aktyn-assistant/core'
 import { BrowserWindow, app, ipcMain, type IpcMainEvent } from 'electron'
 
+import { performChatQuery } from './chat'
 import { createWindow } from './window'
 
 function handleFatalError(error: unknown) {
@@ -69,6 +70,10 @@ async function main() {
       })
     },
   })
+
+  ipcMain.on('performChatQuery', async (_, message: string, model: string, messageId: string) =>
+    performChatQuery(ai, win, message, model, messageId).catch(console.error),
+  )
 
   ready = true
   win.webContents.send('ready')

@@ -1,5 +1,8 @@
 hr {
   border-color: #fff2;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
   width: 100%;
 }
 
@@ -59,8 +62,18 @@ input:focus {
   background-color: color-mix(in srgb, var(--color-active) 15%, transparent);
 }
 
+input:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 input:not(:disabled):not(:focus):hover {
   border-color: #fff6;
+}
+
+input::placeholder {
+  color: var(--text-color-secondary);
+  opacity: 0.5;
 }
 
 .content-container {
