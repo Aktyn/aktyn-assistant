@@ -2,8 +2,14 @@
 @import './common.css';
 @import './components/switch.css';
 @import './components/select.css';
+@import './components/dialog.css';
+@import './components/notifications.css';
 @import './views/info.css';
 @import './views/settings.css';
+
+/** Script for refreshing styles without reloading page:
+  document.querySelectorAll("link[rel=stylesheet]").forEach(link => link.href = link.href.replace(/\?.*|$/, "?" + Date.now()))
+*/
 
 @font-face {
   font-family: 'AI';
@@ -21,7 +27,7 @@ body {
   font-style: normal;
 
   background-color: var(--background-main);
-  color: var(--text-color-main);
+  color: var(--text-color-primary);
 
   height: 100vh;
   display: flex;
@@ -48,7 +54,7 @@ body {
   background-size: 100vw 61.64vw;
   background-repeat: no-repeat;
   background-position: center bottom;
-  filter: blur(8px);
+  filter: blur(4px);
 }
 
 #pattern-bg {

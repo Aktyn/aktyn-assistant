@@ -1,5 +1,5 @@
 select {
-  color: var(--text-color-main);
+  color: var(--text-color-primary);
   border: 1px solid #fff2;
   background-color: #fff2;
   border-radius: 0.5rem;
@@ -16,7 +16,7 @@ select:hover {
 }
 
 option {
-  color: var(--text-color-main);
+  color: var(--text-color-primary);
   background-color: #78909C;
   padding: 0.5rem;
   border: none;

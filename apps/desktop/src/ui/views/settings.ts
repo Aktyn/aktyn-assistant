@@ -6,43 +6,54 @@ import { ViewBase } from './viewBase'
 
 export class SettingsView extends ViewBase {
   constructor() {
-    const mockPaidRequestsSwitch = new Switch(true, console.log) //TODO
-    const chatModelSelect = new Select(
-      [
-        'mock value 1',
-        'mock value 2',
-        'mock value 3',
-        'mock value 4',
-        'mock value 5',
-        'mock value 6',
-      ],
-      'mock value 3',
-      console.log,
-    ) //TODO
-
     super(
       createElement('div', {
         className: 'settings-view content-container',
-        content: [
-          createElement('div', {
-            content: [
-              createElement('div', { content: 'AI provider' }),
-              createElement('b', { content: 'OpenAI' }),
-            ],
-          }),
-
-          createElement('div', {
-            content: [createElement('div', { content: 'Chat model' }), chatModelSelect.element],
-          }),
-
-          createElement('div', {
-            content: [
-              createElement('div', { content: 'Mock paid requests' }),
-              mockPaidRequestsSwitch.element,
-            ],
-          }),
-        ],
       }),
     )
+
+    this.init().catch(console.error)
+  }
+
+  private async init() {
+    const mockPaidRequests = await window.electronAPI.getUserConfigValue('mockPaidRequests')
+    const models = await window.electronAPI.getAvailableModels()
+    const chatModel = await window.electronAPI.getUserConfigValue('selectedChatModel')
+
+    if (mockPaidRequests === null) {
+      throw new Error('Mock paid requests is not set')
+    }
+    if (chatModel === null) {
+      throw new Error('Chat model is not set')
+    }
+
+    const mockPaidRequestsSwitch = new Switch(mockPaidRequests, (on) =>
+      window.electronAPI.setUserConfigValue('mockPaidRequests', on),
+    )
+    const chatModelSelect = new Select(models, chatModel, (model) =>
+      window.electronAPI.setUserConfigValue('selectedChatModel', model),
+    )
+
+    for (const child of [
+      createElement('div', {
+        content: [
+          createElement('div', { content: 'AI provider' }),
+          createElement('b', { content: 'OpenAI' }),
+        ],
+      }),
+
+      createElement('div', {
+        content: [createElement('div', { content: 'Chat model' }), chatModelSelect.element],
+      }),
+
+      createElement('div', {
+        content: [
+          createElement('div', { content: 'Mock paid requests' }),
+          mockPaidRequestsSwitch.element,
+        ],
+      }),
+    ]) {
+      this.content.appendChild(child)
+    }
   }
 }

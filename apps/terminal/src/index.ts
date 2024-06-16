@@ -33,7 +33,7 @@ async function run() {
       requestApiKey: async (providerType, reason) => {
         if (reason === 'validation-failed') {
           printError({
-            title: "Provided OpenAI API didn't work",
+            title: "Provided API key didn't work",
             message: 'Please try again or press CTRL+C to exit',
           })
         }
