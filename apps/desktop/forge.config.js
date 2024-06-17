@@ -7,7 +7,6 @@ const {
 module.exports = {
   buildIdentifier: 'beta',
   packagerConfig: {
-    prune: false,
     appBundleId: fromBuildIdentifier({
       beta: 'com.beta.aktyn-assistant',
       prod: 'com.aktyn-assistant',
