@@ -1,4 +1,4 @@
-import { createElement } from './domUtils'
+import { createElement } from './utils/dom'
 
 export class TitleHeader {
   private readonly header: HTMLHeadingElement

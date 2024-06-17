@@ -40,17 +40,41 @@ Pulvinar sapien et ligula ullamcorper malesuada proin libero nunc consequat. Dia
 
 Enim facilisis gravida neque convallis a. Consequat mauris nunc congue nisi vitae. At ultrices mi tempus imperdiet. Amet consectetur adipiscing elit pellentesque habitant morbi tristique senectus et. In cursus turpis massa tincidunt dui ut. Dui accumsan sit amet nulla facilisi morbi tempus. Eu feugiat pretium nibh ipsum consequat nisl. Donec ultrices tincidunt arcu non sodales neque sodales ut. Rhoncus dolor purus non enim praesent elementum facilisis leo. Ultrices vitae auctor eu augue ut lectus arcu bibendum at.`
 
+const RESPONSE_WITH_CODE = `To achieve this task, we can use the \`stat\` command in Linux to get the creation date of each file in the directory, and then use \`sort\` and \`awk\` to group the files by the day they were created. Here's the Linux bash command that accomplishes this:
+
+\`\`\`bash
+#!/bin/bash
+stat --format="%y %n" * | sort -k1 | awk '{print $1, $2}' | awk '{print $1}' FS="-" | uniq -c
+\`\`\`
+
+In this command:
+- \`stat --format="%y %n" *\` will display the creation date and filename of each file in the directory.
+- \`sort -k1\` will sort the output based on the creation date.
+- \`awk '{print $1, $2}'\` will select and print the date and time part of the output.
+- \`awk '{print $1}' FS="-"\` will extract and print only the day part of the date.
+- \`uniq -c\` will display the unique days along with the count of files created on each day.
+
+You can run this command in the directory of interest to list every file grouped by the day on which it was created.`
+
 export const LOREM_IPSUM_WORDS = LOREM_IPSUM.trim()
+  .replace(/\.\s/g, '.\n')
+  .split(' ')
+  .map((word) => word.trim() + ' ')
+
+export const RESPONSE_WITH_CODE_WORDS = RESPONSE_WITH_CODE.trim()
   .replace(/\.\s/g, '.\n')
   .split(' ')
   .map((word) => word.trim() + ' ')
 
 export function mockChatStream<ResponseType extends object | string>(
   parser: (content: string, isLast: boolean) => ResponseType,
-  length = randomInt(100, 300),
-  delayBetweenMessages = () => randomInt(10, 200),
+  length = randomInt(100, 150),
+  delayBetweenMessages = () => randomInt(10, 50),
 ) {
-  length = Math.min(length, LOREM_IPSUM_WORDS.length)
+  // const source = randomInt(0, 1) ? RESPONSE_WITH_CODE_WORDS : LOREM_IPSUM_WORDS //TODO: restore
+  const source = randomInt(0, 10) ? RESPONSE_WITH_CODE_WORDS : LOREM_IPSUM_WORDS
+
+  length = Math.min(length, source.length)
 
   const controller = new AbortController()
   return {
@@ -61,7 +85,7 @@ export function mockChatStream<ResponseType extends object | string>(
         }
 
         await wait(delayBetweenMessages())
-        yield parser(LOREM_IPSUM_WORDS[i], i === length - 1)
+        yield parser(source[i], i === length - 1)
       }
     },
     controller,

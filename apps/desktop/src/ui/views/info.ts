@@ -1,4 +1,4 @@
-import { createElement, createMdiIcon } from '../domUtils'
+import { createElement, createMdiIcon } from '../utils/dom'
 
 import { ViewBase } from './viewBase'
 
@@ -54,6 +54,8 @@ export class InfoView extends ViewBase {
       }),
     )
   }
+
+  public onOpen() {}
 }
 
 function getVersions(): Record<'node' | 'chrome' | 'electron', string> {

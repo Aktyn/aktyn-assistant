@@ -1,4 +1,4 @@
-import { clsx, createElement } from '../domUtils'
+import { clsx, createElement } from '../utils/dom'
 
 enum NotificationsType {
   Error = 'error',

@@ -1,6 +1,6 @@
 import { Select } from '../components/select'
 import { Switch } from '../components/switch'
-import { createElement } from '../domUtils'
+import { createElement } from '../utils/dom'
 
 import { ViewBase } from './viewBase'
 
@@ -74,4 +74,6 @@ export class SettingsView extends ViewBase {
       this.content.appendChild(child)
     }
   }
+
+  public onOpen() {}
 }

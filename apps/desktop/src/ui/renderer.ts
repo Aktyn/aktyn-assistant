@@ -1,8 +1,8 @@
 import { Menu } from './circularMenu'
 import { Dialog } from './components/dialog'
 import { Notifications } from './components/notifications'
-import { createElement } from './domUtils'
 import { TitleHeader } from './titleHeader'
+import { createElement } from './utils/dom'
 import { ChatView } from './views/chat'
 
 function generatePatternBackground() {

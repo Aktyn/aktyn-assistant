@@ -10,14 +10,18 @@ export async function performChatQuery(
 ) {
   const stream = await ai.performChatQuery(message, model)
 
+  let finished = false
   for await (const chunk of stream) {
     if (stream.controller.signal.aborted) {
       break
     }
     webContents.send('chatResponse', messageId, chunk)
+    if (chunk.finished) {
+      finished = true
+    }
   }
 
-  if (stream.controller.signal.aborted) {
+  if (!finished) {
     webContents.send('chatResponse', messageId, { finished: true })
   }
 }

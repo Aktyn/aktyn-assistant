@@ -1,4 +1,4 @@
-import { createElement } from './domUtils'
+import { createElement } from './utils/dom'
 import { ChatView } from './views/chat'
 import { InfoView } from './views/info'
 import { SettingsView } from './views/settings'
@@ -33,6 +33,7 @@ const viewsProperties: {
 class ViewItem {
   public readonly handleElement: HTMLDivElement
   public readonly contentContainer: HTMLDivElement
+  public readonly view: ViewBase
 
   constructor(public readonly viewType: ViewType) {
     const { title, icon, createView } = viewsProperties[viewType]
@@ -45,9 +46,10 @@ class ViewItem {
     this.handleElement.appendChild(iconElement)
     this.handleElement.appendChild(textElement)
 
+    this.view = createView()
     this.contentContainer = createElement('div', {
       className: 'view-content-container',
-      content: createView().content,
+      content: this.view.content,
     })
   }
 }
@@ -154,12 +156,16 @@ export class Menu {
   }
 
   private focusView(viewType: ViewType, behavior: ScrollBehavior = 'instant') {
-    this.viewItems
-      .find((item) => item.viewType === viewType)
-      ?.contentContainer.scrollIntoView({
-        inline: 'center',
-        behavior,
-      })
+    const viewItem = this.viewItems.find((item) => item.viewType === viewType)
+    if (!viewItem) {
+      return
+    }
+
+    viewItem.contentContainer.scrollIntoView({
+      inline: 'center',
+      behavior,
+    })
+    viewItem.view.onOpen()
   }
 
   async init() {

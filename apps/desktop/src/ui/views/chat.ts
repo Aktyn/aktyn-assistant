@@ -1,4 +1,5 @@
-import { clsx, createElement, createMdiIcon } from '../domUtils'
+import { formatCodeBlocks } from '../utils/codeBlocks'
+import { clsx, createElement, createMdiIcon } from '../utils/dom'
 
 import { ViewBase } from './viewBase'
 
@@ -9,6 +10,8 @@ export class ChatView extends ViewBase {
 
   private activeMessageId: string | null = null
   private activeAiMessageElement: HTMLDivElement | null = null
+  private scrollToBottomTimeout?: NodeJS.Timeout | null = null
+  private formatCodeBlocksTimeout?: NodeJS.Timeout | null = null
 
   constructor() {
     const messagesContainer = createElement('div', {
@@ -19,7 +22,6 @@ export class ChatView extends ViewBase {
     const input = createElement('input', {
       className: 'chat-input',
       postProcess: (input) => {
-        input.placeholder = 'Type your message...'
         input.maxLength = 2048
       },
     })
@@ -57,13 +59,10 @@ export class ChatView extends ViewBase {
       }
     }
 
-    setTimeout(() => {
-      input.focus()
-    }, 16)
-
     this.messagesContainer = messagesContainer
     this.input = input
     this.spinner = spinner
+    this.toggleLoading(false)
 
     window.electronAPI.onChatResponse((messageId, chunk) => {
       if (!this.activeMessageId || !this.activeAiMessageElement) {
@@ -76,23 +75,60 @@ export class ChatView extends ViewBase {
         return
       }
 
-      console.log('Received chat response:', chunk) //TODO: remove
       if (chunk.content) {
-        this.activeAiMessageElement.innerText += chunk.content
-        this.messagesContainer.scrollTo({
-          top: this.messagesContainer.scrollHeight,
-          behavior: 'smooth',
-        })
+        this.activeAiMessageElement.append(chunk.content)
+        this.scrollToBottom()
+        this.formatCodeBlocksDebounced(this.activeAiMessageElement)
       }
 
       if (chunk.finished) {
         this.activeMessageId = null
         this.activeAiMessageElement = null
-        this.input.disabled = false
-        this.input.placeholder = 'Type your message...'
-        this.spinner.style.opacity = '0'
+        this.toggleLoading(false)
       }
     })
+  }
+
+  public onOpen() {
+    setTimeout(() => {
+      this.input.focus()
+    }, 500)
+  }
+
+  private formatCodeBlocksDebounced(element: HTMLElement) {
+    if (this.formatCodeBlocksTimeout) {
+      return
+    }
+
+    this.formatCodeBlocksTimeout = setTimeout(() => {
+      formatCodeBlocks(element)
+
+      this.formatCodeBlocksTimeout = null
+    }, 500)
+  }
+
+  private scrollToBottom() {
+    if (this.scrollToBottomTimeout) {
+      return
+    }
+
+    this.scrollToBottomTimeout = setTimeout(() => {
+      this.messagesContainer.scrollTo({
+        top: this.messagesContainer.scrollHeight,
+        behavior: 'smooth',
+      })
+      this.scrollToBottomTimeout = null
+    }, 100)
+  }
+
+  private toggleLoading(loading: boolean) {
+    this.input.placeholder = loading ? '' : 'Type your message...'
+    this.input.disabled = loading
+    this.spinner.style.opacity = loading ? '1' : '0'
+
+    if (!loading) {
+      this.input.focus()
+    }
   }
 
   private async sendChatMessage(message: string) {
@@ -124,14 +160,10 @@ export class ChatView extends ViewBase {
       translateX: ['4rem', '0rem'],
       delay: anime.stagger(200, { from: 'first' }),
     })
-    this.activeAiMessageElement.scrollIntoView({
-      block: 'start',
-      behavior: 'smooth',
-    })
 
-    this.input.placeholder = ''
-    this.input.disabled = true
-    this.spinner.style.opacity = '1'
+    this.scrollToBottom()
+
+    this.toggleLoading(true)
 
     const model =
       await window.electronAPI.getUserConfigValue('selectedChatModel')

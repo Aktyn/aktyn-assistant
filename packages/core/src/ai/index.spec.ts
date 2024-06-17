@@ -30,7 +30,7 @@ jest.mock('openai', () => ({
 }))
 
 import { AI, AiProviderType } from '.'
-import { LOREM_IPSUM_WORDS } from './mock'
+import { LOREM_IPSUM_WORDS, RESPONSE_WITH_CODE_WORDS } from './mock'
 
 import '../test-utils/extend'
 
@@ -51,7 +51,10 @@ describe('AI class', () => {
       let i = 30
       for await (const response of chatStream) {
         //@ts-expect-error method is extended and therefore not typed
-        expect(response.content).toBeIn(LOREM_IPSUM_WORDS)
+        expect(response.content).toBeIn([
+          ...LOREM_IPSUM_WORDS,
+          ...RESPONSE_WITH_CODE_WORDS,
+        ])
         expect(response.timestamp).toBeGreaterThanOrEqual(now)
 
         if (--i === 0) {

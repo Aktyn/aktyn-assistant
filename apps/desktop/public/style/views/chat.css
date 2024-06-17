@@ -113,6 +113,7 @@ body.quick-chat>.chat-view>.handle:active {
   text-align: left;
   white-space: normal;
   word-wrap: break-word;
+  line-height: 1.5rem;
 }
 
 .chat-message.user {

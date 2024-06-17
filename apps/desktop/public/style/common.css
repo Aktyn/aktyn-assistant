@@ -107,3 +107,15 @@ input::placeholder {
   justify-content: center;
   gap: 1rem;
 }
+
+pre.code-block, pre.code-block-inline {
+  margin: 0;
+  background-color: color-mix(in srgb, #263238 50%, transparent);
+  border-radius: 0.25rem;
+  border: 1px solid #263238;
+  padding-inline: 0.5rem;
+}
+
+pre.code-block-inline {
+  display: inline;
+}

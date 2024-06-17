@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { once } from '@aktyn-assistant/common'
+import { isDev, once } from '@aktyn-assistant/common'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
   BrowserWindow,
@@ -26,7 +26,7 @@ const getStore = once(() =>
 )
 
 export async function createMainWindow() {
-  const openDevTools = false
+  const openDevTools = isDev()
 
   const win = new BrowserWindow({
     width: 1080,
