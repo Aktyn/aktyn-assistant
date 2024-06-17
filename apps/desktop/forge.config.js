@@ -7,6 +7,7 @@ const {
 module.exports = {
   buildIdentifier: 'beta',
   packagerConfig: {
+    prune: false,
     appBundleId: fromBuildIdentifier({
       beta: 'com.beta.aktyn-assistant',
       prod: 'com.aktyn-assistant',
@@ -25,7 +26,7 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
+      platforms: ['darwin', 'linux'],
     },
     {
       name: '@electron-forge/maker-deb',
@@ -36,6 +37,12 @@ module.exports = {
           name: 'Aktyn Assistant',
           productName: 'Aktyn Assistant',
         },
+      },
+    },
+    {
+      name: '@electron-forge/maker-flatpak',
+      config: {
+        options: {},
       },
     },
     // {
