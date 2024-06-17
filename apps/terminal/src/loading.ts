@@ -11,7 +11,10 @@ export async function showSpinner(text: string) {
       },
     }
   } catch (error) {
-    terminal.notify('Spinner error', error instanceof Error ? error.message : '---')
+    terminal.notify(
+      'Spinner error',
+      error instanceof Error ? error.message : '---',
+    )
     return {
       stop() {},
     }

@@ -1,7 +1,16 @@
 import path from 'path'
 
 import { once } from '@aktyn-assistant/common'
-import { BrowserWindow, Menu, type Rectangle, Tray, app, nativeImage, shell } from 'electron'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {
+  BrowserWindow,
+  Menu,
+  type Rectangle,
+  Tray,
+  app,
+  nativeImage,
+  shell,
+} from 'electron'
 
 const publicPath = path.join(__dirname, '..', 'public')
 const iconPath = path.join(publicPath, 'img', 'icon.png')
@@ -83,7 +92,10 @@ function setupWindowToOpenLinksExternally(win: BrowserWindow) {
   })
 }
 
-export function setupTray(mainWindow: BrowserWindow, toggleQuickChat: () => Promise<void>) {
+export function setupTray(
+  mainWindow: BrowserWindow,
+  toggleQuickChat: () => Promise<void>,
+) {
   mainWindow.on('close', (event) => {
     event.preventDefault()
     mainWindow.hide()

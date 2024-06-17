@@ -39,7 +39,9 @@ export class Notifications {
     const notification = createElement('div', {
       className: clsx('notification', type),
       content: [
-        schema.title ? createElement('strong', { content: schema.title }) : null,
+        schema.title
+          ? createElement('strong', { content: schema.title })
+          : null,
         createElement('div', { content: schema.message }),
       ],
     })

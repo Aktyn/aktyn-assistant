@@ -39,7 +39,12 @@ export class SettingsView extends View {
 
     const items = Object.values(SETTINGS_ITEM)
     terminal.singleColumnMenu(
-      [...items.map((item) => `${item}: (${getConfigValueBySettingItem(item)})`), 'Return to menu'],
+      [
+        ...items.map(
+          (item) => `${item}: (${getConfigValueBySettingItem(item)})`,
+        ),
+        'Return to menu',
+      ],
       {
         exitOnUnexpectedKey: true,
         selectedStyle: terminal.brightCyan.bold.inverse,
@@ -57,7 +62,10 @@ export class SettingsView extends View {
           return
         }
 
-        if (typeof response.selectedIndex !== 'number' || response.selectedIndex === items.length) {
+        if (
+          typeof response.selectedIndex !== 'number' ||
+          response.selectedIndex === items.length
+        ) {
           this.onReturnToMenu()
         } else {
           const item = items[response.selectedIndex]
@@ -78,7 +86,9 @@ export class SettingsView extends View {
     terminal.clear()
     terminal.moveTo(1, terminal.height - 1)
 
-    const mock = await selectYesOrNo('Do you want to mock paid requests to AI provider?')
+    const mock = await selectYesOrNo(
+      'Do you want to mock paid requests to AI provider?',
+    )
     if (this.aborted) {
       return
     }

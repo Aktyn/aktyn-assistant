@@ -9,7 +9,9 @@ export class Select {
     onSelect: (option: string) => void,
   ) {
     this.element = createElement('select', {
-      content: options.map((option) => createElement('option', { content: option })),
+      content: options.map((option) =>
+        createElement('option', { content: option }),
+      ),
       postProcess: (element) => {
         //@ts-expect-error it's a hack
         element.onfocus = `this.size=${options.length};`

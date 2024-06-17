@@ -44,7 +44,10 @@ describe('AI class', () => {
       })
 
       const now = Date.now()
-      const chatStream = await ai.performChatQuery('Example query', 'gpt-3.5-turbo')
+      const chatStream = await ai.performChatQuery(
+        'Example query',
+        'gpt-3.5-turbo',
+      )
       let i = 30
       for await (const response of chatStream) {
         //@ts-expect-error method is extended and therefore not typed

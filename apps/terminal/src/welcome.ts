@@ -7,7 +7,8 @@ export function showWelcomeMessage() {
   terminal.clear()
 
   const requiredWidth = productNameAsciiArt.reduce(
-    (acc, line) => Math.max(acc, Math.max(...line.split('\n').map((c) => c.length))),
+    (acc, line) =>
+      Math.max(acc, Math.max(...line.split('\n').map((c) => c.length))),
     0,
   )
 

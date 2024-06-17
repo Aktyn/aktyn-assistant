@@ -1,5 +1,8 @@
 import { terminal } from 'terminal-kit'
-import type { SingleColumnMenuOptions, SingleLineMenuResponse } from 'terminal-kit/Terminal'
+import type {
+  SingleColumnMenuOptions,
+  SingleLineMenuResponse,
+} from 'terminal-kit/Terminal'
 
 export function selectOption(
   items: string[],

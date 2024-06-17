@@ -2,7 +2,13 @@
  * This file specifies the general interface for the AI client.
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
-import { Stream, assert, isDev, once, type ChatResponse } from '@aktyn-assistant/common'
+import {
+  Stream,
+  assert,
+  isDev,
+  once,
+  type ChatResponse,
+} from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
 import { OpenAI } from 'openai'
 
@@ -51,7 +57,10 @@ type GetProviderClass<ProviderType extends AiProviderType> = InstanceType<
 
 type InitType<ProviderType extends AiProviderType> = {
   providerType: ProviderType
-  requestApiKey: (providerType: ProviderType, reason?: 'validation-failed') => Promise<string>
+  requestApiKey: (
+    providerType: ProviderType,
+    reason?: 'validation-failed',
+  ) => Promise<string>
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -107,7 +116,9 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     }
   }
 
-  public static async client<ProviderType extends AiProviderType>(init?: InitType<ProviderType>) {
+  public static async client<ProviderType extends AiProviderType>(
+    init?: InitType<ProviderType>,
+  ) {
     if (!init) {
       if (AI.instance) {
         return AI.instance
@@ -132,8 +143,8 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
   getAvailableModels = once(async () => {
     switch (this.providerType) {
       case AiProviderType.openai:
-        return await OpenAiAPI.getAvailableModels(this.providerClient).then((models) =>
-          models.map((model) => model.id),
+        return await OpenAiAPI.getAvailableModels(this.providerClient).then(
+          (models) => models.map((model) => model.id),
         )
       default:
         throw throwUnsupportedProviderError(this.providerType)
@@ -142,7 +153,10 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   async performChatQuery(query: string, model: string) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
-    assert(typeof mockPaidRequests === 'boolean', 'Mock paid requests is not set')
+    assert(
+      typeof mockPaidRequests === 'boolean',
+      'Mock paid requests is not set',
+    )
 
     switch (this.providerType) {
       case AiProviderType.openai: {

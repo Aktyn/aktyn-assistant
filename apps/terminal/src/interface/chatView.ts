@@ -4,7 +4,11 @@ import type { AnimatedText } from 'terminal-kit/Terminal'
 
 import { printError } from '../error'
 
-import { addNewLine, getRoleColor, showEscapeToReturnToMenuInfo } from './common'
+import {
+  addNewLine,
+  getRoleColor,
+  showEscapeToReturnToMenuInfo,
+} from './common'
 import { View } from './view'
 
 export class ChatView extends View {
@@ -109,14 +113,18 @@ export class ChatView extends View {
       }
 
       if (stream.controller.signal.aborted || !this.chatStream) {
-        if (this.chatStream && this.chatStream.controller.signal.reason === 'Timeout') {
+        if (
+          this.chatStream &&
+          this.chatStream.controller.signal.reason === 'Timeout'
+        ) {
           this.spinner?.animate(false)
           this.spinner = null
 
           terminal.moveTo(1, terminal.height - 1).eraseLine()
           printError({
             title: 'Chat response timeout',
-            message: 'Chat response took too long to complete. Please try again.',
+            message:
+              'Chat response took too long to complete. Please try again.',
           })
 
           for (let i = 0; i < 2; i++) {

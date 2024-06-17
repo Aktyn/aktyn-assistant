@@ -123,7 +123,12 @@ export class TerminalInterface {
           const viewType = items[response.selectedIndex].type
           switch (viewType) {
             case INTERFACE_VIEW.Chat:
-              this.view = new ChatView(viewType, this.handleError.bind(this), noop, this.ai)
+              this.view = new ChatView(
+                viewType,
+                this.handleError.bind(this),
+                noop,
+                this.ai,
+              )
               break
             case INTERFACE_VIEW.Settings:
               this.view = new SettingsView(

@@ -55,11 +55,18 @@ class ViewItem {
 export class Menu {
   private readonly menuContainer: HTMLDivElement
   private readonly viewsContainer: HTMLDivElement
-  private readonly viewItems = Object.values(ViewType).map((viewType) => new ViewItem(viewType))
+  private readonly viewItems = Object.values(ViewType).map(
+    (viewType) => new ViewItem(viewType),
+  )
 
   private view: ViewType | null = null
 
-  constructor(private readonly listeners: { onViewEnter: () => void; onViewHide: () => void }) {
+  constructor(
+    private readonly listeners: {
+      onViewEnter: () => void
+      onViewHide: () => void
+    },
+  ) {
     const main = document.querySelector<HTMLDivElement>('main')
     if (!main) {
       throw new Error('Main element not found in DOM')
@@ -129,7 +136,8 @@ export class Menu {
   }
 
   private initViews(focusView: ViewType) {
-    this.viewsContainer.style.paddingTop = this.menuContainer.getBoundingClientRect().height + 'px'
+    this.viewsContainer.style.paddingTop =
+      this.menuContainer.getBoundingClientRect().height + 'px'
     this.viewsContainer.style.opacity = '0'
 
     anime({

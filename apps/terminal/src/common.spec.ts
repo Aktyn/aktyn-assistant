@@ -50,7 +50,9 @@ describe(printCentered.name, () => {
     const text = 'Test text (first line)\nAnother line'
     terminal.width = 32
     printCentered(text)
-    expect(terminal.defaultColor).toHaveBeenCalledWith('     Test text (first line)\n')
+    expect(terminal.defaultColor).toHaveBeenCalledWith(
+      '     Test text (first line)\n',
+    )
     expect(terminal.defaultColor).toHaveBeenCalledWith('     Another line\n')
   })
 

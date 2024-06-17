@@ -3,5 +3,4 @@ dist-app/
 dist-ui/
 coverage/
 .env
-release/
 out/

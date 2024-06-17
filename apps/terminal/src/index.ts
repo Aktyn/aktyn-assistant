@@ -1,4 +1,9 @@
-import { AI, AiProviderType, getUserConfigValue, setUserConfigValue } from '@aktyn-assistant/core'
+import {
+  AI,
+  AiProviderType,
+  getUserConfigValue,
+  setUserConfigValue,
+} from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 import { toggleTerminateOnCtrlC } from './common'
@@ -56,14 +61,18 @@ async function run() {
 
     let mockPaidRequests = getUserConfigValue('mockPaidRequests')
     if (mockPaidRequests === null) {
-      mockPaidRequests = await selectYesOrNo('Do you want to mock paid requests to AI provider?')
+      mockPaidRequests = await selectYesOrNo(
+        'Do you want to mock paid requests to AI provider?',
+      )
       setUserConfigValue('mockPaidRequests', mockPaidRequests)
     }
     if (mockPaidRequests) {
       console.info(`Paid requests to AI provider are mocked`)
     }
 
-    console.info("Initial setup doesn't require any further work. Initializing menu interface...")
+    console.info(
+      "Initial setup doesn't require any further work. Initializing menu interface...",
+    )
 
     const terminalInterface = new TerminalInterface(ai)
 

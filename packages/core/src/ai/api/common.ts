@@ -18,7 +18,10 @@ export function loadProviderApiKey(providerType: AiProviderType) {
   return loadApiKey(getKeyFilePath(providerType))
 }
 
-export function saveProviderApiKey(providerType: AiProviderType, apiKey: string) {
+export function saveProviderApiKey(
+  providerType: AiProviderType,
+  apiKey: string,
+) {
   const keyFilePath = getKeyFilePath(providerType)
 
   if (!fs.existsSync(path.dirname(keyFilePath))) {

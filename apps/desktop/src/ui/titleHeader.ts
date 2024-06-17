@@ -13,7 +13,10 @@ export class TitleHeader {
     const words = this.header.innerText.split(/\s/)
     this.header.innerText = ''
     for (const word of words) {
-      const span = createElement('span', { content: word, style: { opacity: '0' } })
+      const span = createElement('span', {
+        content: word,
+        style: { opacity: '0' },
+      })
       this.header.appendChild(span)
     }
   }

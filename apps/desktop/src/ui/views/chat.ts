@@ -36,7 +36,10 @@ export class ChatView extends ViewBase {
           messagesContainer,
           input,
           spinner,
-          createElement('div', { className: 'handle', content: createMdiIcon('cursor-move') }),
+          createElement('div', {
+            className: 'handle',
+            content: createMdiIcon('cursor-move'),
+          }),
         ],
       }),
     )
@@ -130,7 +133,8 @@ export class ChatView extends ViewBase {
     this.input.disabled = true
     this.spinner.style.opacity = '1'
 
-    const model = await window.electronAPI.getUserConfigValue('selectedChatModel')
+    const model =
+      await window.electronAPI.getUserConfigValue('selectedChatModel')
     if (!model) {
       throw new Error('Chat model is not set')
     }

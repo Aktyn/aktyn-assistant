@@ -16,9 +16,11 @@ export class SettingsView extends ViewBase {
   }
 
   private async init() {
-    let mockPaidRequests = await window.electronAPI.getUserConfigValue('mockPaidRequests')
+    let mockPaidRequests =
+      await window.electronAPI.getUserConfigValue('mockPaidRequests')
     const models = await window.electronAPI.getAvailableModels()
-    let chatModel = await window.electronAPI.getUserConfigValue('selectedChatModel')
+    let chatModel =
+      await window.electronAPI.getUserConfigValue('selectedChatModel')
 
     if (!models.length) {
       throw new Error('No AI models available')
@@ -27,11 +29,17 @@ export class SettingsView extends ViewBase {
     //TODO: prompt user to select model and mock paid requests if not set
     if (mockPaidRequests === null) {
       console.warn('Mock paid requests is not set')
-      window.electronAPI.setUserConfigValue('mockPaidRequests', (mockPaidRequests = false))
+      window.electronAPI.setUserConfigValue(
+        'mockPaidRequests',
+        (mockPaidRequests = false),
+      )
     }
     if (chatModel === null) {
       console.warn('Chat model is not set')
-      window.electronAPI.setUserConfigValue('selectedChatModel', (chatModel = models[0]))
+      window.electronAPI.setUserConfigValue(
+        'selectedChatModel',
+        (chatModel = models[0]),
+      )
     }
 
     const mockPaidRequestsSwitch = new Switch(mockPaidRequests, (on) =>
@@ -50,7 +58,10 @@ export class SettingsView extends ViewBase {
       }),
 
       createElement('div', {
-        content: [createElement('div', { content: 'Chat model' }), chatModelSelect.element],
+        content: [
+          createElement('div', { content: 'Chat model' }),
+          chatModelSelect.element,
+        ],
       }),
 
       createElement('div', {

@@ -5,7 +5,14 @@ import {
   setUserConfigValue,
   type UserConfigType,
 } from '@aktyn-assistant/core'
-import { BrowserWindow, app, globalShortcut, ipcMain, type IpcMainEvent } from 'electron'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {
+  BrowserWindow,
+  app,
+  globalShortcut,
+  ipcMain,
+  type IpcMainEvent,
+} from 'electron'
 
 import { performChatQuery } from './chat'
 import { forceSingleInstance } from './lock'
@@ -42,11 +49,16 @@ app.on('window-all-closed', () => {
 async function init() {
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
-  ipcMain.handle('getUserConfigValue', (_, key: keyof UserConfigType) => getUserConfigValue(key))
+  ipcMain.handle('getUserConfigValue', (_, key: keyof UserConfigType) =>
+    getUserConfigValue(key),
+  )
   ipcMain.on(
     'setUserConfigValue',
-    <Key extends keyof UserConfigType>(_: IpcMainEvent, key: Key, value: UserConfigType[Key]) =>
-      setUserConfigValue(key, value),
+    <Key extends keyof UserConfigType>(
+      _: IpcMainEvent,
+      key: Key,
+      value: UserConfigType[Key],
+    ) => setUserConfigValue(key, value),
   )
   ipcMain.handle('getAvailableModels', () => ai.getAvailableModels())
 
@@ -63,7 +75,9 @@ async function init() {
   if (!aiProvider || !Object.values(AiProviderType).includes(aiProvider)) {
     win.webContents.send('promptForAiProvider', Object.values(AiProviderType))
     aiProvider = await new Promise<AiProviderType>((resolve) => {
-      ipcMain.once('promptAiProviderCallback', (_, provider: AiProviderType) => resolve(provider))
+      ipcMain.once('promptAiProviderCallback', (_, provider: AiProviderType) =>
+        resolve(provider),
+      )
     })
     setUserConfigValue('selectedAiProvider', aiProvider)
     console.info(`Selected ${aiProvider} as your AI provider`)
@@ -73,7 +87,11 @@ async function init() {
     providerType: aiProvider,
     requestApiKey: async (providerType, reason) => {
       if (reason === 'validation-failed') {
-        win.webContents.send('showError', "Provided API key didn't work", 'Please try again')
+        win.webContents.send(
+          'showError',
+          "Provided API key didn't work",
+          'Please try again',
+        )
       }
 
       win.webContents.send('promptForApiKey', providerType)
@@ -83,8 +101,12 @@ async function init() {
     },
   })
 
-  ipcMain.on('performChatQuery', async (event, message: string, model: string, messageId: string) =>
-    performChatQuery(ai, event.sender, message, model, messageId).catch(console.error),
+  ipcMain.on(
+    'performChatQuery',
+    async (event, message: string, model: string, messageId: string) =>
+      performChatQuery(ai, event.sender, message, model, messageId).catch(
+        console.error,
+      ),
   )
 
   ready = true

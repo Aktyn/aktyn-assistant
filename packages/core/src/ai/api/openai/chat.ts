@@ -60,9 +60,15 @@ function areToolCallsCompleted(
 }
 
 //istanbul ignore next
-export async function performChatQuery(client: OpenAI, content: string, model: string) {
+export async function performChatQuery(
+  client: OpenAI,
+  content: string,
+  model: string,
+) {
   /** NOTE: this should contain conversation history in order for AI to remember previous responses */
-  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [{ role: 'user', content }]
+  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+    { role: 'user', content },
+  ]
 
   const stream = await client.chat.completions.create({
     model,
