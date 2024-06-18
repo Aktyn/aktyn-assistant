@@ -40,7 +40,12 @@ export class ChatView extends ViewBase {
           spinner,
           createElement('div', {
             className: 'handle',
-            content: createMdiIcon('cursor-move'),
+            content: [
+              createMdiIcon('cursor-move'),
+              createElement('span', {
+                content: 'Grab here to move the window',
+              }),
+            ],
           }),
         ],
       }),

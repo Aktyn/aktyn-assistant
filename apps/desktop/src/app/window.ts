@@ -15,6 +15,7 @@ import {
 const publicPath = path.join(__dirname, '..', 'public')
 const iconPath = path.join(publicPath, 'img', 'icon.png')
 const quickChatIconPath = path.join(publicPath, 'img', 'icon-quick-chat.png')
+const trayIconPath = path.join(publicPath, 'img', 'icon-tray.png')
 
 const getStore = once(() =>
   import('electron-store').then(
@@ -96,33 +97,39 @@ export function setupTray(
   mainWindow: BrowserWindow,
   toggleQuickChat: () => Promise<void>,
 ) {
+  const toggleMainWindow = () => {
+    if (mainWindow.isVisible()) {
+      mainWindow.hide()
+    } else {
+      mainWindow.show()
+    }
+  }
+
   mainWindow.on('close', (event) => {
     event.preventDefault()
-    mainWindow.hide()
+    toggleMainWindow()
   })
 
-  const icon = nativeImage.createFromPath(iconPath)
+  const icon = nativeImage.createFromPath(trayIconPath)
 
   const tray = new Tray(icon.resize({ width: 16, height: 16 }))
   tray.setIgnoreDoubleClickEvents(true)
 
   const trayMenu = Menu.buildFromTemplate([
     {
-      label: 'Quit',
-      click: (_) => app.exit(0),
+      label: 'Toggle main window',
+      click: (_) => toggleMainWindow(),
     },
     {
       label: 'Toggle quick chat (Alt+Q)',
       click: (_) => toggleQuickChat().catch(console.error),
     },
+    {
+      label: 'Quit',
+      click: (_) => app.exit(0),
+    },
   ])
   tray.setContextMenu(trayMenu)
 
-  tray.on('click', (_) => {
-    if (mainWindow.isVisible()) {
-      mainWindow.hide()
-    } else {
-      mainWindow.show()
-    }
-  })
+  tray.on('click', toggleMainWindow)
 }

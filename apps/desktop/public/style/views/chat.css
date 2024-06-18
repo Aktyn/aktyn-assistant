@@ -13,7 +13,7 @@ body.quick-chat>.chat-view>.handle {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-color-secondary);
+  color: color-mix(in srgb, var(--text-color-secondary) 25%, transparent);
   font-size: 1.5rem;
   height: 2rem;
   width: 61.8%;
@@ -39,6 +39,12 @@ body.quick-chat>.chat-view>.handle:hover {
 
 body.quick-chat>.chat-view>.handle:active {
   cursor: grabbing;
+}
+
+body.quick-chat>.chat-view>.handle>*:not(.mdi) {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
 }
 
 .chat-view {

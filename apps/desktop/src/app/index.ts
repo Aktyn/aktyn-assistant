@@ -124,16 +124,23 @@ async function init() {
 
 async function postInit(mainWindow: BrowserWindow) {
   let quickChatWindow: BrowserWindow | null = null
+  let shown = false
 
   const toggleQuickChat = async () => {
-    if (quickChatWindow) {
-      quickChatWindow.close()
-      quickChatWindow = null
+    if (shown) {
+      quickChatWindow?.hide()
+      shown = false
     } else {
-      quickChatWindow = await createChatWindow()
-      quickChatWindow.on('close', () => {
-        quickChatWindow = null
-      })
+      if (!quickChatWindow) {
+        quickChatWindow = await createChatWindow()
+        quickChatWindow.on('close', (event) => {
+          event.preventDefault()
+          quickChatWindow?.hide()
+        })
+      } else {
+        quickChatWindow.show()
+      }
+      shown = true
     }
   }
 
