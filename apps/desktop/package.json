@@ -28,7 +28,8 @@
     "@aktyn-assistant/common": "^0.1.0",
     "@aktyn-assistant/core": "^0.1.0",
     "electron-squirrel-startup": "^1.0.1",
-    "electron-store": "^10.0.0"
+    "electron-store": "^10.0.0",
+    "update-electron-app": "^3.0.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
