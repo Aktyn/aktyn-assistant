@@ -76,9 +76,18 @@ export class ChatView extends ViewBase {
       }
 
       if (chunk.content) {
-        this.activeAiMessageElement.append(chunk.content)
+        let lastChild = this.activeAiMessageElement.children.item(
+          this.activeAiMessageElement.children.length - 1,
+        ) as HTMLSpanElement
+        if (!lastChild || lastChild.nodeName.toUpperCase() !== 'SPAN') {
+          const span = createElement('span', { content: chunk.content })
+          this.activeAiMessageElement.appendChild(span)
+          lastChild = span
+        } else {
+          lastChild.innerText += chunk.content
+        }
         this.scrollToBottom()
-        this.formatCodeBlocksDebounced(this.activeAiMessageElement)
+        this.formatCodeBlocksDebounced(lastChild)
       }
 
       if (chunk.finished) {

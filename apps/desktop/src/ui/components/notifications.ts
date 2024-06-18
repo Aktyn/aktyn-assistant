@@ -2,6 +2,7 @@ import { clsx, createElement } from '../utils/dom'
 
 enum NotificationsType {
   Error = 'error',
+  INFO = 'info',
 }
 
 type NotificationSchema = {
@@ -61,8 +62,9 @@ export class Notifications {
           targets: notification,
           easing: 'spring(1, 80, 10, 0)',
           opacity: 0,
-          translateY: ['0rem', '4rem'],
-          //TODO: animate bottom margin to prevent other notifications from jumping when this notification is removed
+          translateY: ['0rem', '-4rem'],
+          marginBottom:
+            -(notification.getBoundingClientRect().height ?? 0) - 16,
           complete: () => {
             notification.remove()
           },

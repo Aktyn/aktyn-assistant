@@ -1,4 +1,4 @@
-import { Menu } from './circularMenu'
+import { Menu, ViewType } from './circularMenu'
 import { Dialog } from './components/dialog'
 import { Notifications } from './components/notifications'
 import { TitleHeader } from './titleHeader'
@@ -138,7 +138,7 @@ async function initMain() {
     opacity: 0,
   })
 
-  await header.enter() //TODO: restore await
+  void header.enter() //TODO: restore await
 
   const isReady = await window.electronAPI.isReady()
   if (isReady) {
@@ -159,9 +159,9 @@ async function postInitMain(header: TitleHeader) {
       header.enter().catch(console.error)
     },
   })
-  await menu.init() //TODO: restore await
+  void menu.init() //TODO: restore await
 
-  // menu.enterView(ViewType.Chat) //TODO: remove
+  menu.enterView(ViewType.Chat) //TODO: remove
 }
 
 async function initQuickChat() {

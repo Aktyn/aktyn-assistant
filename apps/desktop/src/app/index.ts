@@ -1,3 +1,4 @@
+import { isDev } from '@aktyn-assistant/common'
 import {
   AI,
   AiProviderType,
@@ -18,9 +19,11 @@ import { performChatQuery } from './chat'
 import { forceSingleInstance } from './lock'
 import { createChatWindow, createMainWindow, setupTray } from './window'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { updateElectronApp } = require('update-electron-app')
-updateElectronApp()
+if (!isDev()) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { updateElectronApp } = require('update-electron-app')
+  updateElectronApp()
+}
 
 function handleFatalError(error: unknown) {
   console.error(error)

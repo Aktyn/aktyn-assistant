@@ -24,6 +24,7 @@ button {
   font-weight: 500;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
   padding: 0.5rem;
+  outline: none;
 }
 
 button:disabled {
@@ -76,46 +77,7 @@ input::placeholder {
   opacity: 0.5;
 }
 
-.content-container {
-  border: 1px solid #fff2;
-  border-radius: 1rem;
-  background-color: #fff2;
-  backdrop-filter: blur(4px);
-}
-
-.values-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 0.5rem;
-  row-gap: 0.25rem;
-  justify-content: center;
-}
-
-.values-list>*:nth-child(odd) {
-  text-align: right;
-}
-
-.values-list>*:nth-child(even) {
-  text-align: left;
-  font-weight: bold;
-}
-
-.button-select-grid {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  justify-content: center;
-  gap: 1rem;
-}
-
-pre.code-block, pre.code-block-inline {
-  margin: 0;
-  background-color: color-mix(in srgb, #263238 50%, transparent);
-  border-radius: 0.25rem;
-  border: 1px solid #263238;
-  padding-inline: 0.5rem;
-}
-
-pre.code-block-inline {
-  display: inline;
+.mdi::before {
+  transition: transform 0.2s ease-in-out;
+  transform-origin: center;
 }

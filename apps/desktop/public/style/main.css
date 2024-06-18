@@ -1,5 +1,8 @@
 @import './consts.css';
-@import './common.css';
+@import './common/elements.css';
+@import './common/containers.css';
+@import './common/code-blocks.css';
+@import './common/lists.css';
 @import './components/switch.css';
 @import './components/select.css';
 @import './components/dialog.css';

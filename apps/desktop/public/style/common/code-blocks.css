@@ -1,0 +1,58 @@
+pre.code-block, pre.code-block-inline {
+  margin: 0;
+  background-color: color-mix(in srgb, #263238 50%, transparent);
+  border-radius: 0.25rem;
+  border: 1px solid #263238;
+  padding-inline: 0.5rem;
+  white-space: pre-wrap;
+}
+
+pre.code-block-inline {
+  display: inline;
+}
+
+pre.code-block {
+  overflow: auto;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+  min-width: 61.8%;
+  max-width: 100%;
+}
+
+pre.code-block>.code-block-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid #263238;
+  padding-block: 0.5rem;
+}
+
+pre.code-block>.code-block-header>.language {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  text-transform: capitalize;
+}
+
+pre.code-block>.code-block-header>.code-options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+pre.code-block>.code-block-header>.code-options button {
+  padding-block: 0.25rem;
+  font-size: 0.85rem;
+}
+
+pre.code-block>code {
+  display: block;
+  overflow: hidden;
+  max-height: 10000px;
+}

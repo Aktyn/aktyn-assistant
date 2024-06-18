@@ -1,0 +1,14 @@
+.content-container {
+  border: 1px solid #fff2;
+  border-radius: 1rem;
+  background-color: #fff2;
+  backdrop-filter: blur(4px);
+}
+
+.button-select-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  justify-content: center;
+  gap: 1rem;
+}
