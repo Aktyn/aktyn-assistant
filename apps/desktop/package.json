@@ -9,6 +9,7 @@
   "scripts": {
     "package": "cross-env DEBUG=electron-packager electron-forge package --verbose",
     "make": "./fix-modules.sh && electron-forge make && shx rm -rf ./node_modules",
+    "publish": "./fix-modules.sh && electron-forge publish && shx rm -rf ./node_modules",
     "build:app": "tsc -p ./tsconfig-app.json",
     "build:ui": "tsc -p ./tsconfig-ui.json",
     "build": "yarn run build:app && yarn run build:ui",
@@ -38,6 +39,7 @@
     "@electron-forge/maker-zip": "^7.4.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron-forge/publisher-github": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@types/animejs": "^3.1.12",
     "@types/electron-squirrel-startup": "^1",
@@ -47,6 +49,7 @@
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@typescript-eslint/parser": "^7.12.0",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
     "electron": "^31.0.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

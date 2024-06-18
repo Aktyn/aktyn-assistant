@@ -26,7 +26,7 @@ If you already have an OpenAI account, you can generate an API key [here](https:
 
 #### Prerequisites
 
-- **`yarn install`** - yarn 4.2.2 or newer is required
+- **`yarn install`** - yarn 4.2.2 or newer is recommended
 
 #### Terminal app
 
