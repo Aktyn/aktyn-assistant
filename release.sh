@@ -1,6 +1,6 @@
 #!/bin/bash
 
-type = $1 # major, minor, patch
+type=$1 # major, minor, patch
 
 if [ -z "$type" ]; then
     echo "No type specified"
