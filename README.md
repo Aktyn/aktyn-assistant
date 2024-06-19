@@ -9,7 +9,8 @@
 
 ## Overview
 
-Aktyn Assistant is an application that allows you to interact with an AI on various types of devices while performing regular tasks.
+Aktyn Assistant is an application that allows you to interact with an AI on various types of devices while performing regular tasks.<br/>
+It can be easily activated by a keyboard shortcut.
 
 ###### (Coming soon) It is able to take a quick glance at your screen and answer questions about it.<br />It can be easily activated by custom shortcut or voice command.<br />By utilizing different type of AI models, it can perform different tasks like generating images, making real time conversations, understanding image context, etc.
 
@@ -38,11 +39,16 @@ If you already have an OpenAI account, you can generate an API key [here](https:
 - **`yarn build:all`** and **`yarn start:desktop`** to run the application with desktop interface
 - **`yarn dev:packages`** to watch changes only in _packages/_ and then **`yarn dev:desktop`**
 
+##### Building desktop app for various platforms
+- **`yarn build:all`** and **`yarn start:desktop`** will build project binaries and prepare them for distribution (check _apps/desktop/out_ directory afterwards)
+
+##### Publishing desktop app
+- **`yarn build:all`** and **`yarn publish:desktop`** to build and publish the application to github releases
+
 ---
 
 ## Future plans
 
-- Electron based user interface
 - Speech synthesis and recognition
 - Attaching screenshot or selected screen region to active chat with AI
 - Real time voice chat utilizing GPT-4o model possibilities

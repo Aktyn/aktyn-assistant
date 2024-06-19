@@ -55,9 +55,8 @@ app.on('window-all-closed', () => {
 })
 
 async function init() {
-  //TODO: do not setup auto launcher in dev mode //isDev()
-  const success = await setupAutoLaunch(true)
-  if (success) {
+  const success = await setupAutoLaunch(!isDev())
+  if (success && !isDev()) {
     console.info('Auto launch enabled')
   }
 

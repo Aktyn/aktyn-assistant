@@ -24,6 +24,8 @@
     "dev:terminal": "yarn --cwd apps/terminal dev",
     "dev:desktop": "yarn --cwd apps/desktop dev",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
+    "publish:desktop": "yarn --cwd apps/desktop publish",
+    "make:desktop": "yarn --cwd apps/desktop make",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
