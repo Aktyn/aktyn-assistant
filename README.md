@@ -40,9 +40,11 @@ If you already have an OpenAI account, you can generate an API key [here](https:
 - **`yarn dev:packages`** to watch changes only in _packages/_ and then **`yarn dev:desktop`**
 
 ##### Building desktop app for various platforms
+
 - **`yarn build:all`** and **`yarn start:desktop`** will build project binaries and prepare them for distribution (check _apps/desktop/out_ directory afterwards)
 
 ##### Publishing desktop app
+
 - **`yarn build:all`** and **`yarn publish:desktop`** to build and publish the application to github releases
 
 ---

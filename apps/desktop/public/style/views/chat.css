@@ -1,6 +1,10 @@
 body.quick-chat>.chat-view {
-  /* TODO: use gradient as background */
-  background-color: color-mix(in srgb, #546E7A 95%, transparent);
+  /* background-color: color-mix(in srgb, #546E7A 95%, transparent); */
+  background: linear-gradient(to bottom,
+      color-mix(in srgb, #546E7A 95%, transparent) 0%,
+      color-mix(in srgb, #455A64 95%, transparent) 20%,
+      color-mix(in srgb, #37474F 95%, transparent) 80%,
+      color-mix(in srgb, #263238 95%, transparent) 100%);
   padding-top: 2rem;
   width: 100%;
   max-width: unset;

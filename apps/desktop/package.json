@@ -4,6 +4,10 @@
   "private": true,
   "author": "Radosław Krajewski (Aktyn) <aktyn3@gmail.com>",
   "description": "Aktyn Assistant is an application that allows you to interact with an AI on various types of devices while performing regular tasks.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aktyn/aktyn-assistant.git"
+  },
   "main": "./dist-app/index.js",
   "homepage": "https://github.com/Aktyn/aktyn-assistants",
   "scripts": {

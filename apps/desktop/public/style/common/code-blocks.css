@@ -13,7 +13,8 @@ pre.code-block-inline {
 
 pre.code-block {
   overflow: auto;
-  padding-bottom: 0.5rem;
+  /* padding-bottom: 0.5rem; */
+  padding-inline: 0;
   display: inline-block;
   min-width: 61.8%;
   max-width: 100%;
@@ -28,6 +29,8 @@ pre.code-block>.code-block-header {
   gap: 1rem;
   border-bottom: 1px solid #263238;
   padding-block: 0.5rem;
+  padding-inline: 1rem;
+  background-color: color-mix(in srgb, #263238 50%, transparent);
 }
 
 pre.code-block>.code-block-header>.language {
@@ -55,4 +58,7 @@ pre.code-block>code {
   display: block;
   overflow: hidden;
   max-height: 10000px;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  overflow-x: auto;
 }

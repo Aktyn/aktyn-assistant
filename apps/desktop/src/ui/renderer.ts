@@ -168,6 +168,7 @@ async function postInitMain(header: TitleHeader) {
 
 async function initQuickChat() {
   const view = new ChatView()
+  view.onOpen()
   document.body.appendChild(view.content)
 }
 

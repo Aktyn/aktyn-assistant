@@ -185,6 +185,7 @@ function createCodeBlockElement(language: string | undefined, code: string) {
                       easing: 'easeInOutCirc',
                       duration: 200,
                       maxHeight: hidden ? range : range.toReversed(),
+                      opacity: hidden ? 0 : 1,
                     })
                   }
                 },

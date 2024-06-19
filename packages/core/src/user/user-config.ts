@@ -15,6 +15,7 @@ const USER_CONFIG = {
   selectedAiProvider: null as AiProviderType | null,
   selectedChatModel: null as string | null,
   mockPaidRequests: null as boolean | null,
+  autoLaunch: null as boolean | null,
 }
 
 export type UserConfigType = typeof USER_CONFIG

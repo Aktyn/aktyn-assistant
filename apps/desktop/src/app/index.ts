@@ -55,7 +55,11 @@ app.on('window-all-closed', () => {
 })
 
 async function init() {
-  const success = await setupAutoLaunch(!isDev())
+  const autoLaunchUserConfig = getUserConfigValue('autoLaunch')
+
+  const success = await setupAutoLaunch(
+    !isDev() && (autoLaunchUserConfig ?? true),
+  )
   if (success && !isDev()) {
     console.info('Auto launch enabled')
   }
@@ -65,7 +69,11 @@ async function init() {
   ipcMain.handle('getInitData', () =>
     Promise.resolve({ autoLaunchEnabled: success }),
   )
-  ipcMain.handle('setAutoLaunch', (_, on: boolean) => setupAutoLaunch(on))
+  //TODO: CHAT SCROLL AREA FIX!!!
+  ipcMain.handle('setAutoLaunch', async (_, on: boolean) => {
+    setUserConfigValue('autoLaunch', on)
+    return await setupAutoLaunch(on)
+  })
   ipcMain.handle('getUserConfigValue', (_, key: keyof UserConfigType) =>
     getUserConfigValue(key),
   )
