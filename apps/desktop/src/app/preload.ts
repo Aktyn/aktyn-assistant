@@ -10,13 +10,18 @@ window.addEventListener('DOMContentLoaded', () => {
   )
   document.body.setAttribute(
     'versions',
-    JSON.stringify(Object.fromEntries(versions)),
+    JSON.stringify({
+      ...Object.fromEntries(versions),
+      package: process.env.npm_package_version,
+    }),
   )
 })
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // Renderer to main
   isReady: () => ipcRenderer.invoke('isReady'),
+  getInitData: () => ipcRenderer.invoke('getInitData'),
+  setAutoLaunch: (on: boolean) => ipcRenderer.invoke('setAutoLaunch', on),
   getUserConfigValue: (key: string) =>
     ipcRenderer.invoke('getUserConfigValue', key),
   setUserConfigValue: (key: string, value: unknown) =>

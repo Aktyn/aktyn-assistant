@@ -27,6 +27,7 @@
   "dependencies": {
     "@aktyn-assistant/common": "^0.1.0",
     "@aktyn-assistant/core": "^0.1.0",
+    "auto-launch": "^5.0.6",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^10.0.0",
     "update-electron-app": "^3.0.0"
@@ -43,6 +44,7 @@
     "@electron-forge/publisher-github": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@types/animejs": "^3.1.12",
+    "@types/auto-launch": "^5",
     "@types/electron-squirrel-startup": "^1",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.2",

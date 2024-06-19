@@ -1,4 +1,11 @@
 export abstract class ViewBase {
+  protected opened = false
+
   constructor(public readonly content: HTMLDivElement) {}
-  public abstract onOpen(): void
+  public onOpen() {
+    this.opened = true
+  }
+  public onClose() {
+    this.opened = false
+  }
 }

@@ -1,3 +1,4 @@
+import { Notifications } from '../components/notifications'
 import { Select } from '../components/select'
 import { Switch } from '../components/switch'
 import { createElement } from '../utils/dom'
@@ -5,6 +6,11 @@ import { createElement } from '../utils/dom'
 import { ViewBase } from './viewBase'
 
 export class SettingsView extends ViewBase {
+  private launchOnStartupSwitch = new Switch(
+    false,
+    this.toggleLaunchOnStartup.bind(this),
+  )
+
   constructor() {
     super(
       createElement('div', {
@@ -42,11 +48,11 @@ export class SettingsView extends ViewBase {
       )
     }
 
-    const mockPaidRequestsSwitch = new Switch(mockPaidRequests, (on) =>
-      window.electronAPI.setUserConfigValue('mockPaidRequests', on),
-    )
     const chatModelSelect = new Select(models, chatModel, (model) =>
       window.electronAPI.setUserConfigValue('selectedChatModel', model),
+    )
+    const mockPaidRequestsSwitch = new Switch(mockPaidRequests, (on) =>
+      window.electronAPI.setUserConfigValue('mockPaidRequests', on),
     )
 
     for (const child of [
@@ -70,10 +76,35 @@ export class SettingsView extends ViewBase {
           mockPaidRequestsSwitch.element,
         ],
       }),
+
+      createElement('div', {
+        content: [
+          createElement('div', { content: 'Launch on startup' }),
+          this.launchOnStartupSwitch.element,
+        ],
+      }),
     ]) {
       this.content.appendChild(child)
     }
   }
 
   public onOpen() {}
+
+  private async toggleLaunchOnStartup(on: boolean) {
+    try {
+      const success = await window.electronAPI.setAutoLaunch(on)
+      if (!success) {
+        this.launchOnStartupSwitch.set(!on, true)
+        Notifications.provider.showNotification(Notifications.type.Error, {
+          message: 'Failed to set auto launch',
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  public onExternalData(data: { autoLaunchEnabled: boolean }) {
+    this.launchOnStartupSwitch.set(data.autoLaunchEnabled, true)
+  }
 }

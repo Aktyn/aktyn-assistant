@@ -14,22 +14,32 @@ export class Switch {
       className: 'switch',
       content: createElement('span', { content: createMdiIcon('check') }),
     })
-    this.element.onclick = this.toggle.bind(this)
+    this.element.onclick = () => this.toggle()
 
     if (defaultOn) {
       this.element.classList.add('active')
     }
   }
 
-  private toggle() {
+  private toggle(noEmit = false) {
     if (this.on) {
       this.on = false
       this.element.classList.remove('active')
-      this.onToggle(false)
+      if (!noEmit) {
+        this.onToggle(false)
+      }
     } else {
       this.on = true
       this.element.classList.add('active')
-      this.onToggle(true)
+      if (!noEmit) {
+        this.onToggle(true)
+      }
+    }
+  }
+
+  public set(on: boolean, noEmit = false) {
+    if (on !== this.on) {
+      this.toggle(noEmit)
     }
   }
 }

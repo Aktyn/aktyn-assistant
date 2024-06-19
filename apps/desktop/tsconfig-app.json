@@ -26,20 +26,6 @@
         "./src/app/*"
       ]
     },
-    "removeComments": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true
   },
   "ts-node": {
     "transpileOnly": true,

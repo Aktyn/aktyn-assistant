@@ -107,6 +107,7 @@ export class ChatView extends ViewBase {
     setTimeout(() => {
       this.input.focus()
     }, 500)
+    super.onOpen()
   }
 
   private formatCodeBlocksDebounced(element: HTMLElement) {
@@ -122,7 +123,7 @@ export class ChatView extends ViewBase {
   }
 
   private scrollToBottom() {
-    if (this.scrollToBottomTimeout) {
+    if (this.scrollToBottomTimeout || !this.opened) {
       return
     }
 

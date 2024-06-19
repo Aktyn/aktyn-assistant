@@ -166,9 +166,23 @@ export class Menu {
       behavior,
     })
     viewItem.view.onOpen()
+
+    for (const otherView of this.viewItems) {
+      if (otherView.viewType === viewType) {
+        continue
+      }
+      otherView.view.onClose()
+    }
   }
 
-  async init() {
+  async init(
+    initData: Awaited<ReturnType<typeof window.electronAPI.getInitData>>,
+  ) {
+    ;(
+      this.viewItems.find((item) => item.viewType === ViewType.Settings)
+        ?.view as SettingsView
+    ).onExternalData(initData)
+
     return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject('Timeout')

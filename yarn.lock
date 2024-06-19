@@ -1706,6 +1706,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/auto-launch@npm:^5":
+  version: 5.0.5
+  resolution: "@types/auto-launch@npm:5.0.5"
+  checksum: 10c0/c0aa0f1bd048a5f51cc8619b9599095a4908f6349f0e0192300de46f76280f2f35e011d7d2e69296732f5beca6ba484e0aa992b3374ff55741292c34f3c094ae
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.1.14":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
@@ -2296,12 +2303,14 @@ __metadata:
     "@electron-forge/publisher-github": "npm:^7.4.0"
     "@electron/fuses": "npm:^1.8.0"
     "@types/animejs": "npm:^3.1.12"
+    "@types/auto-launch": "npm:^5"
     "@types/electron-squirrel-startup": "npm:^1"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.14.2"
     "@types/prismjs": "npm:^1.26.4"
     "@typescript-eslint/eslint-plugin": "npm:^7.12.0"
     "@typescript-eslint/parser": "npm:^7.12.0"
+    auto-launch: "npm:^5.0.6"
     cross-env: "npm:^7.0.3"
     dotenv: "npm:^16.4.5"
     electron: "npm:^31.0.0"
@@ -2453,6 +2462,13 @@ __metadata:
   version: 1.0.0
   resolution: "appdata-path@npm:1.0.0"
   checksum: 10c0/05cfbfd772619affbb07867c12cc7c4bfee6179c50b7bffc6ea5b94e9d2dd8dea1834623949bac1dabfea8721764d50e5806a91c33d2d4ddd9dfac13bcac830a
+  languageName: node
+  linkType: hard
+
+"applescript@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "applescript@npm:1.0.0"
+  checksum: 10c0/b535e7df97a3e1272d1b8e8c832494ba3933fbad879847cb83c8990c08aed5bcb097d2af200ba2e0754c3467c2367441706b7864173e1aa9ee4132f5189287f0
   languageName: node
   linkType: hard
 
@@ -2627,6 +2643,19 @@ __metadata:
   version: 1.0.0
   resolution: "author-regex@npm:1.0.0"
   checksum: 10c0/3f3a5ad6660be010bd5b979fac180f435bd9615e81db2b1cdac081eb3f639461f6c3927ced956e377a5c91cc789e3de3a3e900e296c1423971043c8fd8be0b73
+  languageName: node
+  linkType: hard
+
+"auto-launch@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "auto-launch@npm:5.0.6"
+  dependencies:
+    applescript: "npm:^1.0.0"
+    mkdirp: "npm:^0.5.1"
+    path-is-absolute: "npm:^1.0.0"
+    untildify: "npm:^3.0.2"
+    winreg: "npm:1.2.4"
+  checksum: 10c0/6eee118ba9f920a2cc8ed8a5ab0da6fb07a4bae9307af6b8133e79b4ecb007b10aa520b52051c44c28a973c3917b90eeb677882b05d05f1edfb25ffc86b9feac
   languageName: node
   linkType: hard
 
@@ -9142,6 +9171,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"untildify@npm:^3.0.2":
+  version: 3.0.3
+  resolution: "untildify@npm:3.0.3"
+  checksum: 10c0/4c73e47320a97226e4f16f1764cd7d9ee62ec41458bd23244d3bd8f11800270d7603a9099586158dd6b911fa65f51713ced5f8a724bb73c7fa33fb3426bcb32d
+  languageName: node
+  linkType: hard
+
 "update-browserslist-db@npm:^1.0.13":
   version: 1.0.16
   resolution: "update-browserslist-db@npm:1.0.16"
@@ -9368,6 +9404,13 @@ __metadata:
   dependencies:
     string-width: "npm:^1.0.2 || 2 || 3 || 4"
   checksum: 10c0/1d9c2a3e36dfb09832f38e2e699c367ef190f96b82c71f809bc0822c306f5379df87bab47bed27ea99106d86447e50eb972d3c516c2f95782807a9d082fbea95
+  languageName: node
+  linkType: hard
+
+"winreg@npm:1.2.4":
+  version: 1.2.4
+  resolution: "winreg@npm:1.2.4"
+  checksum: 10c0/25a687332e51a1928a61e0689f51a9cae9c2ff0788e984334ef6cc286b571125de186195040f746a1b74e8668590acd1a2b17521ece94b57d3c15f8afc8b67b2
   languageName: node
   linkType: hard
 

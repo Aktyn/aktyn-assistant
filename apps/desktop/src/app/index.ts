@@ -15,6 +15,7 @@ import {
   type IpcMainEvent,
 } from 'electron'
 
+import { setupAutoLaunch } from './autoLaunch'
 import { performChatQuery } from './chat'
 import { forceSingleInstance } from './lock'
 import { createChatWindow, createMainWindow, setupTray } from './window'
@@ -54,8 +55,18 @@ app.on('window-all-closed', () => {
 })
 
 async function init() {
+  //TODO: do not setup auto launcher in dev mode //isDev()
+  const success = await setupAutoLaunch(true)
+  if (success) {
+    console.info('Auto launch enabled')
+  }
+
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
+  ipcMain.handle('getInitData', () =>
+    Promise.resolve({ autoLaunchEnabled: success }),
+  )
+  ipcMain.handle('setAutoLaunch', (_, on: boolean) => setupAutoLaunch(on))
   ipcMain.handle('getUserConfigValue', (_, key: keyof UserConfigType) =>
     getUserConfigValue(key),
   )

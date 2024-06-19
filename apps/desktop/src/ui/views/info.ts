@@ -44,9 +44,24 @@ export class InfoView extends ViewBase {
           }),
           createElement('hr'),
           createElement('div', {
+            content: 'VERSIONS',
+            style: {
+              textAlign: 'center',
+              fontWeight: 'bold',
+              paddingBlock: '0.25rem',
+            },
+          }),
+          createElement('div', {
+            className: 'versions values-list',
+            content: [
+              createElement('span', { content: 'Aktyn Assistant:' }),
+              createElement('b', { content: versions.package }),
+            ],
+          }),
+          createElement('div', {
             className: 'versions values-list',
             content: Object.entries(versions).flatMap(([name, version]) => [
-              createElement('span', { content: `${name} version:` }),
+              createElement('span', { content: `${name}:` }),
               createElement('b', { content: version }),
             ]),
           }),
@@ -54,11 +69,12 @@ export class InfoView extends ViewBase {
       }),
     )
   }
-
-  public onOpen() {}
 }
 
-function getVersions(): Record<'node' | 'chrome' | 'electron', string> {
+function getVersions(): Record<
+  'node' | 'chrome' | 'electron' | 'package',
+  string
+> {
   try {
     return JSON.parse(document.body.getAttribute('versions') ?? '{}')
   } catch {
