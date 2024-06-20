@@ -66,10 +66,21 @@ async function init() {
 
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
-  ipcMain.handle('getInitData', () =>
-    Promise.resolve({ autoLaunchEnabled: success }),
-  )
-  //TODO: CHAT SCROLL AREA FIX!!!
+  ipcMain.handle('getInitData', () => {
+    let version: string | undefined
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const packageJson = require('../package.json')
+      version = packageJson.version
+    } catch (error) {
+      console.error(error)
+    }
+
+    return Promise.resolve({
+      autoLaunchEnabled: success,
+      version,
+    })
+  })
   ipcMain.handle('setAutoLaunch', async (_, on: boolean) => {
     setUserConfigValue('autoLaunch', on)
     return await setupAutoLaunch(on)
@@ -141,23 +152,20 @@ async function init() {
 }
 
 async function postInit(mainWindow: BrowserWindow) {
-  let quickChatWindow: BrowserWindow | null = null
   let shown = false
+  const quickChatWindow = await createChatWindow()
+
+  quickChatWindow.on('close', (event) => {
+    event.preventDefault()
+    quickChatWindow?.hide()
+  })
 
   const toggleQuickChat = async () => {
     if (shown) {
-      quickChatWindow?.hide()
+      quickChatWindow.hide()
       shown = false
     } else {
-      if (!quickChatWindow) {
-        quickChatWindow = await createChatWindow()
-        quickChatWindow.on('close', (event) => {
-          event.preventDefault()
-          quickChatWindow?.hide()
-        })
-      } else {
-        quickChatWindow.show()
-      }
+      quickChatWindow.show()
       shown = true
     }
   }

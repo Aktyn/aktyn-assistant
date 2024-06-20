@@ -25,13 +25,27 @@
       "~/*": [
         "./src/app/*"
       ]
-    }
+    },
+    "removeComments": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
   },
   "ts-node": {
     "transpileOnly": true,
     "files": true,
     "compilerOptions": {
       "rootDir": "./src/app"
-    }
+    },
   }
 }

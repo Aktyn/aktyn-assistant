@@ -10,10 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
   )
   document.body.setAttribute(
     'versions',
-    JSON.stringify({
-      ...Object.fromEntries(versions),
-      package: process.env.npm_package_version,
-    }),
+    JSON.stringify(Object.fromEntries(versions)),
   )
 })
 

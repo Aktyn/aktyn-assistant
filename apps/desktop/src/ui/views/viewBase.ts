@@ -8,4 +8,9 @@ export abstract class ViewBase {
   public onClose() {
     this.opened = false
   }
+
+  public abstract onExternalData(data: {
+    autoLaunchEnabled: boolean
+    version?: string
+  }): void
 }

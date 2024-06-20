@@ -12,7 +12,10 @@ declare global {
     electronAPI: {
       // Renderer to main
       isReady: () => Promise<boolean>
-      getInitData: () => Promise<{ autoLaunchEnabled: boolean }>
+      getInitData: () => Promise<{
+        autoLaunchEnabled: boolean
+        version?: string
+      }>
       setAutoLaunch: (on: boolean) => Promise<boolean>
       getUserConfigValue: <Key extends keyof UserConfigType>(
         key: Key,

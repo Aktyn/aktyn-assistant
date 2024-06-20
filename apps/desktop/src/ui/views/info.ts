@@ -3,8 +3,12 @@ import { createElement, createMdiIcon } from '../utils/dom'
 import { ViewBase } from './viewBase'
 
 export class InfoView extends ViewBase {
+  private versionValueElement: HTMLElement
+
   constructor() {
     const versions = getVersions()
+    const versionValueElement = createElement('b', { content: '-' })
+
     super(
       createElement('div', {
         className: 'info-view content-container',
@@ -55,7 +59,7 @@ export class InfoView extends ViewBase {
             className: 'versions values-list',
             content: [
               createElement('span', { content: 'Aktyn Assistant:' }),
-              createElement('b', { content: versions.package }),
+              versionValueElement,
             ],
           }),
           createElement('div', {
@@ -68,13 +72,16 @@ export class InfoView extends ViewBase {
         ],
       }),
     )
+
+    this.versionValueElement = versionValueElement
+  }
+
+  public onExternalData(data: { version?: string }) {
+    this.versionValueElement.innerText = data.version ?? '-'
   }
 }
 
-function getVersions(): Record<
-  'node' | 'chrome' | 'electron' | 'package',
-  string
-> {
+function getVersions(): Record<'node' | 'chrome' | 'electron', string> {
   try {
     return JSON.parse(document.body.getAttribute('versions') ?? '{}')
   } catch {

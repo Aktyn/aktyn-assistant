@@ -1,15 +1,16 @@
 import path from 'path'
 
 import { isDev, once } from '@aktyn-assistant/common'
+import { getUserConfigValue } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
   BrowserWindow,
   Menu,
-  type Rectangle,
   Tray,
   app,
   nativeImage,
   shell,
+  type Rectangle,
 } from 'electron'
 
 const publicPath = path.join(__dirname, '..', 'public')
@@ -36,6 +37,7 @@ export async function createMainWindow() {
     title: 'Aktyn Assistant',
     icon: iconPath,
     backgroundColor: '#263238',
+    show: !getUserConfigValue('launchHidden'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -69,6 +71,7 @@ export async function createChatWindow() {
     transparent: true,
     frame: false,
     icon: quickChatIconPath,
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },

@@ -178,10 +178,9 @@ export class Menu {
   async init(
     initData: Awaited<ReturnType<typeof window.electronAPI.getInitData>>,
   ) {
-    ;(
-      this.viewItems.find((item) => item.viewType === ViewType.Settings)
-        ?.view as SettingsView
-    ).onExternalData(initData)
+    for (const item of this.viewItems) {
+      item.view.onExternalData(initData)
+    }
 
     return new Promise<void>((resolve, reject) => {
       const timeout = setTimeout(() => {

@@ -189,4 +189,8 @@ export class ChatView extends ViewBase {
     this.activeMessageId = Math.random().toString(36).substring(2)
     window.electronAPI.performChatQuery(message, model, this.activeMessageId)
   }
+
+  public onExternalData(): void {
+    //noop
+  }
 }

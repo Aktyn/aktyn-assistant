@@ -54,6 +54,10 @@ export class SettingsView extends ViewBase {
     const mockPaidRequestsSwitch = new Switch(mockPaidRequests, (on) =>
       window.electronAPI.setUserConfigValue('mockPaidRequests', on),
     )
+    const launchHiddenSwitch = new Switch(
+      !!(await window.electronAPI.getUserConfigValue('launchHidden')),
+      (on) => window.electronAPI.setUserConfigValue('launchHidden', on),
+    )
 
     for (const child of [
       createElement('div', {
@@ -83,12 +87,17 @@ export class SettingsView extends ViewBase {
           this.launchOnStartupSwitch.element,
         ],
       }),
+
+      createElement('div', {
+        content: [
+          createElement('div', { content: 'Launch hidden' }),
+          launchHiddenSwitch.element,
+        ],
+      }),
     ]) {
       this.content.appendChild(child)
     }
   }
-
-  public onOpen() {}
 
   private async toggleLaunchOnStartup(on: boolean) {
     try {
