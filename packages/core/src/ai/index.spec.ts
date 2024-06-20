@@ -30,7 +30,11 @@ jest.mock('openai', () => ({
 }))
 
 import { AI, AiProviderType } from '.'
-import { LOREM_IPSUM_WORDS, RESPONSE_WITH_CODE_WORDS } from './mock'
+import {
+  LOREM_IPSUM_WORDS,
+  RESPONSE_WITH_CODE_WORDS,
+  RESPONSE_WITH_MARKDOWN_WORDS,
+} from './mock'
 
 import '../test-utils/extend'
 
@@ -54,6 +58,7 @@ describe('AI class', () => {
         expect(response.content).toBeIn([
           ...LOREM_IPSUM_WORDS,
           ...RESPONSE_WITH_CODE_WORDS,
+          ...RESPONSE_WITH_MARKDOWN_WORDS,
         ])
         expect(response.timestamp).toBeGreaterThanOrEqual(now)
 

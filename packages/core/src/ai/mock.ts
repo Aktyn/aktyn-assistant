@@ -46,6 +46,35 @@ Part of real response:
 
 You can run this command in the directory of interest to list every file grouped by the day on which it was created.`
 
+const RESPONSE_WITH_MARKDOWN = `start
+
+1. **Substitute \\( f(x) = 0 \\)**:
+   \\[ (x+1)^4 - (x-9)^2 + \\frac{x}{2} = 0 \\]
+
+2. **Simplify each term**:
+   - \\( (x+1)^4 \\) is an expression that can be expanded but simplifying directly might not be easy.
+   - \\( (x-9)^2 \\) can be expanded as \\( x^2 - 18x + 81 \\).
+   - \\(\frac{x}{2}\\) is already simplified.
+
+\`inline code test\`
+
+# Test 1
+## Test 2
+### Test 3
+#### Test 4
+##### Test 5
+###### Test 6
+
+---
+
+\`\`\`bash
+#!/bin/bash
+# comment
+stat --format="%y %n" * | sort -k1 | awk '{print $1, $2}' | awk '{print $1}' FS="-" | uniq -c
+\`\`\`
+
+end`
+
 export const LOREM_IPSUM_WORDS = LOREM_IPSUM.trim()
   .replace(/\.\s/g, '.\n')
   .split(' ')
@@ -55,13 +84,24 @@ export const RESPONSE_WITH_CODE_WORDS = RESPONSE_WITH_CODE.trim()
   .split(' ')
   .map((word) => word + ' ')
 
+export const RESPONSE_WITH_MARKDOWN_WORDS = RESPONSE_WITH_MARKDOWN.trim()
+  .split(' ')
+  .map((word) => word + ' ')
+
 export function mockChatStream<ResponseType extends object | string>(
   parser: (content: string, isLast: boolean) => ResponseType,
   length?: number,
   delayBetweenMessages = () => randomInt(10, 50),
 ) {
-  // const source = randomInt(0, 1) ? RESPONSE_WITH_CODE_WORDS : LOREM_IPSUM_WORDS //TODO: restore
-  const source = randomInt(0, 10) ? RESPONSE_WITH_CODE_WORDS : LOREM_IPSUM_WORDS
+  const choice = randomInt(0, 2)
+  const source =
+    randomInt(0, 10) > 1
+      ? RESPONSE_WITH_MARKDOWN
+      : [
+          RESPONSE_WITH_CODE_WORDS,
+          RESPONSE_WITH_MARKDOWN_WORDS,
+          LOREM_IPSUM_WORDS,
+        ][choice]
 
   length = Math.min(length ?? source.length, source.length)
 

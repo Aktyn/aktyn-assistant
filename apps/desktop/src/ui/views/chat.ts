@@ -1,4 +1,4 @@
-import { formatCodeBlocks } from '../utils/codeBlocks'
+import { formatMarkdown } from '../markdown/format'
 import { clsx, createElement, createMdiIcon } from '../utils/dom'
 
 import { ViewBase } from './viewBase'
@@ -19,6 +19,21 @@ export class ChatView extends ViewBase {
       content: 'AI responses will appear here',
     })
 
+    const spinner = createElement('div', {
+      className: 'chat-spinner',
+      content: createMdiIcon('loading', { spin: true }),
+    })
+
+    const optionsMenuButton = createElement('button', {
+      className: 'options-menu-button icon-button clean',
+      content: createMdiIcon('dots-vertical'),
+      postProcess: (button) => {
+        button.onclick = () => {
+          //TODO: implement
+        }
+      },
+    })
+
     const input = createElement('input', {
       className: 'chat-input',
       postProcess: (input) => {
@@ -26,18 +41,15 @@ export class ChatView extends ViewBase {
       },
     })
 
-    const spinner = createElement('div', {
-      className: 'chat-spinner',
-      content: createMdiIcon('loading', { spin: true }),
-    })
-
     super(
       createElement('div', {
         className: 'chat-view content-container',
         content: [
           messagesContainer,
-          input,
-          spinner,
+          createElement('div', {
+            className: 'chat-view-input-container',
+            content: [input, spinner, optionsMenuButton],
+          }),
           createElement('div', {
             className: 'handle',
             content: [
@@ -106,7 +118,7 @@ export class ChatView extends ViewBase {
   public onOpen() {
     setTimeout(() => {
       this.input.focus()
-    }, 500)
+    }, 1_000)
     super.onOpen()
   }
 
@@ -116,22 +128,23 @@ export class ChatView extends ViewBase {
     }
 
     this.formatCodeBlocksTimeout = setTimeout(() => {
-      formatCodeBlocks(element)
-
+      formatMarkdown(element)
       this.formatCodeBlocksTimeout = null
-    }, 500)
+    }, 16)
   }
 
   private scrollToBottom() {
-    if (this.scrollToBottomTimeout || !this.opened) {
+    if (this.scrollToBottomTimeout) {
       return
     }
 
     this.scrollToBottomTimeout = setTimeout(() => {
-      this.messagesContainer.scrollTo({
-        top: this.messagesContainer.scrollHeight,
-        behavior: 'smooth',
-      })
+      if (this.opened) {
+        this.messagesContainer.scrollTo({
+          top: this.messagesContainer.scrollHeight,
+          behavior: 'smooth',
+        })
+      }
       this.scrollToBottomTimeout = null
     }, 100)
   }
@@ -190,7 +203,5 @@ export class ChatView extends ViewBase {
     window.electronAPI.performChatQuery(message, model, this.activeMessageId)
   }
 
-  public onExternalData(): void {
-    //noop
-  }
+  public onExternalData() {}
 }
