@@ -1,9 +1,17 @@
 hr {
   border-color: #fff2;
   border-bottom: none;
-  border-left: none;
   border-right: none;
+}
+
+hr:not(.vertical) {
   width: 100%;
+  border-left: none;
+}
+
+hr.vertical {
+  height: 100%;
+  border-top: none;
 }
 
 a {

@@ -149,22 +149,19 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   font-size: 1.5rem;
   right: 1rem;
   height: 2rem;
-  transition: transform 0.2s ease-in-out;
-}
-
-.chat-view-input-container>.options-menu-button.active {
-  transform: rotate(90deg);
 }
 
 .chat-view-input-container>.options {
-  right: 4rem;
+  right: 0.5rem;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease-in-out;
   max-width: 61.8%;
   background-color: color-mix(in srgb, #263238 50%, transparent);
-  padding-inline: 1rem;
   border-radius: 2rem;
+  border: 1px solid #263238;
+  padding-left: 1rem;
+  padding-right: 0.5rem;
   box-shadow: 0 0 0.5rem #0002 inset;
   overflow-y: hidden;
   overflow-x: auto;
@@ -172,6 +169,7 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   margin-block: 0.25rem;
 }
 

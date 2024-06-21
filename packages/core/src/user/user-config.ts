@@ -17,6 +17,7 @@ const USER_CONFIG = {
   mockPaidRequests: null as boolean | null,
   autoLaunch: null as boolean | null,
   launchHidden: null as boolean | null,
+  showRawResponse: null as boolean | null,
 }
 
 export type UserConfigType = typeof USER_CONFIG

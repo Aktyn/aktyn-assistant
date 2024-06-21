@@ -22,11 +22,32 @@ export class ChatView extends ViewBase {
   private scrollToBottomTimeout: NodeJS.Timeout | null = null
   private formatCodeBlocksTimeout: number | null = null
   private showRawResponse = false
+  private stickToBottom = true
 
   constructor() {
     const messagesContainer = createElement('div', {
       className: 'chat-output empty',
       content: 'AI responses will appear here',
+      postProcess: (element) => {
+        element.onwheel = () => {
+          if (element.classList.contains('empty')) {
+            return
+          }
+
+          const isScrollable =
+            element.scrollHeight - element.scrollTop > element.clientHeight
+          if (!isScrollable) {
+            return
+          }
+
+          const isScrolledToBottom =
+            Math.abs(
+              element.scrollTop + element.clientHeight - element.scrollHeight,
+            ) <= 2
+
+          this.stickToBottom = isScrolledToBottom
+        }
+      },
     })
 
     const spinner = createElement('div', {
@@ -86,7 +107,7 @@ export class ChatView extends ViewBase {
     this.spinner = spinner
     this.toggleLoading(false)
 
-    this.initChatMenu()
+    this.initChatMenu().catch(console.error)
 
     window.electronAPI.onChatResponse((messageId, chunk) => {
       if (!this.activeMessageId || !this.activeAiMessageElement) {
@@ -103,7 +124,9 @@ export class ChatView extends ViewBase {
         const buffer = this.activeAiMessageBuffers.get(messageId) ?? ''
         this.activeAiMessageBuffers.set(messageId, buffer + chunk.content)
 
-        this.scrollToBottom()
+        if (this.stickToBottom) {
+          this.scrollToBottom()
+        }
         // if (chunk.content.includes('\n')) { //? Possible optimization
         this.formatResponse(this.activeAiMessageElement, messageId)
         // }
@@ -122,21 +145,56 @@ export class ChatView extends ViewBase {
     })
   }
 
-  private initChatMenu() {
+  private async initChatMenu() {
+    this.showRawResponse =
+      (await window.electronAPI.getUserConfigValue('showRawResponse')) ?? false
+
+    const toggle = (on: boolean) => {
+      if (on) {
+        options.classList.add('active')
+      } else {
+        options.classList.remove('active')
+      }
+
+      anime({
+        targets: optionsMenuButton,
+        easing: 'spring(1, 80, 10, 0)',
+        translateX: on ? '4rem' : '0rem',
+        opacity: on ? 0 : 1,
+      })
+      anime({
+        targets: options,
+        easing: 'spring(1, 80, 10, 0)',
+        translateX: on ? '0rem' : '4rem',
+        opacity: on ? 1 : 0,
+      })
+      anime({
+        targets: options.querySelectorAll(':scope > *'),
+        easing: 'spring(1, 80, 10, 0)',
+        scale: on ? 1 : 0,
+        opacity: on ? 1 : 0,
+      })
+    }
+
     const optionsMenuButton = createElement('button', {
       className: 'options-menu-button icon-button clean',
       content: createMdiIcon('dots-vertical'),
       postProcess: (button) => {
-        button.onclick = () => {
-          options.classList.toggle('active')
-          button.classList.toggle('active')
-        }
+        button.onclick = () => toggle(true)
+      },
+    })
+
+    const optionsCloseButton = createElement('button', {
+      className: 'options-close-button icon-button clean',
+      content: createMdiIcon('close'),
+      postProcess: (button) => {
+        button.onclick = () => toggle(false)
       },
     })
 
     const rawResponseSwitch = new Switch(this.showRawResponse, (on) => {
       this.showRawResponse = on
-      //TODO: implement and save to user settings
+      window.electronAPI.setUserConfigValue('showRawResponse', on)
 
       const messageContainers =
         this.messagesContainer.querySelectorAll<HTMLDivElement>(
@@ -175,6 +233,8 @@ export class ChatView extends ViewBase {
             rawResponseSwitch.element,
           ],
         }),
+        createElement('hr', { className: 'vertical' }),
+        optionsCloseButton, // Add the close button right into the options element
       ],
     })
 
@@ -292,6 +352,7 @@ export class ChatView extends ViewBase {
     })
 
     this.scrollToBottom()
+    this.stickToBottom = true
 
     this.toggleLoading(true)
     this.activeMessageId = id

@@ -109,6 +109,7 @@ async function init() {
 
   let aiProvider = getUserConfigValue('selectedAiProvider')
   if (!aiProvider || !Object.values(AiProviderType).includes(aiProvider)) {
+    win.show()
     win.webContents.send('promptForAiProvider', Object.values(AiProviderType))
     aiProvider = await new Promise<AiProviderType>((resolve) => {
       ipcMain.once('promptAiProviderCallback', (_, provider: AiProviderType) =>
@@ -123,6 +124,7 @@ async function init() {
     providerType: aiProvider,
     requestApiKey: async (providerType, reason) => {
       if (reason === 'validation-failed') {
+        win.show()
         win.webContents.send(
           'showError',
           "Provided API key didn't work",
@@ -130,6 +132,7 @@ async function init() {
         )
       }
 
+      win.show()
       win.webContents.send('promptForApiKey', providerType)
       return await new Promise<string>((resolve) => {
         ipcMain.once('promptApiKeyCallback', (_, key: string) => resolve(key))
