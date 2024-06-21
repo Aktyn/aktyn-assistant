@@ -3,7 +3,7 @@
   height: 1rem;
   border-radius: 1rem;
   background-color: #fff2;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;

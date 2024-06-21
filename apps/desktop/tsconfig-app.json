@@ -39,13 +39,13 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
   },
   "ts-node": {
     "transpileOnly": true,
     "files": true,
     "compilerOptions": {
       "rootDir": "./src/app"
-    },
+    }
   }
 }

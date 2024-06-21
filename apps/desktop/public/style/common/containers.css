@@ -1,3 +1,9 @@
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .content-container {
   border: 1px solid #fff2;
   border-radius: 1rem;
