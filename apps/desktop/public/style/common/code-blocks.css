@@ -1,4 +1,4 @@
-pre.code-block, pre.code-block-inline {
+.chat-message pre, .chat-message *:not(pre)>code, .chat-message>code {
   margin: 0;
   background-color: color-mix(in srgb, #263238 50%, transparent);
   border-radius: 0.25rem;
@@ -7,20 +7,20 @@ pre.code-block, pre.code-block-inline {
   white-space: pre-wrap;
 }
 
-pre.code-block-inline {
+.chat-message *:not(pre)>code, .chat-message>code {
   display: inline;
 }
 
-pre.code-block {
+.chat-message pre {
   overflow: auto;
   /* padding-bottom: 0.5rem; */
-  padding-inline: 0;
+  padding: 0;
   display: inline-block;
   min-width: 61.8%;
   max-width: 100%;
 }
 
-pre.code-block>.code-block-header {
+.chat-message pre>.code-block-header {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap-reverse;
@@ -33,7 +33,7 @@ pre.code-block>.code-block-header {
   background-color: color-mix(in srgb, #263238 50%, transparent);
 }
 
-pre.code-block>.code-block-header>.language {
+.chat-message pre>.code-block-header>.language {
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
   font-size: 0.85rem;
@@ -41,7 +41,7 @@ pre.code-block>.code-block-header>.language {
   text-transform: capitalize;
 }
 
-pre.code-block>.code-block-header>.code-options {
+.chat-message pre>.code-block-header>.code-options {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -49,12 +49,12 @@ pre.code-block>.code-block-header>.code-options {
   gap: 0.5rem;
 }
 
-pre.code-block>.code-block-header>.code-options button {
+.chat-message pre>.code-block-header>.code-options button {
   padding-block: 0.25rem;
   font-size: 0.85rem;
 }
 
-pre.code-block>code {
+.chat-message pre>code {
   display: block;
   overflow: hidden;
   max-height: 10000px;

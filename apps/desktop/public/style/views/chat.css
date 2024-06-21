@@ -80,7 +80,7 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: flex-start;
   row-gap: 0.5rem;
 }
@@ -107,7 +107,6 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
 .chat-message.ai {
   color: var(--text-color-primary);
   font-weight: 500;
-  white-space: pre-wrap;
 }
 
 .chat-view-input-container {

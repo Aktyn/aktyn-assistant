@@ -93,15 +93,12 @@ export function mockChatStream<ResponseType extends object | string>(
   length?: number,
   delayBetweenMessages = () => randomInt(10, 50),
 ) {
-  const choice = randomInt(0, 2)
   const source =
-    randomInt(0, 10) > 1
-      ? RESPONSE_WITH_MARKDOWN
-      : [
-          RESPONSE_WITH_CODE_WORDS,
-          RESPONSE_WITH_MARKDOWN_WORDS,
-          LOREM_IPSUM_WORDS,
-        ][choice]
+    randomInt(0, 10) > 9
+      ? LOREM_IPSUM_WORDS
+      : [RESPONSE_WITH_CODE_WORDS, RESPONSE_WITH_MARKDOWN_WORDS][
+          randomInt(0, 1)
+        ]
 
   length = Math.min(length ?? source.length, source.length)
 
