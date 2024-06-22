@@ -17,11 +17,11 @@ yarn workspaces foreach -A version $type
 
 # Get version from package.json
 VERSION=$(jq -r '.version' package.json)
-git tag v$VERSION
 
 git add .
 git commit -m "Release $VERSION"
-git push
+git tag v$VERSION
 git push --tags
+git push
 
 yarn publish:desktop
