@@ -1,6 +1,6 @@
 {
   "name": "aktyn-assistant-desktop",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "author": "Radosław Krajewski (Aktyn) <aktyn3@gmail.com>",
   "description": "Aktyn Assistant is an application that allows you to interact with an AI on various types of devices while performing regular tasks.",
@@ -29,8 +29,8 @@
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
-    "@aktyn-assistant/common": "^0.5.0",
-    "@aktyn-assistant/core": "^0.5.0",
+    "@aktyn-assistant/common": "^0.5.1",
+    "@aktyn-assistant/core": "^0.5.1",
     "auto-launch": "^5.0.6",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^10.0.0",
