@@ -1,6 +1,6 @@
 import { Menu, ViewType } from './circularMenu'
-import { Dialog } from './components/dialog'
-import { Notifications } from './components/notifications'
+import { Dialog } from './components/common/dialog'
+import { Notifications } from './components/common/notifications'
 import { TitleHeader } from './titleHeader'
 import { createElement } from './utils/dom'
 import { ChatView } from './views/chat'

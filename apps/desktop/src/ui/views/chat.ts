@@ -1,5 +1,6 @@
-import { Notifications } from '../components/notifications'
-import { Switch } from '../components/switch'
+import { AdvancedInput } from '../components/advancedInput'
+import { Notifications } from '../components/common/notifications'
+import { Switch } from '../components/common/switch'
 import { clsx, createElement, createMdiIcon } from '../utils/dom'
 
 import { ViewBase } from './viewBase'
@@ -12,7 +13,7 @@ export class ChatView extends ViewBase {
     openLinksInNewWindow: true,
   })
   private readonly messagesContainer: HTMLDivElement
-  private readonly input: HTMLInputElement
+  private readonly input: AdvancedInput
   private readonly inputContainer: HTMLDivElement
   private readonly spinner: HTMLDivElement
 
@@ -55,16 +56,9 @@ export class ChatView extends ViewBase {
       content: createMdiIcon('loading', { spin: true }),
     })
 
-    const input = createElement('input', {
-      className: 'chat-input',
-      postProcess: (input) => {
-        input.maxLength = 2048
-      },
-    })
-
     const inputContainer = createElement('div', {
       className: 'chat-view-input-container',
-      content: [input, spinner],
+      content: [spinner],
     })
 
     super(
@@ -88,22 +82,13 @@ export class ChatView extends ViewBase {
 
     this.converter.setFlavor('github')
 
-    input.onkeydown = (event) => {
-      if (event.key === 'Enter') {
-        const content = input.value.trim()
-        if (!content) {
-          return
-        }
-
-        event.preventDefault()
-        this.sendChatMessage(input.value).catch(console.error)
-        input.value = ''
-      }
-    }
-
     this.messagesContainer = messagesContainer
+    this.input = new AdvancedInput((content) => {
+      this.sendChatMessage(content).catch(console.error)
+      this.input.clear()
+    })
+    inputContainer.prepend(this.input.element)
     this.inputContainer = inputContainer
-    this.input = input
     this.spinner = spinner
     this.toggleLoading(false)
 
@@ -165,7 +150,7 @@ export class ChatView extends ViewBase {
       anime({
         targets: options,
         easing: 'spring(1, 80, 10, 0)',
-        translateX: on ? '0rem' : '4rem',
+        translateX: on ? '0rem' : '-2rem',
         opacity: on ? 1 : 0,
       })
       anime({
@@ -173,6 +158,7 @@ export class ChatView extends ViewBase {
         easing: 'spring(1, 80, 10, 0)',
         scale: on ? 1 : 0,
         opacity: on ? 1 : 0,
+        delay: anime.stagger(200, { from: 'first' }),
       })
     }
 
@@ -236,6 +222,7 @@ export class ChatView extends ViewBase {
         createElement('hr', { className: 'vertical' }),
         optionsCloseButton, // Add the close button right into the options element
       ],
+      style: { transform: 'translateX(-2rem)' },
     })
 
     this.inputContainer.appendChild(optionsMenuButton)
@@ -301,8 +288,12 @@ export class ChatView extends ViewBase {
   }
 
   private toggleLoading(loading: boolean) {
-    this.input.placeholder = loading ? '' : 'Type your message...'
-    this.input.disabled = loading
+    //TODO: figure out how to make placeholder work in contenteditable div
+    // this.input.setAttribute(
+    //   'placeholder',
+    //   loading ? '' : 'Type your message...',
+    // )
+    this.input.setDisabled(loading)
     this.spinner.style.opacity = loading ? '1' : '0'
 
     if (!loading) {
@@ -310,7 +301,7 @@ export class ChatView extends ViewBase {
     }
   }
 
-  private async sendChatMessage(message: string) {
+  private async sendChatMessage(message: UiChatMessage[]) {
     let first = false
     if (this.messagesContainer.classList.contains('empty')) {
       first = true
@@ -319,7 +310,20 @@ export class ChatView extends ViewBase {
     }
     const messageElement = createElement('div', {
       className: clsx('chat-message', 'user'),
-      content: message,
+      content: message.map((item) => {
+        switch (item.type) {
+          case 'text':
+            return createElement('span', { content: item.content })
+          case 'image':
+            return createElement('img', {
+              style: { width: 'auto', maxWidth: '100%', maxHeight: '8rem' },
+              postProcess: (img) => {
+                img.src = item.imageData
+              },
+            })
+        }
+        return null
+      }),
     })
     if (!first) {
       this.messagesContainer.appendChild(createElement('hr'))

@@ -70,7 +70,7 @@ button.icon-button {
   height: 1.5rem;
 }
 
-input {
+input, textarea, *[contenteditable="true"] {
   font-family: "Montserrat", sans-serif;
   padding-block: 0.5rem;
   padding-inline: 0.75rem;
@@ -83,21 +83,24 @@ input {
   transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
-input:focus {
+input:focus, textarea:focus, *[contenteditable="true"]:focus {
   border-color: var(--color-active);
   background-color: color-mix(in srgb, var(--color-active) 15%, transparent);
 }
 
-input:disabled {
+input:disabled, textarea:disabled, *[contenteditable="true"][disabled="true"] {
   opacity: 0.5;
   pointer-events: none;
+  caret-color: transparent;
 }
 
-input:not(:disabled):not(:focus):hover {
+input:not(:disabled):not(:focus):hover,
+textarea:not(:disabled):not(:focus):hover,
+*[contenteditable="true"]:not(:disabled):not(:focus):hover {
   border-color: #fff6;
 }
 
-input::placeholder {
+input::placeholder, textarea::placeholder, *[contenteditable="true"]::placeholder {
   color: var(--text-color-secondary);
   opacity: 0.5;
 }

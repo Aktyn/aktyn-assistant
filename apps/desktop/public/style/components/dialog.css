@@ -48,13 +48,3 @@
 .dialog-container>*>.dialog-actions.single {
   grid-template-columns: 1fr;
 }
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}

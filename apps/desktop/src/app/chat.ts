@@ -1,10 +1,11 @@
+import type { ChatMessage } from '@aktyn-assistant/common'
 import type { AI } from '@aktyn-assistant/core'
 import type { WebContents } from 'electron'
 
 export async function performChatQuery(
   ai: AI,
   webContents: WebContents,
-  message: string,
+  message: string | ChatMessage[],
   model: string,
   messageId: string,
 ) {

@@ -1,4 +1,4 @@
-import { createElement, createMdiIcon } from '../utils/dom'
+import { createElement, createMdiIcon } from '../../utils/dom'
 
 export class Switch {
   public readonly element: HTMLDivElement

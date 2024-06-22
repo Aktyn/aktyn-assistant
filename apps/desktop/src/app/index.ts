@@ -1,4 +1,4 @@
-import { isDev } from '@aktyn-assistant/common'
+import { type ChatMessage, isDev } from '@aktyn-assistant/common'
 import {
   AI,
   AiProviderType,
@@ -142,9 +142,18 @@ async function init() {
 
   ipcMain.on(
     'performChatQuery',
-    async (event, message: string, model: string, messageId: string) =>
+    async (
+      event,
+      message: string | ChatMessage[],
+      model: string,
+      messageId: string,
+    ) =>
       performChatQuery(ai, event.sender, message, model, messageId).catch(
-        console.error,
+        (error) => {
+          console.error(error)
+          ai.notifyError(error, 'Performing chat query error')
+          event.sender.send('chatResponse', messageId, { finished: true })
+        },
       ),
   )
 

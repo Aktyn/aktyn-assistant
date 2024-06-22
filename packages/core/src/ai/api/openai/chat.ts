@@ -1,4 +1,4 @@
-import { isDev } from '@aktyn-assistant/common'
+import { isDev, type ChatMessage } from '@aktyn-assistant/common'
 import type { OpenAI } from 'openai'
 import { Stream } from 'openai/streaming'
 
@@ -62,13 +62,38 @@ function areToolCallsCompleted(
 //istanbul ignore next
 export async function performChatQuery(
   client: OpenAI,
-  content: string,
+  content: string | ChatMessage[],
   model: string,
 ) {
   /** NOTE: this should contain conversation history in order for AI to remember previous responses */
-  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-    { role: 'user', content },
-  ]
+  const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
+    typeof content === 'string'
+      ? [{ role: 'user', content }]
+      : [
+          {
+            role: 'user',
+            content:
+              content.map<OpenAI.Chat.Completions.ChatCompletionContentPart>(
+                (item) => {
+                  switch (item.type) {
+                    case 'text':
+                      return {
+                        type: 'text',
+                        text: item.content,
+                      }
+                    case 'image':
+                      return {
+                        type: 'image_url',
+                        image_url: {
+                          url: item.imageData,
+                          detail: 'auto',
+                        },
+                      }
+                  }
+                },
+              ),
+          },
+        ]
 
   const stream = await client.chat.completions.create({
     model,
@@ -151,3 +176,13 @@ export async function performChatQuery(
     }
   }, stream.controller)
 }
+
+// Could be used in the future to be more flexible
+// function encodeImage(filePath: string) {
+//   filePath = filePath.replace(/^file:\/\//i, '')
+//   const extension = filePath.split('.').pop()?.toLowerCase()
+//   if (!extension) {
+//     throw new Error('Invalid image file path')
+//   }
+//   return `data:image/${extension};base64,${fs.readFileSync(filePath).toString('base64')}`
+// }

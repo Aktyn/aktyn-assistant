@@ -99,6 +99,12 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   line-height: 1.5rem;
 }
 
+.chat-message img {
+  display: inline;
+  margin-inline: 0.25rem;
+  vertical-align: middle;
+}
+
 .chat-message.user {
   color: var(--text-color-secondary);
   font-weight: 400;
@@ -110,6 +116,7 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
 }
 
 .chat-view-input-container {
+  display: flex;
   position: relative;
 }
 
@@ -120,16 +127,27 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   border-right: none;
   border-radius: 0;
   box-sizing: border-box;
-  height: 2.5rem;
+  min-height: 2.5rem;
+  height: 100%;
+  max-height: 14rem;
+  line-height: 1.5rem;
+  resize: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.chat-view-input-container>.chat-input img {
+  display: inline;
+  margin-inline: 0.25rem;
+  vertical-align: middle;
 }
 
 .chat-view-input-container>.chat-spinner,
 .chat-view-input-container>.options-menu-button,
 .chat-view-input-container>.options {
   position: absolute;
-  bottom: 0;
-  top: 0;
-  margin-block: auto;
+  top: 0.25rem;
+  height: 2rem;
 }
 
 .chat-view-input-container>.chat-spinner {
@@ -170,7 +188,6 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin-block: 0.25rem;
 }
 
 .chat-view-input-container>.options.active {

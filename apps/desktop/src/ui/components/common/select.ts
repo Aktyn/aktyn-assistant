@@ -1,4 +1,4 @@
-import { createElement } from '../utils/dom'
+import { createElement } from '../../utils/dom'
 
 export class Select {
   public readonly element: HTMLSelectElement

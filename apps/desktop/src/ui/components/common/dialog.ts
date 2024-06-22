@@ -1,4 +1,4 @@
-import { clsx, createElement } from '../utils/dom'
+import { clsx, createElement } from '../../utils/dom'
 
 export class Dialog {
   private readonly container: HTMLDivElement

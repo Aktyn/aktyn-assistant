@@ -1,4 +1,5 @@
 @import './consts.css';
+@import './common/animations.css';
 @import './common/elements.css';
 @import './common/containers.css';
 @import './common/code-blocks.css';

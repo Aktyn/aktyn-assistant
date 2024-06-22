@@ -15,8 +15,6 @@ fi
 
 yarn workspaces foreach -A version $type
 
-yarn workspaces foreach -A version minor
-
 # Get version from package.json
 VERSION=$(jq -r '.version' package.json)
 git tag v$VERSION

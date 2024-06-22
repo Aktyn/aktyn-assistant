@@ -1,4 +1,4 @@
-import type { ChatResponse } from '@aktyn-assistant/common'
+import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
 import type { AiProviderType, UserConfigType } from '@aktyn-assistant/core'
 
 type PromisyfyFunction<T extends (...args: unknown[]) => unknown> = (
@@ -28,7 +28,7 @@ declare global {
       promptAiProviderCallback: (provider: AiProviderType) => void
       promptApiKeyCallback: (key: string) => void
       performChatQuery: (
-        message: string,
+        message: string | ChatMessage[],
         model: string,
         messageId: string,
       ) => void

@@ -1,6 +1,6 @@
-import { Notifications } from '../components/notifications'
-import { Select } from '../components/select'
-import { Switch } from '../components/switch'
+import { Notifications } from '../components/common/notifications'
+import { Select } from '../components/common/select'
+import { Switch } from '../components/common/switch'
 import { createElement } from '../utils/dom'
 
 import { ViewBase } from './viewBase'

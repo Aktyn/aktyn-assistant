@@ -7,6 +7,7 @@ import {
   assert,
   isDev,
   once,
+  type ChatMessage,
   type ChatResponse,
 } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
@@ -151,7 +152,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     }
   })
 
-  async performChatQuery(query: string, model: string) {
+  async performChatQuery(query: string | ChatMessage[], model: string) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
     assert(
       typeof mockPaidRequests === 'boolean',
