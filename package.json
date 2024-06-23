@@ -33,8 +33,8 @@
     "typecheck:all": "turbo run typecheck"
   },
   "devDependencies": {
-    "prettier": "^3.3.0",
-    "turbo": "^2.0.1"
+    "prettier": "^3.3.2",
+    "turbo": "^2.0.4"
   },
   "engines": {
     "npm": ">=7.0.0",
