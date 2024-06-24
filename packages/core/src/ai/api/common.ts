@@ -30,13 +30,6 @@ export function saveProviderApiKey(
   fs.writeFileSync(keyFilePath, apiKey, 'utf8')
 }
 
-export function removeProviderApiKey(providerType: AiProviderType) {
-  const keyFilePath = getKeyFilePath(providerType)
-  if (fs.existsSync(keyFilePath)) {
-    fs.unlinkSync(keyFilePath)
-  }
-}
-
 function loadApiKey(path: string) {
   try {
     return fs.readFileSync(path, 'utf8')

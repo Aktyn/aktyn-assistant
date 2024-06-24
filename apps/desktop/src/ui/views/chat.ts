@@ -1,8 +1,8 @@
 import { AdvancedInput } from '../components/advancedInput'
-import { Notifications } from '../components/common/notifications'
-import { Switch } from '../components/common/switch'
+import { format } from '../utils/contentFormatters'
 import { clsx, createElement, createMdiIcon } from '../utils/dom'
 
+import { ChatMenu } from './chatMenu'
 import { ViewBase } from './viewBase'
 
 export class ChatView extends ViewBase {
@@ -16,6 +16,7 @@ export class ChatView extends ViewBase {
   private readonly input: AdvancedInput
   private readonly inputContainer: HTMLDivElement
   private readonly spinner: HTMLDivElement
+  private chatMenu: ChatMenu | null = null
 
   private activeMessageId: string | null = null
   private activeAiMessageElement: HTMLDivElement | null = null
@@ -27,11 +28,10 @@ export class ChatView extends ViewBase {
 
   constructor() {
     const messagesContainer = createElement('div', {
-      className: 'chat-output empty',
-      content: 'AI responses will appear here',
+      className: 'chat-output',
       postProcess: (element) => {
         element.onwheel = () => {
-          if (element.classList.contains('empty')) {
+          if (!element.childNodes.length) {
             return
           }
 
@@ -134,99 +134,50 @@ export class ChatView extends ViewBase {
     this.showRawResponse =
       (await window.electronAPI.getUserConfigValue('showRawResponse')) ?? false
 
-    const toggle = (on: boolean) => {
-      if (on) {
-        options.classList.add('active')
-      } else {
-        options.classList.remove('active')
-      }
+    this.chatMenu = new ChatMenu(
+      {
+        onRawResponseToggle: (on) => {
+          this.showRawResponse = on
+          window.electronAPI.setUserConfigValue('showRawResponse', on)
 
-      anime({
-        targets: optionsMenuButton,
-        easing: 'spring(1, 80, 10, 0)',
-        translateX: on ? '4rem' : '0rem',
-        opacity: on ? 0 : 1,
-      })
-      anime({
-        targets: options,
-        easing: 'spring(1, 80, 10, 0)',
-        translateX: on ? '0rem' : '-2rem',
-        opacity: on ? 1 : 0,
-      })
-      anime({
-        targets: options.querySelectorAll(':scope > *'),
-        easing: 'spring(1, 80, 10, 0)',
-        scale: on ? 1 : 0,
-        opacity: on ? 1 : 0,
-        delay: anime.stagger(200, { from: 'first' }),
-      })
-    }
+          const messageContainers =
+            this.messagesContainer.querySelectorAll<HTMLDivElement>(
+              '.chat-message.ai',
+            )
+          for (const messageContainer of messageContainers) {
+            const messageId = messageContainer.dataset.messageId
+            if (!messageId) {
+              console.warn('Message id not found in message container')
+              continue
+            }
+            const rawContent = this.activeAiMessageBuffers.get(messageId) ?? ''
 
-    const optionsMenuButton = createElement('button', {
-      className: 'options-menu-button icon-button clean',
-      content: createMdiIcon('dots-vertical'),
-      postProcess: (button) => {
-        button.onclick = () => toggle(true)
+            if (on) {
+              messageContainer.innerText = rawContent
+            } else {
+              messageContainer.innerHTML = this.converter.makeHtml(
+                messageContainer.innerText,
+              )
+
+              format(this.converter, messageContainer, rawContent)
+            }
+          }
+        },
+        onClearChat: () => {
+          this.messagesContainer.innerHTML = ''
+          this.activeMessageId = null
+          this.activeAiMessageElement = null
+          this.activeAiMessageBuffers.clear()
+          this.toggleLoading(false)
+        },
       },
-    })
-
-    const optionsCloseButton = createElement('button', {
-      className: 'options-close-button icon-button clean',
-      content: createMdiIcon('close'),
-      postProcess: (button) => {
-        button.onclick = () => toggle(false)
+      {
+        showRawResponse: this.showRawResponse,
       },
-    })
+    )
 
-    const rawResponseSwitch = new Switch(this.showRawResponse, (on) => {
-      this.showRawResponse = on
-      window.electronAPI.setUserConfigValue('showRawResponse', on)
-
-      const messageContainers =
-        this.messagesContainer.querySelectorAll<HTMLDivElement>(
-          '.chat-message.ai',
-        )
-      for (const messageContainer of messageContainers) {
-        const messageId = messageContainer.dataset.messageId
-        if (!messageId) {
-          console.warn('Message id not found in message container')
-          continue
-        }
-        const rawContent = this.activeAiMessageBuffers.get(messageId) ?? ''
-
-        if (on) {
-          messageContainer.innerText = rawContent
-        } else {
-          messageContainer.innerHTML = this.converter.makeHtml(
-            messageContainer.innerText,
-          )
-
-          format(this.converter, messageContainer, rawContent)
-        }
-      }
-    })
-
-    const options = createElement('div', {
-      className: 'options',
-      content: [
-        createElement('div', {
-          className: 'flex',
-          content: [
-            createElement('span', {
-              className: 'switch-label',
-              content: 'Show raw response:',
-            }),
-            rawResponseSwitch.element,
-          ],
-        }),
-        createElement('hr', { className: 'vertical' }),
-        optionsCloseButton, // Add the close button right into the options element
-      ],
-      style: { transform: 'translateX(-2rem)' },
-    })
-
-    this.inputContainer.appendChild(optionsMenuButton)
-    this.inputContainer.appendChild(options)
+    this.inputContainer.appendChild(this.chatMenu.optionsMenuButton)
+    this.inputContainer.appendChild(this.chatMenu.options)
   }
 
   public onOpen() {
@@ -288,11 +239,6 @@ export class ChatView extends ViewBase {
   }
 
   private toggleLoading(loading: boolean) {
-    //TODO: figure out how to make placeholder work in contenteditable div
-    // this.input.setAttribute(
-    //   'placeholder',
-    //   loading ? '' : 'Type your message...',
-    // )
     this.input.setDisabled(loading)
     this.spinner.style.opacity = loading ? '1' : '0'
 
@@ -302,12 +248,6 @@ export class ChatView extends ViewBase {
   }
 
   private async sendChatMessage(message: UiChatMessage[]) {
-    let first = false
-    if (this.messagesContainer.classList.contains('empty')) {
-      first = true
-      this.messagesContainer.innerText = ''
-      this.messagesContainer.classList.remove('empty')
-    }
     const messageElement = createElement('div', {
       className: clsx('chat-message', 'user'),
       content: message.map((item) => {
@@ -325,7 +265,7 @@ export class ChatView extends ViewBase {
         return null
       }),
     })
-    if (!first) {
+    if (this.messagesContainer.childNodes.length) {
       this.messagesContainer.appendChild(createElement('hr'))
     }
     this.messagesContainer.appendChild(messageElement)
@@ -364,95 +304,4 @@ export class ChatView extends ViewBase {
   }
 
   public onExternalData() {}
-}
-
-function format(
-  converter: showdown.Converter,
-  element: HTMLElement,
-  rawContent: string,
-) {
-  const html = converter.makeHtml(rawContent)
-  element.innerHTML = html
-  window.Prism.highlightAllUnder(element, false)
-  element.querySelectorAll('pre').forEach((pre) => {
-    const header = createCodeBlockHeaderElement(pre)
-    if (header) {
-      pre.prepend(header)
-    }
-  })
-}
-
-function createCodeBlockHeaderElement(pre: HTMLPreElement) {
-  const language = pre.className.replace(/^language-/, '')
-  const codeElement = pre.querySelector('code')
-
-  if (!codeElement) {
-    return null
-  }
-
-  const code = codeElement.textContent ?? ''
-  const chevronIcon = createMdiIcon('chevron-up')
-  const toggleSpan = createElement('span', { content: ' Hide' })
-  let codeHeight = 0
-
-  return createElement('div', {
-    className: 'code-block-header',
-    content: [
-      createElement('div', {
-        className: 'language',
-        content: language ?? 'Plain text',
-      }),
-      createElement('div', {
-        className: 'code-options',
-        content: [
-          createElement('button', {
-            content: [
-              createMdiIcon('content-copy'),
-              createElement('span', { content: ' Copy' }),
-            ],
-            postProcess: (button) => {
-              button.onclick = () => {
-                navigator.clipboard.writeText(code).catch(console.error)
-                Notifications.provider.showNotification(
-                  Notifications.type.INFO,
-                  {
-                    message: 'Copied to clipboard',
-                  },
-                )
-              }
-            },
-          }),
-          createElement('button', {
-            content: [chevronIcon, toggleSpan],
-            postProcess: (button) => {
-              button.onclick = () => {
-                codeElement.classList.toggle('hidden')
-                chevronIcon.classList.toggle('mdi-flip-v')
-
-                const hidden = codeElement.classList.contains('hidden')
-                if (hidden) {
-                  toggleSpan.innerText = ' Show'
-                } else {
-                  toggleSpan.innerText = ' Hide'
-                }
-
-                codeHeight = Math.max(
-                  codeHeight,
-                  codeElement.getBoundingClientRect().height,
-                )
-                const range = [codeHeight, 0]
-                anime({
-                  targets: codeElement,
-                  easing: 'easeInOutCirc',
-                  duration: 200,
-                  maxHeight: hidden ? range : range.toReversed(),
-                  opacity: hidden ? 0 : 1,
-                })
-              }
-            },
-          }),
-        ],
-      }),
-    ],
-  })
 }

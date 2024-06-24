@@ -18,7 +18,6 @@ import { getUserConfigValue } from '../user/user-config'
 import {
   AiProviderType,
   loadProviderApiKey,
-  removeProviderApiKey,
   saveProviderApiKey,
 } from './api/common'
 import * as OpenAiAPI from './api/openai'
@@ -104,7 +103,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
         if (isDev()) {
           console.error(error)
         }
-        removeProviderApiKey(init.providerType)
+        //TODO: await few seconds and send false as second argument when this exception was caused by network error
         return await AI.getProviderClient(init, true)
       }
     } catch (error) {
