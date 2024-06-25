@@ -151,12 +151,15 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     }
   })
 
-  async performChatQuery(query: string | ChatMessage[], model: string) {
+  async performChatQuery(message: ChatMessage, model: string) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
     assert(
       typeof mockPaidRequests === 'boolean',
       'Mock paid requests is not set',
     )
+
+    const useHistory = getUserConfigValue('includeHistory')
+    const maxChatHistoryLength = getUserConfigValue('maxChatHistoryLength') ?? 8
 
     switch (this.providerType) {
       case AiProviderType.openai: {
@@ -172,7 +175,12 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
                 finish_reason: isLast ? 'stop' : null,
               }),
             )
-          : await OpenAiAPI.performChatQuery(this.providerClient, query, model)
+          : await OpenAiAPI.performChatQuery(
+              this.providerClient,
+              message,
+              model,
+              useHistory ? maxChatHistoryLength : 0,
+            )
 
         const timeout = setTimeout(() => {
           stream.controller.abort('Timeout')
@@ -184,10 +192,11 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
             }
 
             yield {
-              content: choice?.delta.content ?? '',
+              conversationId: message.conversationId,
+              content: choice.delta.content ?? '',
               timestamp: Date.now(),
-              finished: !!choice?.finish_reason,
-              role: choice?.delta.role ?? null,
+              finished: !!choice.finish_reason,
+              role: choice.delta.role ?? null,
             } satisfies ChatResponse
           }
           clearTimeout(timeout)

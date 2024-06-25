@@ -142,12 +142,7 @@ async function init() {
 
   ipcMain.on(
     'performChatQuery',
-    async (
-      event,
-      message: string | ChatMessage[],
-      model: string,
-      messageId: string,
-    ) =>
+    async (event, message: ChatMessage, model: string, messageId: string) =>
       performChatQuery(ai, event.sender, message, model, messageId).catch(
         (error) => {
           console.error(error)

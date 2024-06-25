@@ -17,12 +17,14 @@
 	"dependencies": {
 		"@aktyn-assistant/common": "^0.5.1",
 		"@aktyn-assistant/core": "^0.5.1",
-		"terminal-kit": "^3.1.1"
+		"terminal-kit": "^3.1.1",
+		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
 		"@types/node": "^20.14.8",
 		"@types/terminal-kit": "^2.5.6",
+		"@types/uuid": "^10.0.0",
 		"@typescript-eslint/eslint-plugin": "^7.13.1",
 		"@typescript-eslint/parser": "^7.13.1",
 		"cross-env": "^7.0.3",

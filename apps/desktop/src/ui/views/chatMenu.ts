@@ -5,14 +5,20 @@ export class ChatMenu {
   public readonly optionsMenuButton: HTMLButtonElement
   public readonly options: HTMLDivElement
 
+  private synced = false
+
   constructor(
     listeners: {
       onRawResponseToggle: (on: boolean) => void
       onClearChat: () => void
     },
-    initialState: {
-      showRawResponse: boolean
-    },
+    private readonly rawResponseSwitch = new Switch(false, (on) => {
+      window.electronAPI.setUserConfigValue('showRawResponse', on)
+      listeners.onRawResponseToggle(on)
+    }),
+    private readonly includeHistorySwitch = new Switch(false, (on) => {
+      window.electronAPI.setUserConfigValue('includeHistory', on)
+    }),
   ) {
     const toggle = (on: boolean) => {
       if (on) {
@@ -38,7 +44,7 @@ export class ChatMenu {
         easing: 'spring(1, 80, 10, 0)',
         scale: on ? 1 : 0,
         opacity: on ? 1 : 0,
-        delay: anime.stagger(200, { from: 'first' }),
+        delay: anime.stagger(200, { from: 'center' }),
       })
     }
 
@@ -58,11 +64,6 @@ export class ChatMenu {
       },
     })
 
-    const rawResponseSwitch = new Switch(
-      initialState.showRawResponse,
-      listeners.onRawResponseToggle,
-    )
-
     this.options = createElement('div', {
       className: 'options',
       content: [
@@ -73,7 +74,18 @@ export class ChatMenu {
               className: 'switch-label',
               content: 'Show raw response:',
             }),
-            rawResponseSwitch.element,
+            this.rawResponseSwitch.element,
+          ],
+        }),
+        createElement('hr', { className: 'vertical' }),
+        createElement('div', {
+          className: 'flex',
+          content: [
+            createElement('span', {
+              className: 'switch-label',
+              content: 'Include chat history:',
+            }),
+            this.includeHistorySwitch.element,
           ],
         }),
         createElement('hr', { className: 'vertical' }),
@@ -93,5 +105,31 @@ export class ChatMenu {
       ],
       style: { transform: 'translateX(-2rem)' },
     })
+
+    setTimeout(() => {
+      if (!this.synced) {
+        this.sync().catch(console.error)
+      }
+    }, 1_000)
+  }
+
+  get showRawResponse() {
+    return this.rawResponseSwitch.get()
+  }
+  get includeHistory() {
+    return this.includeHistorySwitch.get()
+  }
+
+  public async sync() {
+    this.rawResponseSwitch.set(
+      await window.electronAPI.getUserConfigValue('showRawResponse'),
+      true,
+    )
+    this.includeHistorySwitch.set(
+      await window.electronAPI.getUserConfigValue('includeHistory'),
+      true,
+    )
+
+    this.synced = true
   }
 }

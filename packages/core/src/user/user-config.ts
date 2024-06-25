@@ -15,9 +15,11 @@ const USER_CONFIG = {
   selectedAiProvider: null as AiProviderType | null,
   selectedChatModel: null as string | null,
   mockPaidRequests: null as boolean | null,
-  autoLaunch: null as boolean | null,
-  launchHidden: null as boolean | null,
-  showRawResponse: null as boolean | null,
+  autoLaunch: false,
+  launchHidden: false,
+  showRawResponse: false,
+  includeHistory: false,
+  maxChatHistoryLength: 8,
 }
 
 export type UserConfigType = typeof USER_CONFIG

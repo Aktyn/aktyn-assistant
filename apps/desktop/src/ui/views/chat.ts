@@ -1,4 +1,5 @@
 import { AdvancedInput } from '../components/advancedInput'
+import { randomString } from '../utils/common'
 import { format } from '../utils/contentFormatters'
 import { clsx, createElement, createMdiIcon } from '../utils/dom'
 
@@ -14,21 +15,20 @@ export class ChatView extends ViewBase {
   })
   private readonly messagesContainer: HTMLDivElement
   private readonly input: AdvancedInput
-  private readonly inputContainer: HTMLDivElement
   private readonly spinner: HTMLDivElement
   private chatMenu: ChatMenu | null = null
 
   private activeMessageId: string | null = null
+  private conversationId = randomString()
   private activeAiMessageElement: HTMLDivElement | null = null
   private activeAiMessageBuffers = new Map<string, string>()
   private scrollToBottomTimeout: NodeJS.Timeout | null = null
   private formatCodeBlocksTimeout: number | null = null
-  private showRawResponse = false
   private stickToBottom = true
 
   constructor() {
     const messagesContainer = createElement('div', {
-      className: 'chat-output',
+      className: 'chat-output empty',
       postProcess: (element) => {
         element.onwheel = () => {
           if (!element.childNodes.length) {
@@ -83,12 +83,14 @@ export class ChatView extends ViewBase {
     this.converter.setFlavor('github')
 
     this.messagesContainer = messagesContainer
-    this.input = new AdvancedInput((content) => {
-      this.sendChatMessage(content).catch(console.error)
+    this.input = new AdvancedInput((contents) => {
+      this.sendChatMessage({
+        conversationId: this.conversationId,
+        contents,
+      }).catch(console.error)
       this.input.clear()
     })
     inputContainer.prepend(this.input.element)
-    this.inputContainer = inputContainer
     this.spinner = spinner
     this.toggleLoading(false)
 
@@ -102,6 +104,13 @@ export class ChatView extends ViewBase {
 
       if (messageId !== this.activeMessageId) {
         console.warn('Received chat response for unknown message', messageId)
+        return
+      }
+      if (chunk.conversationId !== this.conversationId) {
+        console.warn(
+          'Received chat response for unknown conversation',
+          chunk.conversationId,
+        )
         return
       }
 
@@ -131,53 +140,51 @@ export class ChatView extends ViewBase {
   }
 
   private async initChatMenu() {
-    this.showRawResponse =
-      (await window.electronAPI.getUserConfigValue('showRawResponse')) ?? false
-
-    this.chatMenu = new ChatMenu(
-      {
-        onRawResponseToggle: (on) => {
-          this.showRawResponse = on
-          window.electronAPI.setUserConfigValue('showRawResponse', on)
-
-          const messageContainers =
-            this.messagesContainer.querySelectorAll<HTMLDivElement>(
-              '.chat-message.ai',
-            )
-          for (const messageContainer of messageContainers) {
-            const messageId = messageContainer.dataset.messageId
-            if (!messageId) {
-              console.warn('Message id not found in message container')
-              continue
-            }
-            const rawContent = this.activeAiMessageBuffers.get(messageId) ?? ''
-
-            if (on) {
-              messageContainer.innerText = rawContent
-            } else {
-              messageContainer.innerHTML = this.converter.makeHtml(
-                messageContainer.innerText,
-              )
-
-              format(this.converter, messageContainer, rawContent)
-            }
+    this.chatMenu = new ChatMenu({
+      onRawResponseToggle: (on) => {
+        const messageContainers =
+          this.messagesContainer.querySelectorAll<HTMLDivElement>(
+            '.chat-message.ai',
+          )
+        for (const messageContainer of messageContainers) {
+          const messageId = messageContainer.dataset.messageId
+          if (!messageId) {
+            console.warn('Message id not found in message container')
+            continue
           }
-        },
-        onClearChat: () => {
-          this.messagesContainer.innerHTML = ''
-          this.activeMessageId = null
-          this.activeAiMessageElement = null
-          this.activeAiMessageBuffers.clear()
-          this.toggleLoading(false)
-        },
-      },
-      {
-        showRawResponse: this.showRawResponse,
-      },
-    )
+          const rawContent = this.activeAiMessageBuffers.get(messageId) ?? ''
 
-    this.inputContainer.appendChild(this.chatMenu.optionsMenuButton)
-    this.inputContainer.appendChild(this.chatMenu.options)
+          if (on) {
+            messageContainer.innerText = rawContent
+          } else {
+            messageContainer.innerHTML = this.converter.makeHtml(
+              messageContainer.innerText,
+            )
+
+            format(this.converter, messageContainer, rawContent)
+          }
+        }
+      },
+      onClearChat: () => {
+        for (const child of [
+          ...this.messagesContainer.querySelectorAll('.chat-message'),
+          ...this.messagesContainer.querySelectorAll(':scope > hr'),
+        ]) {
+          child.remove()
+        }
+        this.messagesContainer.classList.add('empty')
+        this.activeMessageId = null
+        this.conversationId = randomString()
+        this.activeAiMessageElement = null
+        this.activeAiMessageBuffers.clear()
+        this.toggleLoading(false)
+      },
+    })
+
+    await this.chatMenu.sync()
+
+    this.messagesContainer.appendChild(this.chatMenu.optionsMenuButton)
+    this.messagesContainer.appendChild(this.chatMenu.options)
   }
 
   public onOpen() {
@@ -186,6 +193,7 @@ export class ChatView extends ViewBase {
         this.input.focus()
       }
     }, 1_000)
+    this.chatMenu?.sync().catch(console.error)
     super.onOpen()
   }
 
@@ -194,7 +202,7 @@ export class ChatView extends ViewBase {
     messageId: string,
     debounce = true,
   ) {
-    if (this.showRawResponse) {
+    if (this.chatMenu?.showRawResponse) {
       element.innerText = this.activeAiMessageBuffers.get(messageId) ?? ''
       return
     }
@@ -242,33 +250,36 @@ export class ChatView extends ViewBase {
     this.input.setDisabled(loading)
     this.spinner.style.opacity = loading ? '1' : '0'
 
-    if (!loading) {
+    if (!loading && this.opened) {
       this.input.focus()
     }
   }
 
-  private async sendChatMessage(message: UiChatMessage[]) {
+  private async sendChatMessage(message: UiChatMessage) {
     const messageElement = createElement('div', {
       className: clsx('chat-message', 'user'),
-      content: message.map((item) => {
-        switch (item.type) {
-          case 'text':
-            return createElement('span', { content: item.content })
-          case 'image':
-            return createElement('img', {
-              style: { width: 'auto', maxWidth: '100%', maxHeight: '8rem' },
-              postProcess: (img) => {
-                img.src = item.imageData
-              },
-            })
-        }
-        return null
-      }),
+      content: message.contents.map(
+        (item: UiChatMessage['contents'][number]) => {
+          switch (item.type) {
+            case 'text':
+              return createElement('span', { content: item.content })
+            case 'image':
+              return createElement('img', {
+                style: { width: 'auto', maxWidth: '100%', maxHeight: '8rem' },
+                postProcess: (img) => {
+                  img.src = item.imageData
+                },
+              })
+          }
+          return null
+        },
+      ),
     })
-    if (this.messagesContainer.childNodes.length) {
+    if (this.messagesContainer.childNodes.length > 2) {
       this.messagesContainer.appendChild(createElement('hr'))
     }
     this.messagesContainer.appendChild(messageElement)
+    this.messagesContainer.classList.remove('empty')
 
     const model =
       await window.electronAPI.getUserConfigValue('selectedChatModel')
@@ -276,7 +287,7 @@ export class ChatView extends ViewBase {
       throw new Error('Chat model is not set')
     }
 
-    const id = Math.random().toString(36).substring(2)
+    const id = randomString()
     this.activeAiMessageElement = createElement('div', {
       className: clsx('chat-message', 'ai'),
       content: '',

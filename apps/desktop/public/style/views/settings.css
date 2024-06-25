@@ -6,3 +6,8 @@
   align-items: stretch;
   justify-content: flex-start;
 }
+
+.settings-view input[type="number"] {
+  box-sizing: border-box;
+  width: 100%;
+}

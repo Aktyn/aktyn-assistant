@@ -6,7 +6,7 @@ export class Select {
   constructor(
     options: string[],
     defaultSelectedOption: string | null,
-    onSelect: (option: string) => void,
+    private readonly onSelect: (option: string) => void,
   ) {
     this.element = createElement('select', {
       content: options.map((option) =>
@@ -26,5 +26,14 @@ export class Select {
     }
     this.element.onchange = (event: Event) =>
       event.target && onSelect((event.target as HTMLSelectElement).value)
+  }
+
+  public set(value: string, noEmit = false) {
+    if (value !== this.element.value) {
+      this.element.value = value
+    }
+    if (!noEmit) {
+      this.onSelect(value)
+    }
   }
 }

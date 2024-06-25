@@ -29,3 +29,8 @@ export function bufferToBase64(buffer: ArrayBuffer, type: string) {
     reader.readAsDataURL(new Blob([buffer], { type }))
   })
 }
+
+//TODO: replace with uuid
+export function randomString() {
+  return Math.random().toString(36).substring(2)
+}

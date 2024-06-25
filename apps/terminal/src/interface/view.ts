@@ -1,4 +1,4 @@
-import { assert } from '@aktyn-assistant/common'
+import { assert, type ChatMessage } from '@aktyn-assistant/common'
 import { getUserConfigValue, type AI } from '@aktyn-assistant/core'
 
 export enum INTERFACE_VIEW {
@@ -17,7 +17,7 @@ export abstract class View {
   abstract abortAsynchronousActions(): void
   abstract open(): void
 
-  protected async sendChatMessage(message: string) {
+  protected async sendChatMessage(message: ChatMessage) {
     try {
       const chatModel = getUserConfigValue('selectedChatModel')
       assert(typeof chatModel === 'string', 'Chat model is not set')

@@ -28,7 +28,7 @@ declare global {
       promptAiProviderCallback: (provider: AiProviderType) => void
       promptApiKeyCallback: (key: string) => void
       performChatQuery: (
-        message: string | ChatMessage[],
+        message: ChatMessage,
         model: string,
         messageId: string,
       ) => void
@@ -44,7 +44,7 @@ declare global {
         callback: (
           messageId: string,
           chunk: Partial<ChatResponse> &
-            Required<Pick<ChatResponse, 'finished'>>,
+            Required<Pick<ChatResponse, 'finished' | 'conversationId'>>,
         ) => void,
       ) => void
     }

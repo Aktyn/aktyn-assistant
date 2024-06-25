@@ -49,7 +49,10 @@ describe('AI class', () => {
 
       const now = Date.now()
       const chatStream = await ai.performChatQuery(
-        'Example query',
+        {
+          conversationId: '1',
+          contents: [{ type: 'text', content: 'Example query' }],
+        },
         'gpt-3.5-turbo',
       )
       let i = 30

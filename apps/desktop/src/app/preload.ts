@@ -28,11 +28,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.send('promptAiProviderCallback', provider),
   promptApiKeyCallback: (key: string) =>
     ipcRenderer.send('promptApiKeyCallback', key),
-  performChatQuery: (
-    message: string | ChatMessage[],
-    model: string,
-    messageId: string,
-  ) => ipcRenderer.send('performChatQuery', message, model, messageId),
+  performChatQuery: (message: ChatMessage, model: string, messageId: string) =>
+    ipcRenderer.send('performChatQuery', message, model, messageId),
 
   // Main to renderer
   onReady: (callback: () => void) =>
@@ -52,12 +49,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onChatResponse: (
     callback: (
       messageId: string,
-      chunk: ChatResponse | { finished: true },
+      chunk: ChatResponse | { finished: true; conversationId: string },
     ) => void,
   ) =>
     ipcRenderer.on(
       'chatResponse',
-      (_, messageId: string, chunk: ChatResponse | { finished: true }) =>
-        callback(messageId, chunk),
+      (
+        _,
+        messageId: string,
+        chunk: ChatResponse | { finished: true; conversationId: string },
+      ) => callback(messageId, chunk),
     ),
 })

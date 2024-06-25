@@ -10,6 +10,31 @@ export class SettingsView extends ViewBase {
     false,
     this.toggleLaunchOnStartup.bind(this),
   )
+  private chatModelSelect: Select | null = null
+  private mockPaidRequestsSwitch = new Switch(false, (on) =>
+    window.electronAPI.setUserConfigValue('mockPaidRequests', on),
+  )
+  private launchHiddenSwitch = new Switch(false, (on) =>
+    window.electronAPI.setUserConfigValue('launchHidden', on),
+  )
+  private useHistorySwitch = new Switch(false, (on) =>
+    window.electronAPI.setUserConfigValue('includeHistory', on),
+  )
+  private maxHistoryLengthInput = createElement('input', {
+    postProcess: (input) => {
+      input.type = 'number'
+      input.min = '1'
+      input.max = '32'
+      input.onchange = () => {
+        const value = parseInt(input.value)
+        if (isNaN(value)) {
+          return
+        } else {
+          window.electronAPI.setUserConfigValue('maxChatHistoryLength', value)
+        }
+      }
+    },
+  })
 
   constructor() {
     super(
@@ -22,8 +47,6 @@ export class SettingsView extends ViewBase {
   }
 
   private async init() {
-    let mockPaidRequests =
-      await window.electronAPI.getUserConfigValue('mockPaidRequests')
     const models = await window.electronAPI.getAvailableModels()
     let chatModel =
       await window.electronAPI.getUserConfigValue('selectedChatModel')
@@ -33,11 +56,13 @@ export class SettingsView extends ViewBase {
     }
 
     //TODO: prompt user to select model and mock paid requests if not set
+    const mockPaidRequests =
+      await window.electronAPI.getUserConfigValue('mockPaidRequests')
     if (mockPaidRequests === null) {
       console.warn('Mock paid requests is not set')
       window.electronAPI.setUserConfigValue(
         'mockPaidRequests',
-        (mockPaidRequests = false),
+        mockPaidRequests,
       )
     }
     if (chatModel === null) {
@@ -48,16 +73,11 @@ export class SettingsView extends ViewBase {
       )
     }
 
-    const chatModelSelect = new Select(models, chatModel, (model) =>
+    this.chatModelSelect = new Select(models, chatModel, (model) =>
       window.electronAPI.setUserConfigValue('selectedChatModel', model),
     )
-    const mockPaidRequestsSwitch = new Switch(mockPaidRequests, (on) =>
-      window.electronAPI.setUserConfigValue('mockPaidRequests', on),
-    )
-    const launchHiddenSwitch = new Switch(
-      !!(await window.electronAPI.getUserConfigValue('launchHidden')),
-      (on) => window.electronAPI.setUserConfigValue('launchHidden', on),
-    )
+
+    await this.syncSettings()
 
     for (const child of [
       createElement('div', {
@@ -70,14 +90,14 @@ export class SettingsView extends ViewBase {
       createElement('div', {
         content: [
           createElement('div', { content: 'Chat model' }),
-          chatModelSelect.element,
+          this.chatModelSelect.element,
         ],
       }),
 
       createElement('div', {
         content: [
           createElement('div', { content: 'Mock paid requests' }),
-          mockPaidRequestsSwitch.element,
+          this.mockPaidRequestsSwitch.element,
         ],
       }),
 
@@ -91,12 +111,58 @@ export class SettingsView extends ViewBase {
       createElement('div', {
         content: [
           createElement('div', { content: 'Launch hidden' }),
-          launchHiddenSwitch.element,
+          this.launchHiddenSwitch.element,
+        ],
+      }),
+
+      createElement('div', {
+        content: [
+          createElement('div', { content: 'Include history' }),
+          this.useHistorySwitch.element,
+        ],
+      }),
+
+      createElement('div', {
+        content: [
+          createElement('div', { content: 'Previous messages sent to AI' }),
+          this.maxHistoryLengthInput,
         ],
       }),
     ]) {
       this.content.appendChild(child)
     }
+  }
+
+  private async syncSettings() {
+    const model =
+      await window.electronAPI.getUserConfigValue('selectedChatModel')
+    if (model) {
+      this.chatModelSelect?.set(model, true)
+    }
+    this.mockPaidRequestsSwitch.set(
+      !!(await window.electronAPI.getUserConfigValue('mockPaidRequests')),
+      true,
+    )
+    this.launchOnStartupSwitch.set(
+      await window.electronAPI.getUserConfigValue('autoLaunch'),
+      true,
+    )
+    this.launchHiddenSwitch.set(
+      await window.electronAPI.getUserConfigValue('launchHidden'),
+      true,
+    )
+    this.useHistorySwitch.set(
+      await window.electronAPI.getUserConfigValue('includeHistory'),
+      true,
+    )
+    this.maxHistoryLengthInput.value = String(
+      await window.electronAPI.getUserConfigValue('maxChatHistoryLength'),
+    )
+  }
+
+  onOpen() {
+    super.onOpen()
+    this.syncSettings().catch(console.error)
   }
 
   private async toggleLaunchOnStartup(on: boolean) {

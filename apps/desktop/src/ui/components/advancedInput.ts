@@ -4,7 +4,7 @@ import { createElement } from '../utils/dom'
 export class AdvancedInput {
   private _element: HTMLDivElement
 
-  constructor(onSend: (content: UiChatMessage[]) => void) {
+  constructor(onSend: (contents: UiChatMessage['contents']) => void) {
     const autoHeight = (element: HTMLElement) => {
       setTimeout(() => {
         element.style.height = '1px'
@@ -31,41 +31,44 @@ export class AdvancedInput {
               return
             }
 
-            const message = nodes.reduce((acc, node) => {
-              switch (node.nodeName) {
-                case 'IMG':
-                  {
-                    const imageData = (node as HTMLImageElement).src
-                    if (imageData.match(/^data:image\/([^;]+);base64,/)) {
-                      acc.push({
-                        type: 'image',
-                        imageData,
-                      })
-                    } else {
-                      console.warn('Invalid image data:', imageData)
-                    }
-                  }
-                  break
-                case '#text':
-                  {
-                    const content = node.textContent?.trim()
-                    if (content) {
-                      const last = acc.at(-1)
-                      if (last && last.type === 'text') {
-                        last.content += '\n' + content
-                      } else {
+            const contents = nodes.reduce(
+              (acc, node) => {
+                switch (node.nodeName) {
+                  case 'IMG':
+                    {
+                      const imageData = (node as HTMLImageElement).src
+                      if (imageData.match(/^data:image\/([^;]+);base64,/)) {
                         acc.push({
-                          type: 'text',
-                          content,
+                          type: 'image',
+                          imageData,
                         })
+                      } else {
+                        console.warn('Invalid image data:', imageData)
                       }
                     }
-                  }
-                  break
-              }
-              return acc
-            }, [] as UiChatMessage[])
-            onSend(message)
+                    break
+                  case '#text':
+                    {
+                      const content = node.textContent?.trim()
+                      if (content) {
+                        const last = acc.at(-1)
+                        if (last && last.type === 'text') {
+                          last.content += '\n' + content
+                        } else {
+                          acc.push({
+                            type: 'text',
+                            content,
+                          })
+                        }
+                      }
+                    }
+                    break
+                }
+                return acc
+              },
+              [] as UiChatMessage['contents'],
+            )
+            onSend(contents)
           }
           autoHeight(editableElement)
         }

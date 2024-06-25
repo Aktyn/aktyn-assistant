@@ -37,6 +37,10 @@ export class Switch {
     }
   }
 
+  public get() {
+    return this.on
+  }
+
   public set(on: boolean, noEmit = false) {
     if (on !== this.on) {
       this.toggle(noEmit)

@@ -5,7 +5,7 @@ import type { WebContents } from 'electron'
 export async function performChatQuery(
   ai: AI,
   webContents: WebContents,
-  message: string | ChatMessage[],
+  message: ChatMessage,
   model: string,
   messageId: string,
 ) {
@@ -23,6 +23,9 @@ export async function performChatQuery(
   }
 
   if (!finished) {
-    webContents.send('chatResponse', messageId, { finished: true })
+    webContents.send('chatResponse', messageId, {
+      finished: true,
+      conversationId: message.conversationId,
+    })
   }
 }

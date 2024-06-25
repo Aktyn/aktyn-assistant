@@ -1,6 +1,7 @@
-import type { ChatResponse, Stream } from '@aktyn-assistant/common'
+import type { ChatMessage, ChatResponse, Stream } from '@aktyn-assistant/common'
 import { terminal } from 'terminal-kit'
 import type { AnimatedText } from 'terminal-kit/Terminal'
+import { v4 as uuidv4 } from 'uuid'
 
 import { printError } from '../error'
 
@@ -15,6 +16,7 @@ export class ChatView extends View {
   private spinner: AnimatedText | null = null
   private chatStream: InstanceType<typeof Stream<ChatResponse>> | null = null
   private abortChatMessageInput: (() => void) | null = null
+  private conversationId = uuidv4()
 
   abortAsynchronousActions() {
     if (this.spinner) {
@@ -32,6 +34,7 @@ export class ChatView extends View {
   }
 
   open() {
+    this.conversationId = uuidv4()
     terminal.eraseDisplay()
     this.requestChatMessage()
   }
@@ -59,7 +62,10 @@ export class ChatView extends View {
         value = value?.trim() ?? ''
         this.abortChatMessageInput = null
         if (value) {
-          this.handleMessageInput(value).catch((error) => {
+          this.handleMessageInput({
+            conversationId: this.conversationId,
+            contents: [{ type: 'text', content: value }],
+          }).catch((error) => {
             console.error(error)
             process.exit(1)
           })
@@ -72,7 +78,7 @@ export class ChatView extends View {
     this.abortChatMessageInput = abort
   }
 
-  private async handleMessageInput(message: string) {
+  private async handleMessageInput(message: ChatMessage) {
     addNewLine()
     showEscapeToReturnToMenuInfo()
 

@@ -85,13 +85,16 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   align-items: stretch;
   justify-content: flex-start;
   row-gap: 0.5rem;
+  position: relative;
 }
 
-.chat-view>.chat-output:empty::before {
+.chat-view>.chat-output.empty::before {
   content: 'AI responses will appear here';
   color: var(--text-color-secondary);
   font-weight: bold;
   align-items: center;
+  height: 2rem;
+  line-height: 2rem;
 }
 
 .chat-message {
@@ -169,16 +172,11 @@ body.quick-chat>.chat-view>.handle>*:not(.mdi) {
   vertical-align: middle;
 }
 
-.chat-view-input-container>.chat-spinner,
-.chat-view-input-container>.options-menu-button,
-.chat-view-input-container>.options {
+.chat-view-input-container>.chat-spinner {
   position: absolute;
   top: 0.25rem;
-  height: 2rem;
-}
-
-.chat-view-input-container>.chat-spinner {
   left: 0;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
