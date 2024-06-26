@@ -18,13 +18,13 @@
 		"@aktyn-assistant/common": "^0.6.0",
 		"appdata-path": "^1.0.0",
 		"node-notifier": "^10.0.1",
-		"openai": "^4.52.0"
+		"openai": "^4.52.1"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
-		"@types/node": "^20.14.8",
+		"@types/node": "^20.14.9",
 		"@types/node-notifier": "^8.0.5",
-		"@typescript-eslint/eslint-plugin": "^7.13.1",
+		"@typescript-eslint/eslint-plugin": "^7.14.1",
 		"@typescript-eslint/parser": "^7.13.1",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
