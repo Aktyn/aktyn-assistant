@@ -19,6 +19,10 @@
 			"name": "Desktop",
 			"path": "./apps/desktop"
 		},
+		{
+			"name": "Weather tool",
+			"path": "./tools/weather"
+		},
 	],
 	"settings": {
 		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",

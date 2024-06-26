@@ -2,12 +2,7 @@ import { isDev, type ChatMessage } from '@aktyn-assistant/common'
 import type { OpenAI } from 'openai'
 import { Stream } from 'openai/streaming'
 
-import {
-  appendToToolCalls,
-  areToolCallsCompleted,
-  OPEN_AI_TOOLS,
-  tryCallToolFunction,
-} from './tool'
+import { OPEN_AI_TOOLS, tryCallToolFunction } from './tool'
 
 type Choice = OpenAI.Chat.Completions.ChatCompletionChunk.Choice
 type OpenAiMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam
@@ -199,6 +194,59 @@ export async function performChatQuery(
     })
     updateConversationHistory(message.conversationId, messages)
   }, stream.controller)
+}
+
+function appendToToolCalls(
+  targetToolCalls: Required<Choice['delta']>['tool_calls'] | null,
+  toolCallsToAppend: Required<Choice['delta']>['tool_calls'],
+) {
+  if (!targetToolCalls) {
+    return toolCallsToAppend
+  }
+
+  if (toolCallsToAppend.length === targetToolCalls.length) {
+    for (let i = 0; i < targetToolCalls.length; i++) {
+      const targetToolCall = targetToolCalls[i]
+      const partialToolCall = toolCallsToAppend[i]
+
+      if (
+        targetToolCall.index !== partialToolCall.index ||
+        !targetToolCall.function ||
+        !partialToolCall.function?.arguments
+      ) {
+        continue
+      }
+
+      targetToolCall.function.arguments ??= ''
+      targetToolCall.function.arguments += partialToolCall.function.arguments
+    }
+  }
+
+  return targetToolCalls
+}
+
+function areToolCallsCompleted(
+  toolCalls:
+    | Required<Choice['delta']>['tool_calls']
+    | OpenAI.Chat.Completions.ChatCompletionMessageToolCall[]
+    | null,
+): toolCalls is OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
+  if (!toolCalls) {
+    return false
+  }
+
+  for (const toolCall of toolCalls) {
+    if (
+      !toolCall.id ||
+      !toolCall.type ||
+      !toolCall.function?.name ||
+      !toolCall.function?.arguments
+    ) {
+      return false
+    }
+  }
+
+  return true
 }
 
 // Could be used in the future to be more flexible

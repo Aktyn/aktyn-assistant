@@ -1,8 +1,6 @@
 import { isDev } from '@aktyn-assistant/common'
 import type { OpenAI } from 'openai'
 
-type Choice = OpenAI.ChatCompletionChunk.Choice
-
 /**
  * @see https://platform.openai.com/docs/guides/function-calling/supported-models
  * */
@@ -38,63 +36,13 @@ export function tryCallToolFunction(
     return functionToCall(JSON.parse(functionData.arguments))
   } catch (error) {
     if (isDev()) {
-      console.error('Error while calling tool function', error)
+      console.error(
+        `Error while calling tool function "${functionData.name}"`,
+        error,
+      )
     }
     return ''
   }
-}
-
-export function appendToToolCalls(
-  targetToolCalls: Required<Choice['delta']>['tool_calls'] | null,
-  toolCallsToAppend: Required<Choice['delta']>['tool_calls'],
-) {
-  if (!targetToolCalls) {
-    return toolCallsToAppend
-  }
-
-  if (toolCallsToAppend.length === targetToolCalls.length) {
-    for (let i = 0; i < targetToolCalls.length; i++) {
-      const targetToolCall = targetToolCalls[i]
-      const partialToolCall = toolCallsToAppend[i]
-
-      if (
-        targetToolCall.index !== partialToolCall.index ||
-        !targetToolCall.function ||
-        !partialToolCall.function?.arguments
-      ) {
-        continue
-      }
-
-      targetToolCall.function.arguments ??= ''
-      targetToolCall.function.arguments += partialToolCall.function.arguments
-    }
-  }
-
-  return targetToolCalls
-}
-
-export function areToolCallsCompleted(
-  toolCalls:
-    | Required<Choice['delta']>['tool_calls']
-    | OpenAI.Chat.Completions.ChatCompletionMessageToolCall[]
-    | null,
-): toolCalls is OpenAI.Chat.Completions.ChatCompletionMessageToolCall[] {
-  if (!toolCalls) {
-    return false
-  }
-
-  for (const toolCall of toolCalls) {
-    if (
-      !toolCall.id ||
-      !toolCall.type ||
-      !toolCall.function?.name ||
-      !toolCall.function?.arguments
-    ) {
-      return false
-    }
-  }
-
-  return true
 }
 
 type ToolFunction<T extends object> = (data: T) => string
