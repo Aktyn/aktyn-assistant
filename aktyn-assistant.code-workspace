@@ -20,6 +20,10 @@
 			"path": "./apps/desktop"
 		},
 		{
+			"name": "Desktop UI",
+			"path": "./apps/desktop-ui"
+		},
+		{
 			"name": "Weather tool",
 			"path": "./tools/weather"
 		},
@@ -32,6 +36,9 @@
 			"aktyn-assistant"
 		],
 		"jest.monitorLongRun": 30000,
-		"jest.runMode": "watch"
+		"jest.runMode": "watch",
+		"cSpell.words": [
+			"nextui"
+		]
 	}
 }

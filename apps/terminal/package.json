@@ -1,5 +1,5 @@
 {
-	"name": "aktyn-assistant-terminal",
+	"name": "@aktyn-assistant/terminal",
 	"version": "0.6.0",
 	"private": true,
 	"main": "./dist/index.js",
