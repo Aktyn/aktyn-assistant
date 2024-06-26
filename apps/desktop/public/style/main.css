@@ -142,6 +142,7 @@ main {
 
   transition: gap 0.4s ease-in-out, border-radius 0.2s ease-in-out, border-color 0.2s ease-in-out;
   transition-delay: 0.4s;
+  /* TODO: horizontal scrolling */
 }
 
 .menu-container.active {

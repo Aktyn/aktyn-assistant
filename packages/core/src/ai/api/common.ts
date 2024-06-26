@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { getConfigDirectory } from '../../user/user-config'
+import { getDataDirectory } from '../../user/user-config'
 
 export enum AiProviderType {
   openai = 'OpenAI',
@@ -12,7 +12,7 @@ const AiProviderApiKeyFileNames: { [key in AiProviderType]: string } = {
 }
 
 const getKeyFilePath = (providerType: AiProviderType) =>
-  path.join(getConfigDirectory(), AiProviderApiKeyFileNames[providerType])
+  path.join(getDataDirectory(), AiProviderApiKeyFileNames[providerType])
 
 export function loadProviderApiKey(providerType: AiProviderType) {
   return loadApiKey(getKeyFilePath(providerType))

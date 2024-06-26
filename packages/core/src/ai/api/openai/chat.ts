@@ -1,8 +1,6 @@
-import { isDev, type ChatMessage } from '@aktyn-assistant/common'
+import { isDev, type ChatMessage, type Tool } from '@aktyn-assistant/common'
 import type { OpenAI } from 'openai'
 import { Stream } from 'openai/streaming'
-
-import { OPEN_AI_TOOLS, tryCallToolFunction } from './tool'
 
 type Choice = OpenAI.Chat.Completions.ChatCompletionChunk.Choice
 type OpenAiMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam
@@ -64,6 +62,7 @@ export async function performChatQuery(
   client: OpenAI,
   message: ChatMessage,
   model: string,
+  tools: Array<Tool>,
   numberOfPreviousMessagesToInclude = 0,
 ) {
   const previousMessages =
@@ -91,7 +90,16 @@ export async function performChatQuery(
     model,
     messages,
     stream: true,
-    tools: OPEN_AI_TOOLS,
+    tools: tools.length
+      ? tools.map(({ schema }) => ({
+          type: 'function',
+          function: {
+            name: schema.functionName,
+            description: schema.description,
+            parameters: schema.parameters,
+          },
+        }))
+      : undefined,
     tool_choice: 'auto',
     // stream_options: {include_usage: true} // Use this to get usage info
   })
@@ -146,7 +154,10 @@ export async function performChatQuery(
     })
 
     for (const toolCall of toolCalls) {
-      const functionResponse = tryCallToolFunction(toolCall.function)
+      const functionResponse = await tryCallToolFunction(
+        tools,
+        toolCall.function,
+      )
       messages.push({
         tool_call_id: toolCall.id,
         role: 'tool',
@@ -194,6 +205,29 @@ export async function performChatQuery(
     })
     updateConversationHistory(message.conversationId, messages)
   }, stream.controller)
+}
+
+function tryCallToolFunction(
+  tools: Array<Tool>,
+  functionData: OpenAI.Chat.Completions.ChatCompletionMessageToolCall['function'],
+) {
+  try {
+    const tool = tools.find(
+      (tool) => tool.schema.functionName === functionData.name,
+    )
+    if (!tool) {
+      throw new Error(`Tool not found: ${functionData.name}`)
+    }
+    return tool.function(JSON.parse(functionData.arguments))
+  } catch (error) {
+    if (isDev()) {
+      console.error(
+        `Error while calling tool function "${functionData.name}"`,
+        error,
+      )
+    }
+    return ''
+  }
 }
 
 function appendToToolCalls(

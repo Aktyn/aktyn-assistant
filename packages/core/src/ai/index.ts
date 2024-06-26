@@ -3,12 +3,13 @@
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
 import {
-  Stream,
   assert,
   isDev,
   once,
+  Stream,
   type ChatMessage,
   type ChatResponse,
+  type Tool,
 } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
 import { OpenAI } from 'openai'
@@ -22,6 +23,7 @@ import {
 } from './api/common'
 import * as OpenAiAPI from './api/openai'
 import { mockChatStream } from './mock'
+import { loadTools } from './tools'
 
 export { AiProviderType } from './api/common'
 
@@ -135,8 +137,21 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
     const client = await AI.getProviderClient<ProviderType>(init)
     AI.instance = new AI<ProviderType>(init.providerType, client)
+    await AI.instance.init()
 
     return AI.instance
+  }
+
+  // --------------------------------------------------------------------------------
+
+  private tools: Array<Tool> = []
+
+  private async init() {
+    this.tools = await loadTools() //TODO: filter by list of enabled tools specified in user config
+    const plural = this.tools.length === 1 ? '' : 's'
+    console.info(
+      `Loaded ${this.tools.length} tool${plural ? 's' : ''}: ${this.tools.map((tool) => tool.schema.functionName).join(', ')}`,
+    )
   }
 
   //istanbul ignore next
@@ -179,6 +194,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
               this.providerClient,
               message,
               model,
+              this.tools,
               useHistory ? maxChatHistoryLength : 0,
             )
 

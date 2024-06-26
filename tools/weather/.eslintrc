@@ -1,8 +1,7 @@
 {
   "ignorePatterns": [
     "*.config.js",
-    "dist-app/",
-    "dist-ui/",
+    "dist/",
     "node_modules/"
   ],
   "plugins": [
@@ -189,12 +188,8 @@
         "**/test-utils/**"
       ],
       "rules": {
-        "@typescript-eslint/no-explicit-any": [
-          0
-        ],
-        "@typescript-eslint/no-non-null-assertion": [
-          0
-        ],
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
         "import/no-extraneous-dependencies": [
           0
         ]

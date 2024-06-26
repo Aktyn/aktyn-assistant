@@ -24,9 +24,9 @@ const USER_CONFIG = {
 
 export type UserConfigType = typeof USER_CONFIG
 
-export const getConfigDirectory = once(() => getAppDataPath('aktyn-assistant'))
+export const getDataDirectory = once(() => getAppDataPath('aktyn-assistant'))
 
-const getConfigPath = once(() => path.join(getConfigDirectory(), 'config.json'))
+const getConfigPath = once(() => path.join(getDataDirectory(), 'config.json'))
 
 const lazyLoadConfig = once(() => {
   try {
