@@ -74,21 +74,6 @@ export class AdvancedInput {
         }
 
         editableElement.onpaste = (event) => {
-          const addFile = async (file: File) => {
-            const buffer = await file.arrayBuffer()
-            if (buffer.byteLength !== file.size) {
-              throw new Error('File size mismatch')
-            }
-
-            const imageTypes = ['image/png', 'image/jpeg', 'image/webp']
-            if (
-              buffer.byteLength === file.size &&
-              imageTypes.includes(file.type)
-            ) {
-              await addImage(editableElement, buffer, file.type)
-            }
-          }
-
           const clipboardData = event.clipboardData
           if (!clipboardData) {
             return
@@ -100,19 +85,35 @@ export class AdvancedInput {
           const files = clipboardData.files
           if (files.length) {
             for (const file of files) {
-              addFile(file).catch(console.error)
+              addFile(file, editableElement).catch(console.error)
             }
           } else {
             const selection = window.getSelection()
 
             if (text.startsWith('file://')) {
               const filePath = text.replace('file://', '')
-              imageUrlToFile(filePath).then(addFile).catch(console.error)
+              imageUrlToFile(filePath)
+                .then((file) => addFile(file, editableElement))
+                .catch(console.error)
             } else {
               console.info('Pasted text:', text)
               selection?.getRangeAt(0).insertNode(document.createTextNode(text))
             }
           }
+        }
+
+        editableElement.ondrop = (event) => {
+          event.preventDefault()
+          const files = event.dataTransfer?.files
+          if (files?.length) {
+            for (const file of files) {
+              addFile(file, editableElement).catch(console.error)
+            }
+          }
+        }
+
+        editableElement.ondragover = (event) => {
+          event.preventDefault()
         }
       },
     })
@@ -138,6 +139,18 @@ export class AdvancedInput {
     if (disabled) {
       this._element.blur()
     }
+  }
+}
+
+async function addFile(file: File, element: HTMLElement) {
+  const buffer = await file.arrayBuffer()
+  if (buffer.byteLength !== file.size) {
+    throw new Error('File size mismatch')
+  }
+
+  const imageTypes = ['image/png', 'image/jpeg', 'image/webp']
+  if (buffer.byteLength === file.size && imageTypes.includes(file.type)) {
+    await addImage(element, buffer, file.type)
   }
 }
 
