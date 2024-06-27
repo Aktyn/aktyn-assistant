@@ -1,13 +1,12 @@
-import { ChatMessage } from '@aktyn-assistant/common'
+import { type ChatMessage } from '@aktyn-assistant/common'
+import anime from 'animejs'
+import { Converter } from 'showdown'
+import { ChatMenu } from './chatMenu'
+import { ViewBase } from './viewBase'
 import { AdvancedInput } from '../components/advancedInput'
 import { randomString } from '../utils/common'
 import { format } from '../utils/contentFormatters'
 import { clsx, createElement, createMdiIcon } from '../utils/dom'
-
-import { ChatMenu } from './chatMenu'
-import { ViewBase } from './viewBase'
-import anime from 'animejs'
-import { Converter } from 'showdown'
 
 export class ChatView extends ViewBase {
   private readonly converter = new Converter({

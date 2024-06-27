@@ -1,17 +1,5 @@
 hr {
-  border-color: #fff2;
-  border-bottom: none;
-  border-right: none;
-}
-
-hr:not(.vertical) {
-  width: 100%;
-  border-left: none;
-}
-
-hr.vertical {
-  height: 100%;
-  border-top: none;
+  @apply border-divider;
 }
 
 /* a {
@@ -106,4 +94,8 @@ button.icon-button {
 .mdi::before {
   transition: transform 0.2s ease-in-out;
   transform-origin: center;
+}
+
+.card {
+  border: 1px solid red;
 }

@@ -4,12 +4,13 @@
   justify-content: center;
 }
 
-.content-container {
+/* TODO: remove this block of code */
+/* .content-container {
   border: 1px solid #fff2;
   border-radius: 1rem;
   background-color: #fff2;
   backdrop-filter: blur(4px);
-}
+} */
 
 .button-select-grid {
   display: grid;

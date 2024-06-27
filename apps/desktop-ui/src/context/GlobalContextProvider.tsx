@@ -1,7 +1,7 @@
 import {
   createContext,
-  FC,
-  PropsWithChildren,
+  type FC,
+  type PropsWithChildren,
   useCallback,
   useEffect,
   useState,
@@ -9,15 +9,20 @@ import {
 import { Dialog } from '../deprecated/components/common/dialog'
 import { Notifications } from '../deprecated/components/common/notifications'
 import { createElement } from '../deprecated/utils/dom'
+import { type ViewType } from '../utils/navigation'
 
 type InitData = Awaited<ReturnType<typeof window.electronAPI.getInitData>>
+const noop = () => {}
 
 export const GlobalContext = createContext({
   initData: null as InitData | null,
+  view: null as ViewType | null,
+  setView: noop as (view: ViewType) => void,
 })
 
 export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [initData, setInitData] = useState<InitData | null>(null)
+  const [view, setView] = useState<ViewType | null>(null)
 
   const init = useCallback(async () => {
     const initData = await window.electronAPI.getInitData()
@@ -153,10 +158,10 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
         }
       })
       .catch(console.error)
-  }, [])
+  }, [init])
 
   return (
-    <GlobalContext.Provider value={{ initData }}>
+    <GlobalContext.Provider value={{ initData, view, setView }}>
       {children}
     </GlobalContext.Provider>
   )

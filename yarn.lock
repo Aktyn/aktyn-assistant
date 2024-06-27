@@ -63,8 +63,12 @@ __metadata:
     "@mdi/js": "npm:^7.4.47"
     "@mdi/react": "npm:^1.6.1"
     "@nextui-org/button": "npm:^2.0.34"
+    "@nextui-org/card": "npm:^2.0.31"
+    "@nextui-org/divider": "npm:^2.0.28"
     "@nextui-org/input": "npm:^2.2.2"
+    "@nextui-org/link": "npm:^2.0.32"
     "@nextui-org/react": "npm:^2.4.2"
+    "@nextui-org/scroll-shadow": "npm:^2.1.17"
     "@nextui-org/system": "npm:^2.2.2"
     "@nextui-org/theme": "npm:^2.2.6"
     "@types/animejs": "npm:^3.1.12"
@@ -3452,7 +3456,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/card@npm:2.0.31":
+"@nextui-org/card@npm:2.0.31, @nextui-org/card@npm:^2.0.31":
   version: 2.0.31
   resolution: "@nextui-org/card@npm:2.0.31"
   dependencies:
@@ -3588,7 +3592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/divider@npm:2.0.28":
+"@nextui-org/divider@npm:2.0.28, @nextui-org/divider@npm:^2.0.28":
   version: 2.0.28
   resolution: "@nextui-org/divider@npm:2.0.28"
   dependencies:
@@ -3700,7 +3704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/link@npm:2.0.32":
+"@nextui-org/link@npm:2.0.32, @nextui-org/link@npm:^2.0.32":
   version: 2.0.32
   resolution: "@nextui-org/link@npm:2.0.32"
   dependencies:
@@ -4013,7 +4017,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/scroll-shadow@npm:2.1.17":
+"@nextui-org/scroll-shadow@npm:2.1.17, @nextui-org/scroll-shadow@npm:^2.1.17":
   version: 2.1.17
   resolution: "@nextui-org/scroll-shadow@npm:2.1.17"
   dependencies:

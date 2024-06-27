@@ -1,9 +1,8 @@
+import { ViewBase } from './viewBase'
 import { Notifications } from '../components/common/notifications'
 import { Select } from '../components/common/select'
 import { Switch } from '../components/common/switch'
 import { createElement } from '../utils/dom'
-
-import { ViewBase } from './viewBase'
 
 export class SettingsView extends ViewBase {
   private launchOnStartupSwitch = new Switch(

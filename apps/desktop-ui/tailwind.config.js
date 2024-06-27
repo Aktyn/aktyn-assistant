@@ -5,11 +5,12 @@ module.exports = {
   content: [
     './src/**/*.{html,js,jsx,ts,tsx}',
     // Must be root node_modules
-    '../../node_modules/@nextui-org/theme/dist/components/(button|input).js',
+    '../../node_modules/@nextui-org/theme/dist/components/(button|input|divider|card|scroll-shadow|link).js',
   ],
   theme: {
     extend: {
       borderWidth: 1,
+      divideColor: '#f55',
       colors: {
         divider: '#fff2',
         foreground: '#ECEFF1',

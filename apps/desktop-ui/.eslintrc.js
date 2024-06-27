@@ -9,7 +9,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:prettier/recommended',
   ],
-  plugins: ['@emotion', 'react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint', 'prettier'],
   parserOptions: {
     project: './tsconfig.json',
     ecmaVersion: 2021,
@@ -68,8 +68,6 @@ module.exports = {
       },
     ],
     '@typescript-eslint/indent': [0],
-    '@emotion/styled-import': 'error',
-    '@emotion/syntax-preference': [2, 'string'],
     'import/default': 0,
     'import/extensions': 0,
     'import/named': 0,

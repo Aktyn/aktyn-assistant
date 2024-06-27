@@ -1,4 +1,4 @@
-import { ChatMessage } from '@aktyn-assistant/common'
+import { type ChatMessage } from '@aktyn-assistant/common'
 import { bufferToBase64, imageUrlToFile } from '../utils/common'
 import { createElement } from '../utils/dom'
 

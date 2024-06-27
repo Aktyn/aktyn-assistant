@@ -1,9 +1,9 @@
 import anime from 'animejs'
-import { Notifications } from '../components/common/notifications'
 
-import { createElement, createMdiIcon } from './dom'
 import { highlightAllUnder } from 'prismjs'
-import { Converter } from 'showdown'
+import { type Converter } from 'showdown'
+import { createElement, createMdiIcon } from './dom'
+import { Notifications } from '../components/common/notifications'
 
 export function format(
   converter: Converter,
