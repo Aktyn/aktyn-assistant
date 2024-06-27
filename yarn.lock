@@ -60,6 +60,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@aktyn-assistant/desktop-ui@workspace:apps/desktop-ui"
   dependencies:
+    "@mdi/js": "npm:^7.4.47"
+    "@mdi/react": "npm:^1.6.1"
     "@nextui-org/button": "npm:^2.0.34"
     "@nextui-org/input": "npm:^2.2.2"
     "@nextui-org/react": "npm:^2.4.2"
@@ -70,6 +72,7 @@ __metadata:
     "@types/prismjs": "npm:^1.26.4"
     "@types/react": "npm:^18.3.3"
     "@types/react-dom": "npm:^18.3.0"
+    "@types/showdown": "npm:^2"
     animejs: "npm:^3.2.2"
     cross-env: "npm:^7.0.3"
     eslint: "npm:^8.57.0"
@@ -88,6 +91,7 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-scripts: "npm:5.0.1"
+    showdown: "npm:^2.1.0"
     tailwindcss: "npm:^3.4.4"
     typescript: "npm:^5.5.2"
   languageName: unknown
@@ -3233,6 +3237,22 @@ __metadata:
     lodash: "npm:^4.17.15"
     tmp-promise: "npm:^3.0.2"
   checksum: 10c0/b3c87f6482b1956411af1118c771afb39cd9a0568fbb5e86015547ff6d68d2e73a7f0d74b75a57f0a156391c347c8d0adc1037e75172b92da72b96e0a05a2f4f
+  languageName: node
+  linkType: hard
+
+"@mdi/js@npm:^7.4.47":
+  version: 7.4.47
+  resolution: "@mdi/js@npm:7.4.47"
+  checksum: 10c0/4364d4dff943c630f9cdddba1a74d3713654e4da1b85bc7a307b2285447a57c41434a39a8520b39957df1028186a2e5944102fd1386d6c0c73e709335f5ccb3e
+  languageName: node
+  linkType: hard
+
+"@mdi/react@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@mdi/react@npm:1.6.1"
+  dependencies:
+    prop-types: "npm:^15.7.2"
+  checksum: 10c0/6e5c5dcec6596eba4ff274181e1311aa790b5480c4594eaf67a5c74184de15796f7755e6a70e7590be5af7f009ffd328b0f82e7f46f0b09773d774de21a22ddc
   languageName: node
   linkType: hard
 
@@ -6830,7 +6850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/showdown@npm:^2.0.6":
+"@types/showdown@npm:^2, @types/showdown@npm:^2.0.6":
   version: 2.0.6
   resolution: "@types/showdown@npm:2.0.6"
   checksum: 10c0/7136e47a9f0b871e74d8f17afcd99bca3d356f9fd81ee4ddb5361beb41be11d6d5705b86cf8f44796b6ca61caa5c4ff408029b772e436f6a1f9021bb73f36f95
@@ -9130,7 +9150,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^9.4.0":
+"commander@npm:^9.0.0, commander@npm:^9.4.0":
   version: 9.5.0
   resolution: "commander@npm:9.5.0"
   checksum: 10c0/5f7784fbda2aaec39e89eb46f06a999e00224b3763dc65976e05929ec486e174fe9aac2655f03ba6a5e83875bd173be5283dc19309b7c65954701c02025b3c1d
@@ -17443,7 +17463,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -18741,6 +18761,17 @@ __metadata:
   version: 0.1.1
   resolution: "shellwords@npm:0.1.1"
   checksum: 10c0/7d66b28927e0b524b71b2e185651fcd88a70473a077dd230fbf86188380e948ffb36cea00832d78fc13c93cd15f6f52286fb05f2746b7580623ca1ec619eb004
+  languageName: node
+  linkType: hard
+
+"showdown@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "showdown@npm:2.1.0"
+  dependencies:
+    commander: "npm:^9.0.0"
+  bin:
+    showdown: bin/showdown.js
+  checksum: 10c0/8508e060874c42338b9ebfe884763e8042d9575185d9dd3a12f7380736732893a4738f37140add97bde0c4c87d6bad66ed0761505f310df6044ee3385e2ae349
   languageName: node
   linkType: hard
 

@@ -1,0 +1,29 @@
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #fff2;
+  border: 1px solid #fff2;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #B0BEC5;
+  border-radius: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #CFD8DC;
+}
+
+::-webkit-scrollbar-thumb:active {
+  /* TODO: use next ui color */
+  background-color: #3EFF9F;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #fff2;
+}

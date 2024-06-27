@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+      "DOM",
+      "DOM.Iterable",
+      "ESNext",
+      "ESNext.String"
     ],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -17,7 +18,20 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "downlevelIteration": true,
     "noEmit": true,
+    "incremental": true,
+    "verbatimModuleSyntax": false,
+    "paths": {
+      "~/*": [
+        "./app/*"
+      ]
+    },
+    "baseUrl": ".",
+    "types": [
+      "node",
+      "jest"
+    ],
     "jsx": "react-jsx"
   },
   "include": [

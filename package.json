@@ -22,7 +22,7 @@
     "start:terminal": "yarn --cwd apps/terminal start",
     "start:desktop": "yarn --cwd apps/desktop start",
     "dev:terminal": "yarn --cwd apps/terminal dev",
-    "dev:desktop": "yarn --cwd apps/desktop dev",
+    "dev:desktop": "yarn --cwd apps/desktop dev & yarn --cwd apps/desktop-ui dev",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
     "publish:desktop": "yarn --cwd apps/desktop publish",
     "make:desktop": "yarn --cwd apps/desktop make",

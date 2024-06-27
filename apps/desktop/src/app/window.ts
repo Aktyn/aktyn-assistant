@@ -28,11 +28,9 @@ const getStore = once(() =>
 )
 
 export async function createMainWindow() {
-  const openDevTools = isDev()
-
   const win = new BrowserWindow({
     width: 1080,
-    height: 640 + (openDevTools ? 450 : 0),
+    height: 640 + (isDev() ? 450 : 0),
     autoHideMenuBar: true,
     title: 'Aktyn Assistant',
     icon: iconPath,
@@ -43,10 +41,12 @@ export async function createMainWindow() {
     },
   })
 
-  if (openDevTools) {
+  if (isDev()) {
     win.webContents.openDevTools()
+    await win.loadURL('http://localhost:3000')
+  } else {
+    await win.loadFile(path.join(publicPath, 'index.html'))
   }
-  await win.loadFile(path.join(publicPath, 'index.html'))
 
   setupWindowToOpenLinksExternally(win)
 
@@ -81,6 +81,12 @@ export async function createChatWindow() {
   setupWindowToOpenLinksExternally(win)
 
   await win.loadFile(path.join(publicPath, 'quick-chat.html'))
+  if (isDev()) {
+    win.webContents.openDevTools()
+    await win.loadURL('http://localhost:3000?mode=quick-chat')
+  } else {
+    // await win.loadFile(path.join(publicPath, 'index.html')) //TODO: use some param
+  }
 
   win.on('close', () => {
     store.set('quickChatWindowBounds', win.getBounds())

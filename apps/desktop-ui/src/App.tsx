@@ -1,14 +1,21 @@
-import { Button } from '@nextui-org/button'
-import { Input } from '@nextui-org/input'
+import { Background } from './components/Background'
+import { Menu } from './components/Menu'
+import { TitleHeader } from './components/TitleHeader'
+import { GlobalContextProvider } from './context/GlobalContextProvider'
 
-function App() {
+const App = () => {
   return (
-    <div>
-      <div className="b-red font-bold underline">Hello world</div>
-      <Button>Press me</Button>
-      <hr />
-      <Input placeholder="Type something" />
-    </div>
+    <GlobalContextProvider>
+      <Background />
+      <div className="grid h-lvh" style={{ gridTemplateColumns: 'auto 1fr' }}>
+        <Menu />
+        <main className="flex flex-col justify-center items-center overflow-x-auto">
+          <TitleHeader />
+          {/* <Content /> */}
+          <div className="text-foreground">TODO: content</div>
+        </main>
+      </div>
+    </GlobalContextProvider>
   )
 }
 

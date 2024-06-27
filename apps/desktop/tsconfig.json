@@ -1,16 +1,51 @@
 {
-  "extends": "./tsconfig-app.json",
   "include": [
-    "./src/app",
-    "./src/ui"
+    "./src/app"
+  ],
+  "exclude": [
+    "./node_modules",
+    "./dist-app",
+    "./dist-ui"
   ],
   "compilerOptions": {
-    "rootDir": "./src",
-    "baseUrl": "./src",
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true,
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "allowJs": false,
+    "outDir": "./dist-app",
+    "rootDir": "./src/app",
+    "baseUrl": "./src/app",
     "paths": {
       "~/*": [
-        "./src/*"
+        "./src/app/*"
       ]
     },
+    "removeComments": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "files": true,
+    "compilerOptions": {
+      "rootDir": "./src/app"
+    }
   }
 }

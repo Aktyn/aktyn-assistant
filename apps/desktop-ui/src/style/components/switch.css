@@ -1,0 +1,42 @@
+.switch {
+  width: 2rem;
+  height: 1rem;
+  border-radius: 1rem;
+  background-color: #fff2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-block: 0.5rem;
+  box-sizing: border-box;
+  border: 1px solid #fff1;
+}
+
+.switch>span {
+  box-sizing: border-box;
+  display: inline-block;
+  width: 1.618rem;
+  height: 1.618rem;
+  background-color: #fff;
+  border: 0.309rem solid #fff;
+  border-radius: 1rem;
+  text-align: center;
+  color: #fff;
+  text-shadow: none;
+
+  transform: translateX(-0.618rem);
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.switch.active>span {
+  transform: translateX(0.618rem);
+  background-color: var(--color-active);
+}
+
+.switch:hover>span {
+  transform: translateX(-0.618rem) scale(1.2);
+}
+
+.switch.active:hover>span {
+  transform: translateX(0.618rem) scale(1.2);
+}
