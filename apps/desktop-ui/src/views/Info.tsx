@@ -39,7 +39,7 @@ export const Info = ({ in: active }: { in?: boolean }) => {
         <CardHeader className="text-xl font-bold justify-center">
           Author
         </CardHeader>
-        <CardBody className="justify-start">
+        <CardBody className="justify-start items-center gap-y-1">
           <div>
             <span>Created by </span>
             <b>Aktyn</b>

@@ -1,16 +1,39 @@
 const { nextui } = require('@nextui-org/react')
 
+const blueGrey = {
+  50: '#ECEFF1',
+  100: '#CFD8DC',
+  200: '#B0BEC5',
+  300: '#90A4AE',
+  400: '#78909C',
+  500: '#607D8B',
+  600: '#546E7A',
+  700: '#455A64',
+  800: '#37474F',
+  900: '#263238',
+}
+
+const components = [
+  'button',
+  'input',
+  'divider',
+  'card',
+  'scroll-shadow',
+  'link',
+  'select',
+  'checkbox',
+]
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './src/**/*.{html,js,jsx,ts,tsx}',
     // Must be root node_modules
-    '../../node_modules/@nextui-org/theme/dist/components/(button|input|divider|card|scroll-shadow|link).js',
+    `../../node_modules/@nextui-org/theme/dist/components/(${components.join('|')}).js`,
   ],
   theme: {
     extend: {
       borderWidth: 1,
-      divideColor: '#f55',
       colors: {
         divider: '#fff2',
         foreground: '#ECEFF1',
@@ -25,18 +48,8 @@ module.exports = {
       themes: {
         dark: {
           colors: {
-            foreground: {
-              50: '#ECEFF1',
-              100: '#CFD8DC',
-              200: '#B0BEC5',
-              300: '#90A4AE',
-              400: '#78909C',
-              500: '#607D8B',
-              600: '#546E7A',
-              700: '#455A64',
-              800: '#37474F',
-              900: '#263238',
-            },
+            default: blueGrey,
+            foreground: blueGrey,
             primary: {
               50: '#E0F2F1',
               100: '#B2DFDB',
@@ -61,6 +74,7 @@ module.exports = {
               800: '#69000D',
               900: '#4D000D',
             },
+            content1: '#37474F',
           },
         },
       },

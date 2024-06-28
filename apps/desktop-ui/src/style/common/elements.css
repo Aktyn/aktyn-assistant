@@ -2,62 +2,6 @@ hr {
   @apply border-divider;
 }
 
-/* a {
-  color: #81D4FA;
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
-}
-
-a:hover {
-  color: #E1F5FE;
-} */
-
-/* button {
-  color: var(--text-color-primary);
-  border: 1px solid #fff0;
-  background-color: #fff0;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-  padding: 0.5rem;
-  outline: none;
-}
-
-button:not(.clean) {
-  border-color: #fff2;
-  background-color: #fff2;
-}
-
-button:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-button:not(:disabled):not(.selected):hover {
-  background-color: #fff4;
-  border-color: #fff4;
-}
-
-button:not(:disabled):not(.selected) {
-  cursor: pointer;
-}
-
-button:not(:disabled).selected {
-  background-color: color-mix(in srgb, var(--color-active) 50%, transparent);
-  border-color: var(--color-active);
-}
-
-button.icon-button {
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  aspect-ratio: 1;
-  line-height: 1;
-  height: 1.5rem;
-} */
-
 *[contenteditable="true"] {
   font-family: "Montserrat", sans-serif;
   padding-block: 0.5rem;
@@ -89,13 +33,4 @@ button.icon-button {
 *[contenteditable="true"]::placeholder {
   color: var(--text-color-secondary);
   opacity: 0.5;
-}
-
-.mdi::before {
-  transition: transform 0.2s ease-in-out;
-  transform-origin: center;
-}
-
-.card {
-  border: 1px solid red;
 }

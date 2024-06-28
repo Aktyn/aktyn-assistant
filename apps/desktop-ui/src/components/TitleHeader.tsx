@@ -25,15 +25,18 @@ export const TitleHeader = () => {
       delay: anime.stagger(100, { from: visible ? 'last' : 'first' }),
       translateY: visible ? 0 : -height,
       opacity: visible ? 1 : 0,
-      marginBottom: {
-        value: visible ? 0 : -height,
-        easing: 'easeInOutQuad',
-        duration: 400,
-      },
+    })
+    const marginAnimation = anime({
+      targets: header,
+      easing: 'easeInOutQuad',
+      duration: 400,
+      delay: 500,
+      marginBottom: visible ? 0 : -height,
     })
 
     return () => {
       anime.remove(animation)
+      anime.remove(marginAnimation)
     }
   }, [visible])
 

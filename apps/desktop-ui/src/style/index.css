@@ -7,12 +7,9 @@
 @import './common/containers.css';
 @import './common/code-blocks.css';
 @import './common/lists.css';
-@import './components/switch.css';
-@import './components/select.css';
 @import './components/dialog.css';
 @import './components/notifications.css';
 @import './views/chat.css';
-@import './views/settings.css';
 
 @font-face {
   font-family: 'AI';

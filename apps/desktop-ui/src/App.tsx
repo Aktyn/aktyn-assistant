@@ -18,7 +18,7 @@ const App = () => {
 
 const Main = () => {
   return (
-    <main className="flex flex-col justify-center items-center overflow-x-auto pt-8">
+    <main className="flex flex-col justify-center items-center overflow-hidden pt-8">
       <TitleHeader />
       <Content />
     </main>

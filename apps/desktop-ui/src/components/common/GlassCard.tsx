@@ -2,6 +2,7 @@ import { Card, type CardProps } from '@nextui-org/card'
 import { clsx } from '../../utils/common'
 
 export const GlassCard = (props: CardProps) => {
+  // TODO: add noise effect to the background
   return (
     <Card
       {...props}
