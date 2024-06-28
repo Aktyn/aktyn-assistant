@@ -3,7 +3,6 @@ import anime from 'animejs'
 import { highlightAllUnder } from 'prismjs'
 import { type Converter } from 'showdown'
 import { createElement, createMdiIcon } from './dom'
-import { Notifications } from '../components/common/notifications'
 
 export function format(
   converter: Converter,
@@ -52,12 +51,13 @@ function createCodeBlockHeaderElement(pre: HTMLPreElement) {
             postProcess: (button) => {
               button.onclick = () => {
                 navigator.clipboard.writeText(code).catch(console.error)
-                Notifications.provider.showNotification(
-                  Notifications.type.INFO,
-                  {
-                    message: 'Copied to clipboard',
-                  },
-                )
+                //TODO: show notification
+                // Notifications.provider.showNotification(
+                //   Notifications.type.INFO,
+                //   {
+                //     message: 'Copied to clipboard',
+                //   },
+                // )
               }
             },
           }),

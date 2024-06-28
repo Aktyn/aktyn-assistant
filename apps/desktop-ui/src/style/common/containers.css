@@ -1,8 +1,0 @@
-/* TODO: remove after reworking dialog component */
-.button-select-grid {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  justify-content: center;
-  gap: 1rem;
-}

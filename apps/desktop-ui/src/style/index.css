@@ -4,11 +4,9 @@
 
 @import './common/animations.css';
 @import './common/elements.css';
-@import './common/containers.css';
 @import './common/code-blocks.css';
 @import './common/lists.css';
-@import './components/dialog.css';
-@import './components/notifications.css';
+@import './common/notifications.css';
 @import './views/chat.css';
 
 @font-face {
@@ -43,128 +41,4 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.menu-container {
-  z-index: 1;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  justify-content: center;
-  gap: 2rem;
-  border: 1px solid transparent;
-  border-top: none;
-  border-radius: 0;
-
-  transition: gap 0.4s ease-in-out, border-radius 0.2s ease-in-out, border-color 0.2s ease-in-out;
-  transition-delay: 0.4s;
-  /* TODO: horizontal scrolling */
-}
-
-.menu-container.active {
-  overflow: hidden;
-  gap: 0;
-  border-bottom-left-radius: 2rem;
-  border-bottom-right-radius: 2rem;
-  border-color: #fff2;
-}
-
-.view-item {
-  /* aspect-ratio: 1.618; */
-  opacity: 0;
-  box-sizing: border-box;
-
-  font-size: 2rem;
-  font-weight: 800;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-inline: 2rem;
-  padding-block: 1rem;
-  row-gap: 0.25rem;
-  border: 1px solid #fff2;
-  background-color: #fff2;
-  box-shadow: 0 2px 4px #0002;
-  border-radius: 0.5rem;
-  backdrop-filter: blur(6px);
-
-  transition:
-    background-color 0.2s ease-in-out,
-    border-color 0.2s ease-in-out,
-    color 0.2s 0.2s ease-in-out,
-    border-radius 0.2s ease-in-out,
-    padding 0.2s 0.2s ease-in-out;
-}
-
-.menu-container.active .view-item {
-  padding-block: 0;
-  border-radius: 0;
-  border-width: 0;
-  background-color: #fff1;
-}
-
-.view-item.active {
-  pointer-events: none;
-  color: var(--color-active);
-}
-
-.view-item:not(.active) {
-  cursor: pointer;
-}
-
-.view-item:not(.active):hover {
-  border-color: #fff4;
-  background-color: #fff4;
-}
-
-.menu-container:not(.active) .view-item:not(.active):hover {
-  border-radius: 1.5rem;
-}
-
-.view-item>* {
-  transform: scale(0.8);
-  transition: transform 0.2s ease-in-out;
-}
-
-.view-item:not(.active):hover>* {
-  transform: scale(1);
-}
-
-
-.view-item .mdi::before {
-  font-size: 3rem;
-  opacity: 0.5;
-}
-
-.views-container {
-  box-sizing: border-box;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  margin-block: auto;
-  width: 100vw;
-  max-height: 100vh;
-  /* overflow-x: hidden; */
-  /* overflow-y: auto; */
-  overflow: hidden;
-
-  opacity: 0;
-  align-self: stretch;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-items: stretch;
-  justify-content: flex-start;
-}
-
-.views-container>.view-content-container {
-  width: 100vw;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  white-space: normal;
-  overflow: hidden;
 }

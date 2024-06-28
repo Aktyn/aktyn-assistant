@@ -6,10 +6,12 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Dialog } from '../deprecated/components/common/dialog'
-import { Notifications } from '../deprecated/components/common/notifications'
-import { createElement } from '../deprecated/utils/dom'
-import { type ViewType } from '../utils/navigation'
+import { Input } from '@nextui-org/input'
+import { Listbox, ListboxItem } from '@nextui-org/listbox'
+import { closeSnackbar, enqueueSnackbar } from 'notistack'
+import { NotificationMessage } from '../components/common/NotificationMessage'
+import { Dialog } from '../components/dialog/Dialog'
+import type { ViewType } from '../utils/navigation'
 
 type InitData = Awaited<ReturnType<typeof window.electronAPI.getInitData>>
 const noop = () => {}
@@ -23,28 +25,34 @@ export const GlobalContext = createContext({
 export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [initData, setInitData] = useState<InitData | null>(null)
   const [view, setView] = useState<ViewType | null>(null)
+  const [aiProviderDialogOpen, setAiProviderDialogOpen] = useState(false)
+  const [aiProviders, setAiProviders] = useState<string[]>([])
+  const [selectedAiProvider, setSelectedAiProvider] = useState<string | null>(
+    null,
+  )
+  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false)
+  const [apiKeyProviderType, setApiKeyProviderType] = useState<string | null>(
+    null,
+  )
+  const [apiKeyValue, setApiKeyValue] = useState<string | null>(null)
 
   const init = useCallback(async () => {
     const initData = await window.electronAPI.getInitData()
     setInitData(initData)
-    //TODO
-    // const menu = new Menu({
-    //   onViewEnter: () => {
-    //     header.hide().catch(console.error)
-    //   },
-    //   onViewHide: () => {
-    //     header.enter().catch(console.error)
-    //   },
-    // })
-    // await menu.init(initData)
   }, [])
 
   useEffect(() => {
     window.electronAPI.onError((title, message) => {
-      //TODO
-      Notifications.provider.showNotification(Notifications.type.Error, {
-        title,
-        message,
+      const key = enqueueSnackbar({
+        variant: 'error',
+        message: (
+          <NotificationMessage
+            title={title}
+            message={message}
+            copyable
+            onClose={() => closeSnackbar(key)}
+          />
+        ),
       })
     })
 
@@ -54,96 +62,13 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
         return
       }
 
-      let selectedOption: string | null = null
-
-      const optionButtons = options.map((option) =>
-        createElement('button', {
-          content: option,
-          postProcess: (item) => {
-            item.onclick = () => {
-              selectedOption = option
-
-              for (const button of optionButtons) {
-                button.classList.remove('selected')
-              }
-              item.classList.add('selected')
-
-              dialog.enableConfirmButton()
-            }
-          },
-        }),
-      )
-
-      const dialog = new Dialog(
-        'Select AI provider',
-        createElement('div', {
-          className: 'button-select-grid',
-          content: optionButtons,
-          style: {
-            padding: '1rem',
-          },
-        }),
-        {
-          onClose: null,
-          onConfirm: () => {
-            if (!selectedOption) {
-              return
-            }
-            window.electronAPI.promptAiProviderCallback(selectedOption as never)
-            dialog.close()
-          },
-        },
-      )
-      dialog.disableConfirmButton()
-      dialog.open()
+      setAiProviders(options)
+      setAiProviderDialogOpen(true)
     })
 
     window.electronAPI.onPromptForApiKey((providerType) => {
-      let apiKeyValue = ''
-
-      const keyInput = createElement('input', {
-        postProcess: (input) => {
-          input.autofocus = true
-
-          input.onkeyup = (event) => {
-            apiKeyValue = (event.target as HTMLInputElement).value.trim()
-            if (apiKeyValue) {
-              dialog.enableConfirmButton()
-            } else {
-              dialog.disableConfirmButton()
-            }
-
-            if (event.key === 'Enter' && apiKeyValue) {
-              window.electronAPI.promptApiKeyCallback(apiKeyValue)
-              dialog.close()
-            }
-          }
-        },
-      })
-
-      //TODO
-      const dialog = new Dialog(
-        `Enter API key for ${providerType}`,
-        createElement('div', {
-          content: keyInput,
-          style: {
-            padding: '1rem',
-            textAlign: 'center',
-          },
-        }),
-        {
-          onClose: null,
-          onConfirm: () => {
-            if (!apiKeyValue) {
-              return
-            }
-            window.electronAPI.promptApiKeyCallback(apiKeyValue)
-            dialog.close()
-          },
-        },
-      )
-      dialog.disableConfirmButton()
-      dialog.open()
+      setApiKeyDialogOpen(true)
+      setApiKeyProviderType(providerType)
     })
 
     window.electronAPI
@@ -163,6 +88,64 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <GlobalContext.Provider value={{ initData, view, setView }}>
       {children}
+      <Dialog
+        isOpen={aiProviderDialogOpen}
+        isDismissable={false}
+        isKeyboardDismissDisabled
+        title="Select AI provider"
+        disableConfirmButton={!selectedAiProvider}
+        onConfirm={() => {
+          if (!selectedAiProvider) {
+            return
+          }
+          window.electronAPI.promptAiProviderCallback(
+            selectedAiProvider as never,
+          )
+          setAiProviderDialogOpen(false)
+        }}
+      >
+        <Listbox
+          aria-label="Single selection example"
+          variant="flat"
+          color="primary"
+          disallowEmptySelection
+          selectionMode="single"
+          selectedKeys={selectedAiProvider ? [selectedAiProvider] : []}
+          onSelectionChange={(selection) =>
+            selection !== 'all' &&
+            setSelectedAiProvider(selection.values().next().value)
+          }
+        >
+          {aiProviders.map((provider) => (
+            <ListboxItem key={provider} value={provider}>
+              {provider}
+            </ListboxItem>
+          ))}
+        </Listbox>
+      </Dialog>
+      <Dialog
+        isOpen={apiKeyDialogOpen}
+        isDismissable={false}
+        isKeyboardDismissDisabled
+        title={`Enter API key for ${apiKeyProviderType}`}
+        disableConfirmButton={!apiKeyValue}
+        onConfirm={() => {
+          if (!apiKeyValue) {
+            return
+          }
+          window.electronAPI.promptApiKeyCallback(apiKeyValue)
+          setApiKeyDialogOpen(false)
+        }}
+      >
+        <Input
+          size="lg"
+          variant="bordered"
+          label="API key"
+          isRequired
+          value={apiKeyValue ?? ''}
+          onChange={(value) => setApiKeyValue(value.target.value)}
+        />
+      </Dialog>
     </GlobalContext.Provider>
   )
 }

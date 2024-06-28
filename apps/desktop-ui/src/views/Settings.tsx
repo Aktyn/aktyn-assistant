@@ -3,37 +3,43 @@ import { CardBody } from '@nextui-org/card'
 import { Checkbox } from '@nextui-org/checkbox'
 import { Input } from '@nextui-org/input'
 import { Select, SelectItem } from '@nextui-org/select'
+import { enqueueSnackbar } from 'notistack'
 import { GlassCard } from '../components/common/GlassCard'
 import { GlobalContext } from '../context/GlobalContextProvider'
+import { useUserConfigValue } from '../hooks/useUserConfigValue'
 
 export const Settings = ({ in: active }: { in?: boolean }) => {
   const { initData } = useContext(GlobalContext)
 
-  //TODO: useUserConfigValue() hook
   const [models, setModels] = useState<string[]>([])
-  const [chatModel, setChatModel] = useState<string | null>(null)
-  const [mockPaidRequests, setMockPaidRequests] = useState<boolean>(false)
-  const [launchOnStartup, setLaunchOnStartup] = useState<boolean>(false)
-  const [launchHidden, setLaunchHidden] = useState<boolean>(false)
-  const [useHistory, setUseHistory] = useState<boolean>(false)
-  const [maxHistoryLength, setMaxHistoryLength] = useState<number>(1)
+  const [chatModel, setChatModel, syncChatModel] =
+    useUserConfigValue('selectedChatModel')
+  const [mockPaidRequests, setMockPaidRequests, syncMockPaidRequests] =
+    useUserConfigValue('mockPaidRequests')
+  const [launchOnStartup, setLaunchOnStartup, syncLaunchOnStartup] =
+    useUserConfigValue('autoLaunch')
+  const [launchHidden, setLaunchHidden, syncLaunchHidden] =
+    useUserConfigValue('launchHidden')
+  const [useHistory, setUseHistory, syncUseHistory] =
+    useUserConfigValue('includeHistory')
+  const [maxHistoryLength, setMaxHistoryLength, syncMaxHistoryLength] =
+    useUserConfigValue('maxChatHistoryLength')
 
   const syncSettings = useCallback(async () => {
-    setChatModel(
-      await window.electronAPI.getUserConfigValue('selectedChatModel'),
-    )
-    setMockPaidRequests(
-      !!(await window.electronAPI.getUserConfigValue('mockPaidRequests')),
-    )
-    setLaunchOnStartup(
-      await window.electronAPI.getUserConfigValue('autoLaunch'),
-    )
-    setLaunchHidden(await window.electronAPI.getUserConfigValue('launchHidden'))
-    setUseHistory(await window.electronAPI.getUserConfigValue('includeHistory'))
-    setMaxHistoryLength(
-      await window.electronAPI.getUserConfigValue('maxChatHistoryLength'),
-    )
-  }, [])
+    void syncChatModel()
+    void syncMockPaidRequests()
+    void syncLaunchOnStartup()
+    void syncLaunchHidden()
+    void syncUseHistory()
+    void syncMaxHistoryLength()
+  }, [
+    syncChatModel,
+    syncLaunchHidden,
+    syncLaunchOnStartup,
+    syncMaxHistoryLength,
+    syncMockPaidRequests,
+    syncUseHistory,
+  ])
 
   useEffect(() => {
     if (active) {
@@ -77,15 +83,15 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
   initData?.autoLaunchEnabled
   const toggleLaunchOnStartup = async (checked: boolean) => {
-    setLaunchOnStartup(checked)
+    setLaunchOnStartup(checked, true)
 
     try {
       const success = await window.electronAPI.setAutoLaunch(checked)
       if (!success) {
-        //TODO: show error notification
-        // Notifications.provider.showNotification(Notifications.type.Error, {
-        //   message: 'Failed to set auto launch',
-        // })
+        enqueueSnackbar({
+          variant: 'error',
+          message: 'Failed to set auto launch',
+        })
       }
     } catch (error) {
       console.error(error)
@@ -108,12 +114,12 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
         <Select
           label="Chat model"
           variant="underlined"
-          selectedKeys={chatModel ? [chatModel] : []}
+          selectedKeys={
+            chatModel && models.includes(chatModel) ? [chatModel] : []
+          }
           onSelectionChange={(keys) => {
             if (keys instanceof Set) {
-              const model = keys.values().next().value
-              setChatModel(model)
-              window.electronAPI.setUserConfigValue('selectedChatModel', model)
+              setChatModel(keys.values().next().value)
             }
           }}
         >
@@ -126,10 +132,9 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
         <Checkbox
           color="default"
-          isSelected={mockPaidRequests}
+          isSelected={!!mockPaidRequests}
           onValueChange={(checked) => {
             setMockPaidRequests(checked)
-            window.electronAPI.setUserConfigValue('mockPaidRequests', checked)
           }}
         >
           Mock paid requests
@@ -137,7 +142,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
         <Checkbox
           color="default"
-          isSelected={launchOnStartup}
+          isSelected={!!launchOnStartup}
           onValueChange={toggleLaunchOnStartup}
         >
           Launch on startup
@@ -145,10 +150,9 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
         <Checkbox
           color="default"
-          isSelected={launchHidden}
+          isSelected={!!launchHidden}
           onValueChange={(checked) => {
             setLaunchHidden(checked)
-            window.electronAPI.setUserConfigValue('launchHidden', checked)
           }}
         >
           Launch hidden
@@ -156,10 +160,9 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
         <Checkbox
           color="default"
-          isSelected={useHistory}
+          isSelected={!!useHistory}
           onValueChange={(checked) => {
             setUseHistory(checked)
-            window.electronAPI.setUserConfigValue('includeHistory', checked)
           }}
         >
           Include history
@@ -171,7 +174,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
           type="number"
           min="1"
           max="32"
-          value={maxHistoryLength.toString()}
+          value={(maxHistoryLength ?? 8).toString()}
           onChange={handleMaxHistoryLengthChange}
           label={
             <span className="text-nowrap">Previous messages sent to AI</span>

@@ -1,5 +1,4 @@
 import anime from 'animejs'
-import { Switch } from '../components/common/switch'
 import { createElement, createMdiIcon } from '../utils/dom'
 
 export class ChatMenu {
@@ -13,13 +12,13 @@ export class ChatMenu {
       onRawResponseToggle: (on: boolean) => void
       onClearChat: () => void
     },
-    private readonly rawResponseSwitch = new Switch(false, (on) => {
-      window.electronAPI.setUserConfigValue('showRawResponse', on)
-      listeners.onRawResponseToggle(on)
-    }),
-    private readonly includeHistorySwitch = new Switch(false, (on) => {
-      window.electronAPI.setUserConfigValue('includeHistory', on)
-    }),
+    // private readonly rawResponseSwitch = new Switch(false, (on) => {
+    //   window.electronAPI.setUserConfigValue('showRawResponse', on)
+    //   listeners.onRawResponseToggle(on)
+    // }),
+    // private readonly includeHistorySwitch = new Switch(false, (on) => {
+    //   window.electronAPI.setUserConfigValue('includeHistory', on)
+    // }),
   ) {
     const toggle = (on: boolean) => {
       if (on) {
@@ -75,7 +74,7 @@ export class ChatMenu {
               className: 'switch-label',
               content: 'Show raw response:',
             }),
-            this.rawResponseSwitch.element,
+            // this.rawResponseSwitch.element,
           ],
         }),
         createElement('hr', { className: 'vertical' }),
@@ -86,7 +85,7 @@ export class ChatMenu {
               className: 'switch-label',
               content: 'Include chat history:',
             }),
-            this.includeHistorySwitch.element,
+            // this.includeHistorySwitch.element,
           ],
         }),
         createElement('hr', { className: 'vertical' }),
@@ -115,21 +114,23 @@ export class ChatMenu {
   }
 
   get showRawResponse() {
-    return this.rawResponseSwitch.get()
+    return false //TODO
+    // return this.rawResponseSwitch.get()
   }
   get includeHistory() {
-    return this.includeHistorySwitch.get()
+    return false //TODO
+    // return this.includeHistorySwitch.get()
   }
 
   public async sync() {
-    this.rawResponseSwitch.set(
-      await window.electronAPI.getUserConfigValue('showRawResponse'),
-      true,
-    )
-    this.includeHistorySwitch.set(
-      await window.electronAPI.getUserConfigValue('includeHistory'),
-      true,
-    )
+    // this.rawResponseSwitch.set(
+    //   await window.electronAPI.getUserConfigValue('showRawResponse'),
+    //   true,
+    // )
+    // this.includeHistorySwitch.set(
+    //   await window.electronAPI.getUserConfigValue('includeHistory'),
+    //   true,
+    // )
 
     this.synced = true
   }

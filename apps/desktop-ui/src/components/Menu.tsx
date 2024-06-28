@@ -1,9 +1,10 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { mdiChat, mdiCog, mdiInformationBox } from '@mdi/js'
 import Icon from '@mdi/react'
 import { Button } from '@nextui-org/button'
 
 import { Divider } from '@nextui-org/divider'
+import anime from 'animejs'
 import { GlobalContext } from '../context/GlobalContextProvider'
 import icon from '../img/icon.png'
 import { ViewType } from '../utils/navigation'
@@ -26,10 +27,24 @@ const viewsProperties: {
 }
 
 export const Menu = () => {
+  const ref = useRef<HTMLDivElement>(null)
   const { initData, view, setView } = useContext(GlobalContext)
 
+  useEffect(() => {
+    anime({
+      targets: ref.current,
+      easing: 'easeOutSine',
+      duration: 400,
+      delay: 200,
+      translateX: ['-100%', '0%'],
+    })
+  }, [])
+
   return (
-    <aside className="h-full bg-background bg-opacity-10 border-r border-divider backdrop-blur-[6px] flex flex-col items-stretch justify-start pt-4">
+    <aside
+      ref={ref}
+      className="h-full bg-background bg-opacity-10 border-r border-divider backdrop-blur-[6px] flex flex-col items-stretch justify-start pt-4"
+    >
       <div className="flex flex-col items-center justify-center relative max-h-24 mb-6">
         <img
           src={icon}

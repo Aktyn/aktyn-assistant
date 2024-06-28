@@ -12,12 +12,13 @@ import {
   type Tool,
 } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
-import { OpenAI } from 'openai'
+import { AuthenticationError, OpenAI } from 'openai'
 
 import { getUserConfigValue } from '../user/user-config'
 
 import {
   AiProviderType,
+  deleteApiKey,
   loadProviderApiKey,
   saveProviderApiKey,
 } from './api/common'
@@ -100,6 +101,10 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
       } catch (error) {
         if (error instanceof UnsupportedProviderError) {
           throw error
+        }
+
+        if (error instanceof AuthenticationError) {
+          deleteApiKey(init.providerType)
         }
 
         if (isDev()) {

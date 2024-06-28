@@ -37,3 +37,12 @@ function loadApiKey(path: string) {
     return null
   }
 }
+
+export function deleteApiKey(providerType: AiProviderType) {
+  const keyFilePath = getKeyFilePath(providerType)
+  try {
+    fs.unlinkSync(keyFilePath)
+  } catch (error) {
+    console.error(error)
+  }
+}

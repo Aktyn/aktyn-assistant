@@ -68,6 +68,8 @@ __metadata:
     "@nextui-org/divider": "npm:^2.0.28"
     "@nextui-org/input": "npm:^2.2.2"
     "@nextui-org/link": "npm:^2.0.32"
+    "@nextui-org/listbox": "npm:^2.1.22"
+    "@nextui-org/modal": "npm:^2.0.36"
     "@nextui-org/react": "npm:^2.4.2"
     "@nextui-org/scroll-shadow": "npm:^2.1.17"
     "@nextui-org/select": "npm:^2.2.2"
@@ -93,6 +95,7 @@ __metadata:
     eslint-plugin-react: "npm:^7.34.3"
     eslint-plugin-react-hooks: "npm:^4.6.2"
     framer-motion: "npm:^11.2.12"
+    notistack: "npm:^3.0.1"
     prettier: "npm:^3.3.2"
     prismjs: "npm:^1.29.0"
     react: "npm:^18.3.1"
@@ -3728,7 +3731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/listbox@npm:2.1.22":
+"@nextui-org/listbox@npm:2.1.22, @nextui-org/listbox@npm:^2.1.22":
   version: 2.1.22
   resolution: "@nextui-org/listbox@npm:2.1.22"
   dependencies:
@@ -3780,7 +3783,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/modal@npm:2.0.36":
+"@nextui-org/modal@npm:2.0.36, @nextui-org/modal@npm:^2.0.36":
   version: 2.0.36
   resolution: "@nextui-org/modal@npm:2.0.36"
   dependencies:
@@ -8992,7 +8995,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.2.1":
+"clsx@npm:^1.1.0, clsx@npm:^1.2.1":
   version: 1.2.1
   resolution: "clsx@npm:1.2.1"
   checksum: 10c0/34dead8bee24f5e96f6e7937d711978380647e936a22e76380290e35486afd8634966ce300fc4b74a32f3762c7d4c0303f442c3e259f4ce02374eb0c82834f27
@@ -12181,6 +12184,15 @@ __metadata:
     merge2: "npm:^1.4.1"
     slash: "npm:^3.0.0"
   checksum: 10c0/b39511b4afe4bd8a7aead3a27c4ade2b9968649abab0a6c28b1a90141b96ca68ca5db1302f7c7bd29eab66bf51e13916b8e0a3d0ac08f75e1e84a39b35691189
+  languageName: node
+  linkType: hard
+
+"goober@npm:^2.0.33":
+  version: 2.1.14
+  resolution: "goober@npm:2.1.14"
+  peerDependencies:
+    csstype: ^3.0.10
+  checksum: 10c0/184eda787a9a14cffbaa8284e98dc127095e538b4acab2a84b81babca84253bb883e16208822e02584f27c7a69f3ec47341e5060dfa40a0e07c32ac1f79b2714
   languageName: node
   linkType: hard
 
@@ -15750,6 +15762,19 @@ __metadata:
   version: 6.1.0
   resolution: "normalize-url@npm:6.1.0"
   checksum: 10c0/95d948f9bdd2cfde91aa786d1816ae40f8262946e13700bf6628105994fe0ff361662c20af3961161c38a119dc977adeb41fc0b41b1745eb77edaaf9cb22db23
+  languageName: node
+  linkType: hard
+
+"notistack@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "notistack@npm:3.0.1"
+  dependencies:
+    clsx: "npm:^1.1.0"
+    goober: "npm:^2.0.33"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 10c0/dd5bd492dbaf8d07a1f45a53ae195c5d481bc7136d73a756eb076534d315216a3cd2f4628263be55ad21d8bfed6ec546e5063584ffcc2798fb2aac56e5ccf0cf
   languageName: node
   linkType: hard
 
