@@ -1,4 +1,7 @@
-import { type ChatMessage, isDev } from '@aktyn-assistant/common'
+import fs from 'fs'
+import path from 'path'
+
+import { isDev, type ChatMessage } from '@aktyn-assistant/common'
 import {
   AI,
   AiProviderType,
@@ -69,9 +72,14 @@ async function init() {
   ipcMain.handle('getInitData', () => {
     let version: string | undefined
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const packageJson = require('../package.json')
-      version = packageJson.version
+      let packageJsonPath = path.join(__dirname, '..', 'package.json')
+      if (!fs.existsSync(packageJsonPath)) {
+        packageJsonPath = path.join(__dirname, '..', '..', 'package.json')
+      }
+      if (fs.existsSync(packageJsonPath)) {
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+        version = packageJson.version
+      }
     } catch (error) {
       console.error(error)
     }

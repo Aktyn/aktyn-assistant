@@ -53,6 +53,7 @@ If you already have an OpenAI account, you can generate an API key [here](https:
 ## Tools
 
 #### Tools are not part of workspace tree!
+
 ##### More info soon
 
 ## Future plans

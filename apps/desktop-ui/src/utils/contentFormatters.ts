@@ -10,8 +10,7 @@ export function format(
   const html = converter.makeHtml(rawContent)
   element.innerHTML = html
   try {
-    // @ts-expect-error temp //TODO: declare prismjs types
-    Prism.highlightAllUnder(element, false)
+    window.Prism.highlightAllUnder(element, false)
   } catch (e) {
     console.error(e)
   }

@@ -32,7 +32,7 @@ module.exports = {
       executableName: 'aktyn-assistant-desktop',
       config: {
         options: {
-          icon: './public/img/icon.png',
+          icon: './img/icon.png',
           name: 'Aktyn Assistant',
           productName: 'Aktyn Assistant',
         },

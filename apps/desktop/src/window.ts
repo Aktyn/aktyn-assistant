@@ -14,6 +14,7 @@ import {
 } from 'electron'
 
 const rootPath = path.join(__dirname, '..')
+const uiPath = path.join(__dirname, '..', 'ui')
 const iconPath = path.join(rootPath, 'img', 'icon.png')
 const quickChatIconPath = path.join(rootPath, 'img', 'icon-quick-chat.png')
 const trayIconPath = path.join(rootPath, 'img', 'icon-tray.png')
@@ -46,7 +47,7 @@ export async function createMainWindow() {
     win.webContents.openDevTools()
     await win.loadURL('http://localhost:3000')
   } else {
-    // await win.loadFile(path.join(publicPath, 'index.html')) //TODO
+    await win.loadFile(path.join(uiPath, 'index.html'))
   }
 
   return win
@@ -81,7 +82,9 @@ export async function createChatWindow() {
   if (isDev()) {
     await win.loadURL('http://localhost:3000?mode=quick-chat')
   } else {
-    // await win.loadFile(path.join(publicPath, 'index.html')) //TODO
+    await win.loadFile(path.join(uiPath, 'index.html'), {
+      search: 'mode=quick-chat',
+    })
   }
 
   win.on('close', () => {

@@ -7724,6 +7724,7 @@ __metadata:
   resolution: "aktyn-assistant@workspace:."
   dependencies:
     prettier: "npm:^3.3.2"
+    shx: "npm:^0.3.4"
     turbo: "npm:^2.0.5"
   languageName: unknown
   linkType: soft

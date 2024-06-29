@@ -30,7 +30,8 @@
     "baseUrl": ".",
     "types": [
       "node",
-      "jest"
+      "jest",
+      "prismjs"
     ],
     "jsx": "react-jsx"
   },

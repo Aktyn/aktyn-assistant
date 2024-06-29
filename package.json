@@ -24,8 +24,9 @@
     "dev:terminal": "yarn --cwd apps/terminal dev",
     "dev:desktop": "yarn --cwd apps/desktop dev & yarn --cwd apps/desktop-ui dev",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
-    "publish:desktop": "yarn --cwd apps/desktop publish",
-    "make:desktop": "yarn --cwd apps/desktop make",
+    "copy:desktop-ui": "yarn build:all && shx rm -rf apps/desktop/ui && shx cp -r apps/desktop-ui/build apps/desktop/ui",
+    "publish:desktop": "yarn copy:desktop-ui && yarn --cwd apps/desktop publish",
+    "make:desktop": "yarn copy:desktop-ui && yarn --cwd apps/desktop make",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "prettier": "^3.3.2",
+    "shx": "^0.3.4",
     "turbo": "^2.0.5"
   },
   "engines": {
