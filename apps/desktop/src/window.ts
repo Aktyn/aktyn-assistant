@@ -13,10 +13,10 @@ import {
   type Rectangle,
 } from 'electron'
 
-const publicPath = path.join(__dirname, '..', 'public')
-const iconPath = path.join(publicPath, 'img', 'icon.png')
-const quickChatIconPath = path.join(publicPath, 'img', 'icon-quick-chat.png')
-const trayIconPath = path.join(publicPath, 'img', 'icon-tray.png')
+const rootPath = path.join(__dirname, '..')
+const iconPath = path.join(rootPath, 'img', 'icon.png')
+const quickChatIconPath = path.join(rootPath, 'img', 'icon-quick-chat.png')
+const trayIconPath = path.join(rootPath, 'img', 'icon-tray.png')
 
 const getStore = once(() =>
   import('electron-store').then(
@@ -40,15 +40,14 @@ export async function createMainWindow() {
       preload: path.join(__dirname, 'preload.js'),
     },
   })
+  setupWindowToOpenLinksExternally(win)
 
   if (isDev()) {
     win.webContents.openDevTools()
     await win.loadURL('http://localhost:3000')
   } else {
-    await win.loadFile(path.join(publicPath, 'index.html'))
+    // await win.loadFile(path.join(publicPath, 'index.html')) //TODO
   }
-
-  setupWindowToOpenLinksExternally(win)
 
   return win
 }
@@ -77,15 +76,13 @@ export async function createChatWindow() {
     },
     ...bounds,
   })
-
   setupWindowToOpenLinksExternally(win)
 
-  await win.loadFile(path.join(publicPath, 'quick-chat.html'))
   if (isDev()) {
     win.webContents.openDevTools()
-    await win.loadURL('http://localhost:3000?mode=quick-chat')
+    await win.loadURL('http://localhost:3000?mode=quick-chat') //TODO: use some param
   } else {
-    // await win.loadFile(path.join(publicPath, 'index.html')) //TODO: use some param
+    // await win.loadFile(path.join(publicPath, 'index.html')) //TODO
   }
 
   win.on('close', () => {

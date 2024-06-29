@@ -1,8 +1,7 @@
 {
   "ignorePatterns": [
     "*.config.js",
-    "dist-app/",
-    "dist-ui/",
+    "dist/",
     "node_modules/"
   ],
   "plugins": [

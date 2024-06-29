@@ -1,11 +1,10 @@
 {
   "include": [
-    "./src/app"
+    "./src"
   ],
   "exclude": [
     "./node_modules",
-    "./dist-app",
-    "./dist-ui"
+    "./dist"
   ],
   "compilerOptions": {
     "target": "ESNext",
@@ -18,12 +17,12 @@
       "DOM.Iterable"
     ],
     "allowJs": false,
-    "outDir": "./dist-app",
-    "rootDir": "./src/app",
-    "baseUrl": "./src/app",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
     "paths": {
       "~/*": [
-        "./src/app/*"
+        "./src/*"
       ]
     },
     "removeComments": true,
@@ -45,7 +44,7 @@
     "transpileOnly": true,
     "files": true,
     "compilerOptions": {
-      "rootDir": "./src/app"
+      "rootDir": "./src"
     }
   }
 }

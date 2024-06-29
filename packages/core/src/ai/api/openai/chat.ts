@@ -100,7 +100,7 @@ export async function performChatQuery(
           },
         }))
       : undefined,
-    tool_choice: 'auto',
+    tool_choice: tools.length ? 'auto' : undefined,
     // stream_options: {include_usage: true} // Use this to get usage info
   })
 

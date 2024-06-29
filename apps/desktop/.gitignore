@@ -1,6 +1,5 @@
 node_modules/
-dist-app/
-dist-ui/
+dist/
 coverage/
 .env
 out/

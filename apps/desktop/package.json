@@ -8,15 +8,15 @@
     "type": "git",
     "url": "git+https://github.com/Aktyn/aktyn-assistant.git"
   },
-  "main": "./dist-app/index.js",
+  "main": "./dist/index.js",
   "homepage": "https://github.com/Aktyn/aktyn-assistants",
   "scripts": {
     "package": "cross-env DEBUG=electron-packager electron-forge package --verbose",
     "make": "./fix-modules.sh && electron-forge make && shx rm -rf ./node_modules",
     "publish": "./fix-modules.sh && electron-forge publish && shx rm -rf ./node_modules",
     "build": "tsc -p ./tsconfig.json",
-    "start:no-electron": "node ./dist-app/index.js",
-    "start:legacy": "electron ./dist-app/index.js",
+    "start:no-electron": "node ./dist/index.js",
+    "start:legacy": "electron ./dist/index.js",
     "start": "electron-forge start",
     "dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn start:legacy || exit 1\" -e ts,html",
     "test": "jest --passWithNoTests",

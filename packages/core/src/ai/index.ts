@@ -153,10 +153,14 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   private async init() {
     this.tools = await loadTools() //TODO: filter by list of enabled tools specified in user config
-    const plural = this.tools.length === 1 ? '' : 's'
-    console.info(
-      `Loaded ${this.tools.length} tool${plural ? 's' : ''}: ${this.tools.map((tool) => tool.schema.functionName).join(', ')}`,
-    )
+    if (this.tools.length) {
+      const plural = this.tools.length === 1 ? '' : 's'
+      console.info(
+        `Loaded ${this.tools.length} tool${plural ? 's' : ''}: ${this.tools.map((tool) => tool.schema.functionName).join(', ')}`,
+      )
+    } else {
+      console.info('No tools loaded')
+    }
   }
 
   //istanbul ignore next
