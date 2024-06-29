@@ -79,8 +79,7 @@ export async function createChatWindow() {
   setupWindowToOpenLinksExternally(win)
 
   if (isDev()) {
-    win.webContents.openDevTools()
-    await win.loadURL('http://localhost:3000?mode=quick-chat') //TODO: use some param
+    await win.loadURL('http://localhost:3000?mode=quick-chat')
   } else {
     // await win.loadFile(path.join(publicPath, 'index.html')) //TODO
   }

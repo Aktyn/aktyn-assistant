@@ -1,25 +1,39 @@
 @import './chat-menu.css';
 
-body.quick-chat>.chat-view {
-  /* background-color: color-mix(in srgb, #546E7A 95%, transparent); */
-  background: linear-gradient(to bottom,
+#root:has(.quick-chat-view) {
+  @apply h-full;
+}
+
+#root:has(.quick-chat-view)>* {
+  @apply h-full;
+}
+
+.chat-view.quick-chat-view {
+  /* background: linear-gradient(to bottom,
       color-mix(in srgb, #546E7A 95%, transparent) 0%,
       color-mix(in srgb, #455A64 95%, transparent) 20%,
       color-mix(in srgb, #37474F 95%, transparent) 80%,
-      color-mix(in srgb, #263238 95%, transparent) 100%);
+      color-mix(in srgb, #263238 95%, transparent) 100%); */
+  @apply bg-foreground-900 bg-gradient-to-br from-primary-600/15 to-secondary-600/15;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 2rem, #000d 2rem, #000 50%);
+  box-shadow: none;
+  border: none;
   padding-top: 2rem;
   width: 100%;
   max-width: unset;
   max-height: unset;
   height: 100%;
   text-shadow: 0 0 1px #0004;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-body.quick-chat>.chat-view>.handle {
+.chat-view.quick-chat-view>.handle {
   display: flex;
   align-items: center;
   justify-content: center;
-  @apply text-foreground-600/25;
+  @apply text-foreground-100/25;
   font-size: 1.5rem;
   height: 2rem;
   width: 61.8%;
@@ -33,21 +47,12 @@ body.quick-chat>.chat-view>.handle {
   right: 0;
   margin-inline: auto;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
 
   -webkit-app-region: drag;
   user-select: none;
 }
 
-body.quick-chat>.chat-view>.handle:hover {
-  background-color: #546E7A;
-}
-
-body.quick-chat>.chat-view>.handle:active {
-  cursor: grabbing;
-}
-
-body.quick-chat>.chat-view>.handle>*:not(.mdi) {
+.chat-view.quick-chat-view>.handle>*:not(.mdi) {
   font-size: 0.85rem;
   font-weight: 600;
   margin-left: 0.5rem;

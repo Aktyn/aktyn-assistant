@@ -8,6 +8,7 @@ import {
 import { type ChatMessage } from '@aktyn-assistant/common'
 import { mdiCursorMove, mdiLoading } from '@mdi/js'
 import Icon from '@mdi/react'
+import { cn } from '@nextui-org/theme'
 import anime from 'animejs'
 import { Converter } from 'showdown'
 import { v4 as uuidv4 } from 'uuid'
@@ -22,7 +23,12 @@ import { useStateToRef } from '../hooks/useStateToRef'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
 import { format } from '../utils/contentFormatters'
 
-export const Chat = ({ in: active }: { in?: boolean }) => {
+type ChatProps = {
+  in?: boolean
+  quickChatMode?: boolean
+}
+
+export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   const inputRef = useRef<AdvancedInputHandle>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const activeAiMessageElementRef = useRef<HTMLDivElement | null>()
@@ -322,7 +328,12 @@ export const Chat = ({ in: active }: { in?: boolean }) => {
   )
 
   return (
-    <GlassCard className="chat-view border-b-0 rounded-b-none">
+    <GlassCard
+      className={cn(
+        'chat-view border-b-0 rounded-b-none',
+        quickChatMode && 'quick-chat-view',
+      )}
+    >
       <div
         ref={messagesContainerRef}
         className="chat-output empty"
@@ -343,7 +354,7 @@ export const Chat = ({ in: active }: { in?: boolean }) => {
         </div>
       </div>
       <div className="handle">
-        <Icon path={mdiCursorMove} />
+        <Icon path={mdiCursorMove} size="1.5rem" />
         <span>Grab here to move the window</span>
       </div>
     </GlassCard>
