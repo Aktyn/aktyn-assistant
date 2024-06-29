@@ -3,8 +3,8 @@ import { NextUIProvider } from '@nextui-org/system'
 import { SnackbarProvider } from 'notistack'
 import { createRoot } from 'react-dom/client'
 
+import './style/prism.css'
 import './style/index.css'
-import './style/prism.css' //TODO: remove (also file) after fixing prismjs
 import './style/scrollbars.css'
 
 import App from './App'

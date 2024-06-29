@@ -4,10 +4,10 @@
 
 @import './common/animations.css';
 @import './common/elements.css';
-@import './common/code-blocks.css';
 @import './common/lists.css';
 @import './common/notifications.css';
 @import './views/chat.css';
+@import './common/code-blocks.css';
 
 @font-face {
   font-family: 'AI';
@@ -35,10 +35,6 @@ body {
   overflow-y: auto;
 }
 
-main {
-  flex-grow: 1;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.reset-tw>*:not(pre):not(code):not(hr) {
+  all: revert !important;
 }

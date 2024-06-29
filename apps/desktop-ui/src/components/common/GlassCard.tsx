@@ -1,11 +1,13 @@
+import { forwardRef } from 'react'
 import { Card, type CardProps } from '@nextui-org/card'
 import { clsx } from '../../utils/common'
 
-export const GlassCard = (props: CardProps) => {
+export const GlassCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
   // TODO: add noise effect to the background
   return (
     <Card
       {...props}
+      ref={ref}
       isBlurred
       className={clsx(
         props.className,
@@ -13,4 +15,4 @@ export const GlassCard = (props: CardProps) => {
       )}
     />
   )
-}
+})

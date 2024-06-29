@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from 'react'
-import { mdiChat, mdiCog, mdiInformationBox } from '@mdi/js'
+import { mdiChat, mdiCog, mdiHammerWrench, mdiInformationBox } from '@mdi/js'
 import Icon from '@mdi/react'
 import { Button } from '@nextui-org/button'
 
@@ -15,6 +15,10 @@ const viewsProperties: {
   [ViewType.Chat]: {
     title: 'Chat',
     icon: mdiChat,
+  },
+  [ViewType.Tools]: {
+    title: 'Tools',
+    icon: mdiHammerWrench,
   },
   [ViewType.Settings]: {
     title: 'Settings',

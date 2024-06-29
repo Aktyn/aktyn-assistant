@@ -1,23 +1,17 @@
-hr {
-  @apply border-divider;
-}
-
 *[contenteditable="true"] {
   font-family: "Montserrat", sans-serif;
   padding-block: 0.5rem;
   padding-inline: 0.75rem;
-  border: 1px solid #fff2;
+  box-sizing: border-box;
   border-radius: 2rem;
-  background-color: #fff2;
   outline: none;
-  color: var(--text-color-primary);
+  @apply text-foreground-50 border-t-1 border-t-divider bg-foreground-50/5;
 
   transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
 *[contenteditable="true"]:focus {
-  border-color: var(--color-active);
-  background-color: color-mix(in srgb, var(--color-active) 15%, transparent);
+  @apply border-primary-400 bg-primary-400/15;
 }
 
 *[contenteditable="true"][disabled="true"] {
@@ -31,6 +25,6 @@ hr {
 }
 
 *[contenteditable="true"]::placeholder {
-  color: var(--text-color-secondary);
+  @apply text-foreground-600;
   opacity: 0.5;
 }

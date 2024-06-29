@@ -4,6 +4,10 @@
   border: 1px solid;
 }
 
+#notistack-snackbar {
+  width: 100%;
+}
+
 .notistack-MuiContent-default {
   @apply bg-transparent bg-gradient-to-br from-foreground-500/50 to-foreground-300/40 border-foreground-300 text-foreground-100;
 }

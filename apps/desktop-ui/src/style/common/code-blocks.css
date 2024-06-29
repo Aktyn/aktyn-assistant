@@ -4,6 +4,7 @@
   border-radius: 0.25rem;
   border: 1px solid #263238;
   padding-inline: 0.5rem;
+  padding-block: 0.125rem;
   white-space: pre-wrap;
 }
 
@@ -13,7 +14,6 @@
 
 .chat-message pre {
   overflow: auto;
-  /* padding-bottom: 0.5rem; */
   padding: 0;
   display: inline-block;
   min-width: 61.8%;
@@ -37,7 +37,7 @@
   font-family: "Montserrat", sans-serif;
   font-weight: 400;
   font-size: 0.85rem;
-  color: var(--text-color-secondary);
+  @apply text-foreground-600;
   text-transform: capitalize;
 }
 

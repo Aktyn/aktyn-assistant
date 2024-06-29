@@ -133,9 +133,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
         <Checkbox
           color="default"
           isSelected={!!mockPaidRequests}
-          onValueChange={(checked) => {
-            setMockPaidRequests(checked)
-          }}
+          onValueChange={setMockPaidRequests}
         >
           Mock paid requests
         </Checkbox>
@@ -151,9 +149,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
         <Checkbox
           color="default"
           isSelected={!!launchHidden}
-          onValueChange={(checked) => {
-            setLaunchHidden(checked)
-          }}
+          onValueChange={setLaunchHidden}
         >
           Launch hidden
         </Checkbox>
@@ -161,9 +157,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
         <Checkbox
           color="default"
           isSelected={!!useHistory}
-          onValueChange={(checked) => {
-            setUseHistory(checked)
-          }}
+          onValueChange={setUseHistory}
         >
           Include history
         </Checkbox>

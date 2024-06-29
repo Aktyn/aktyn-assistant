@@ -38,8 +38,10 @@
 		"jest.monitorLongRun": 30000,
 		"jest.runMode": "watch",
 		"cSpell.words": [
+			"autoloader",
 			"contenteditable",
 			"Dismissable",
+			"listbox",
 			"nextui"
 		]
 	}

@@ -28,7 +28,7 @@ export const NotificationMessage = ({
   }
 
   return (
-    <div className="flex flex-row items-center gap-4">
+    <div className="flex flex-row items-center justify-between gap-4 w-full pr-2">
       <div className="flex flex-col items-start">
         {title && <div className="font-bold">{title}</div>}
         <div>{message}</div>

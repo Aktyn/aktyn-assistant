@@ -30,7 +30,6 @@ export const TitleHeader = () => {
       targets: header,
       easing: 'easeInOutQuad',
       duration: 400,
-      delay: 500,
       marginBottom: visible ? 0 : -height,
     })
 

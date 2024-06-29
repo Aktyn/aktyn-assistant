@@ -2,8 +2,10 @@ import { useContext, useEffect, useState } from 'react'
 import { ScrollShadow } from '@nextui-org/scroll-shadow'
 import { GlobalContext } from '../context/GlobalContextProvider'
 import { ViewType } from '../utils/navigation'
+import { Chat } from '../views/Chat'
 import { Info } from '../views/Info'
 import { Settings } from '../views/Settings'
+import { Tools } from '../views/Tools'
 
 const views = Object.values(ViewType)
 
@@ -47,11 +49,16 @@ export const Content = () => {
                 key={viewType}
                 className="absolute left-0 top-0 w-full h-full flex flex-col justify-start items-center transition-[opacity,transform] duration-400 ease-in-out overflow-x-hidden"
                 style={{
+                  pointerEvents: active ? 'all' : 'none',
                   opacity: active ? 1 : 0,
-                  transform: `translateX(${diff}%) scale(${diff === 0 ? 1 : 0.618})`,
+                  transform:
+                    viewType === ViewType.Chat
+                      ? `translate(${diff}%, ${Math.abs(diff)}%)`
+                      : `translateX(${diff}%) scale(${diff === 0 ? 1 : 0.618})`,
                 }}
               >
-                {viewType === ViewType.Chat && <span>TODO - chat</span>}
+                {viewType === ViewType.Chat && <Chat in={active} />}
+                {viewType === ViewType.Tools && <Tools in={active} />}
                 {viewType === ViewType.Settings && <Settings in={active} />}
                 {viewType === ViewType.Info && <Info in={active} />}
               </ScrollShadow>

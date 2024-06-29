@@ -16,10 +16,7 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease-in-out;
-  max-width: 61.8%;
-  background-color: color-mix(in srgb, #263238 80%, transparent);
-  border-radius: 2rem;
-  border: 1px solid #607D8B;
+  @apply bg-primary-200/25 border-1 border-primary-200 text-primary-100 rounded-full;
   padding-left: 1rem;
   padding-right: 0.5rem;
   box-shadow: 0 0 0.5rem #0002 inset;
@@ -37,13 +34,4 @@
 .chat-output>.options.active {
   opacity: 1;
   pointer-events: all;
-}
-
-.chat-output>.options .switch-label {
-  font-size: 0.85rem;
-  padding-right: 0.75rem;
-}
-
-.chat-output>.options button {
-  padding-block: 0.125rem;
 }
