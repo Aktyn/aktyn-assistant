@@ -1,5 +1,5 @@
-.chat-output>.options-menu-button, .chat-output>.options {
-  position: fixed;
+.chat-view>.options-menu-button, .chat-view>.options {
+  position: absolute !important;
   right: 1rem;
   top: 1rem;
   align-self: flex-end;
@@ -8,11 +8,11 @@
   backdrop-filter: blur(6px);
 }
 
-.chat-output>.options-menu-button {
+.chat-view>.options-menu-button {
   font-size: 1.5rem;
 }
 
-.chat-output>.options {
+.chat-view>.options {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease-in-out;
@@ -31,7 +31,7 @@
   white-space: nowrap;
 }
 
-.chat-output>.options.active {
+.chat-view>.options.active {
   opacity: 1;
   pointer-events: all;
 }

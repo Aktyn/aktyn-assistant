@@ -8,6 +8,7 @@ import {
 import { type ChatMessage } from '@aktyn-assistant/common'
 import { mdiCursorMove, mdiLoading } from '@mdi/js'
 import Icon from '@mdi/react'
+import { ScrollShadow } from '@nextui-org/scroll-shadow'
 import { cn } from '@nextui-org/theme'
 import anime from 'animejs'
 import { Converter } from 'showdown'
@@ -105,7 +106,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
 
   const sendChatMessage = useCallback(
     async (message: ChatMessage) => {
-      if ((messagesContainerRef.current?.childNodes.length ?? 0) > 2) {
+      if ((messagesContainerRef.current?.childNodes.length ?? 0) > 1) {
         const hr = document.createElement('hr')
         messagesContainerRef.current?.appendChild(hr)
       }
@@ -334,28 +335,31 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         quickChatMode && 'quick-chat-view',
       )}
     >
-      <div
+      <ScrollShadow
+        orientation="vertical"
+        size={60}
         ref={messagesContainerRef}
         className="chat-output empty"
         onWheel={handleWheel}
-      >
-        <ChatMenu
-          showRawResponse={!!showRawResponse}
-          setShowRawResponse={handleRawResponseToggle}
-          useHistory={!!useHistory}
-          setUseHistory={setUseHistory}
-          onClearChat={handleClearChat}
-        />
-      </div>
+      />
+      <ChatMenu
+        showRawResponse={!!showRawResponse}
+        setShowRawResponse={handleRawResponseToggle}
+        useHistory={!!useHistory}
+        setUseHistory={setUseHistory}
+        onClearChat={handleClearChat}
+      />
       <div className="chat-view-input-container">
         <AdvancedInput ref={inputRef} onSend={handleSend} disabled={loading} />
         <div className="chat-spinner" style={{ opacity: loading ? 1 : 0 }}>
           <Icon path={mdiLoading} spin size="1.5rem" />
         </div>
       </div>
-      <div className="handle">
-        <Icon path={mdiCursorMove} size="1.5rem" />
-        <span>Grab here to move the window</span>
+      <div className="handle-container">
+        <div className="handle">
+          <Icon path={mdiCursorMove} size="1.5rem" />
+          <span>Grab here to move the window</span>
+        </div>
       </div>
     </GlassCard>
   )

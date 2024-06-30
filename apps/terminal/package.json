@@ -15,8 +15,8 @@
 		"typecheck": "tsc --noEmit --skipLibCheck"
 	},
 	"dependencies": {
-		"@aktyn-assistant/common": "^1.0.0",
-		"@aktyn-assistant/core": "^1.0.0",
+		"@aktyn-assistant/common": "*",
+		"@aktyn-assistant/core": "*",
 		"terminal-kit": "^3.1.1",
 		"uuid": "^10.0.0"
 	},

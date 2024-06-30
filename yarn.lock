@@ -5,7 +5,7 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@aktyn-assistant/common@npm:^1.0.0, @aktyn-assistant/common@workspace:packages/common":
+"@aktyn-assistant/common@npm:*, @aktyn-assistant/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@aktyn-assistant/common@workspace:packages/common"
   dependencies:
@@ -28,11 +28,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@aktyn-assistant/core@npm:^1.0.0, @aktyn-assistant/core@workspace:packages/core":
+"@aktyn-assistant/core@npm:*, @aktyn-assistant/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@aktyn-assistant/core@workspace:packages/core"
   dependencies:
-    "@aktyn-assistant/common": "npm:^1.0.0"
+    "@aktyn-assistant/common": "npm:*"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.14.9"
     "@types/node-notifier": "npm:^8.0.5"
@@ -112,8 +112,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@aktyn-assistant/terminal@workspace:apps/terminal"
   dependencies:
-    "@aktyn-assistant/common": "npm:^1.0.0"
-    "@aktyn-assistant/core": "npm:^1.0.0"
+    "@aktyn-assistant/common": "npm:*"
+    "@aktyn-assistant/core": "npm:*"
     "@types/jest": "npm:^29.5.12"
     "@types/node": "npm:^20.14.9"
     "@types/terminal-kit": "npm:^2.5.6"
@@ -7675,8 +7675,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "aktyn-assistant-desktop@workspace:apps/desktop"
   dependencies:
-    "@aktyn-assistant/common": "npm:^1.0.0"
-    "@aktyn-assistant/core": "npm:^1.0.0"
+    "@aktyn-assistant/common": "npm:*"
+    "@aktyn-assistant/core": "npm:*"
     "@electron-forge/cli": "npm:^7.4.0"
     "@electron-forge/maker-deb": "npm:^7.4.0"
     "@electron-forge/maker-flatpak": "npm:^7.4.0"
