@@ -1,8 +1,9 @@
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren, ReactNode } from 'react'
 import { Button } from '@nextui-org/button'
 import {
   Modal,
   ModalBody,
+  type ModalBodyProps,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -11,11 +12,13 @@ import {
 
 type DialogProps = PropsWithChildren<
   {
-    title?: string
+    title?: ReactNode
     onCancel?: () => void
     onConfirm?: () => void
     disableConfirmButton?: boolean
-  } & Omit<ModalProps, 'children'>
+    isLoading?: boolean
+    bodyProps?: ModalBodyProps
+  } & Omit<ModalProps, 'children' | 'title'>
 >
 
 export const Dialog = ({
@@ -24,6 +27,8 @@ export const Dialog = ({
   onCancel,
   onConfirm,
   disableConfirmButton,
+  isLoading,
+  bodyProps,
   ...modalProps
 }: DialogProps) => {
   return (
@@ -34,12 +39,13 @@ export const Dialog = ({
       classNames={{
         backdrop:
           'backdrop-blur-sm bg-gradient-to-br from-primary-700/15 to-secondary-700/15',
+        wrapper: 'overflow-hidden',
       }}
       {...modalProps}
     >
       <ModalContent>
         {title && <ModalHeader>{title}</ModalHeader>}
-        <ModalBody>{children}</ModalBody>
+        <ModalBody {...bodyProps}>{children}</ModalBody>
         <ModalFooter>
           {onCancel && (
             <Button color="secondary" onPress={onCancel}>
@@ -51,6 +57,7 @@ export const Dialog = ({
               color="primary"
               isDisabled={disableConfirmButton}
               onPress={onConfirm}
+              isLoading={isLoading}
             >
               Confirm
             </Button>

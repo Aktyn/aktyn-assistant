@@ -3,16 +3,18 @@ import path from 'path'
 
 import { isDev, type ChatMessage } from '@aktyn-assistant/common'
 import {
+  addTool,
   AI,
   AiProviderType,
   getUserConfigValue,
   setUserConfigValue,
+  type ToolData,
   type UserConfigType,
 } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
-  BrowserWindow,
   app,
+  BrowserWindow,
   globalShortcut,
   ipcMain,
   type IpcMainEvent,
@@ -105,6 +107,14 @@ async function init() {
     ) => setUserConfigValue(key, value),
   )
   ipcMain.handle('getAvailableModels', () => ai.getAvailableModels())
+  ipcMain.handle('addTool', async (_, data: ToolData) => {
+    try {
+      await addTool(data)
+      return null
+    } catch (error) {
+      return error instanceof Error ? error.message : 'Unknown error'
+    }
+  })
 
   const win = await createMainWindow()
 

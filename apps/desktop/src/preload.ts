@@ -1,5 +1,5 @@
-import type { ChatResponse, ChatMessage } from '@aktyn-assistant/common'
-import type { AiProviderType } from '@aktyn-assistant/core'
+import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
+import type { AiProviderType, ToolData } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { contextBridge, ipcRenderer } from 'electron'
 
@@ -30,6 +30,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.send('promptApiKeyCallback', key),
   performChatQuery: (message: ChatMessage, model: string, messageId: string) =>
     ipcRenderer.send('performChatQuery', message, model, messageId),
+  addTool: (data: ToolData) => ipcRenderer.invoke('addTool', data),
 
   // Main to renderer
   onReady: (callback: () => void) =>

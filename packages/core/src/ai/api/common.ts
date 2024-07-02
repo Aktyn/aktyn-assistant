@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { getDataDirectory } from '../../user/user-config'
+import { getDataDirectory } from '../../utils'
 
 export enum AiProviderType {
   openai = 'OpenAI',

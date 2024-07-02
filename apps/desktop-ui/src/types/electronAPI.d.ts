@@ -1,5 +1,9 @@
 import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
-import type { AiProviderType, UserConfigType } from '@aktyn-assistant/core'
+import type {
+  AiProviderType,
+  ToolData,
+  UserConfigType,
+} from '@aktyn-assistant/core'
 
 type PromisyfyFunction<T extends (...args: unknown[]) => unknown> = (
   ...args: Parameters<T>
@@ -32,6 +36,7 @@ declare global {
         model: string,
         messageId: string,
       ) => void
+      addTool: (data: ToolData) => Promise<string | null>
 
       // Main to renderer
       onReady: (callback: () => void) => void

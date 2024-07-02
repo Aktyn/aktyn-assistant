@@ -1,6 +1,6 @@
 import Icon from '@mdi/react'
 import { Button, type ButtonProps } from '@nextui-org/button'
-import { cn } from '@nextui-org/theme'
+import { cn } from '@nextui-org/react'
 
 type IconButtonProps = {
   icon: string

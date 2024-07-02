@@ -27,6 +27,7 @@ import { mockChatStream } from './mock'
 import { loadTools } from './tools'
 
 export { AiProviderType } from './api/common'
+export { addTool, type ToolData } from './tools'
 
 //TODO: add this to readme if say.js will be implemented: `sudo apt-get install festival festvox-kallpc16k`
 // setTimeout(async () => {

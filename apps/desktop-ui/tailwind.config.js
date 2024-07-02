@@ -241,6 +241,11 @@ const components = [
   'select',
   'checkbox',
   'modal',
+  'breadcrumbs',
+  'spacer',
+  'dropdown',
+  'tooltip',
+  'spinner',
 ]
 
 /** @type {import('tailwindcss').Config} */
@@ -267,7 +272,7 @@ module.exports = {
       themes: {
         dark: {
           colors: {
-            default: colors.blueGrey,
+            default: { ...colors.blueGrey, DEFAULT: colors.blueGrey[400] },
             foreground: colors.blueGrey,
             primary: {
               50: '#E0F2F1',
@@ -283,20 +288,15 @@ module.exports = {
               DEFAULT: '#4DB6AC',
             },
             secondary: {
-              50: '#F2E0E1',
-              100: '#DFB2B6',
-              200: '#CB8087',
-              300: '#B64D57',
-              400: '#A62632',
-              500: '#96000E',
-              600: '#89000E',
-              700: '#79000E',
-              800: '#69000D',
-              900: '#4D000D',
-              DEFAULT: '#B64D57',
+              ...colors.indigo,
+              DEFAULT: colors.indigo[300],
             },
-            content1: '#37474F',
+            content1: colors.blueGrey[800],
+            content2: '#f55',
+            content3: '#f55',
+            content4: '#f55',
             overlay: '#000712',
+            divider: '#f55',
 
             ...colors,
           },

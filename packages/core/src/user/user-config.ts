@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 
 import { once } from '@aktyn-assistant/common'
-import { getAppDataPath } from 'appdata-path'
 
 import type { AiProviderType } from '../ai'
+import { getDataDirectory } from '../utils/external-data'
 
 /**
  ** Do not export this object
@@ -23,8 +23,6 @@ const USER_CONFIG = {
 }
 
 export type UserConfigType = typeof USER_CONFIG
-
-export const getDataDirectory = once(() => getAppDataPath('aktyn-assistant'))
 
 const getConfigPath = once(() => path.join(getDataDirectory(), 'config.json'))
 

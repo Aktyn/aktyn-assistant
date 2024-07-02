@@ -28,3 +28,7 @@
   @apply text-foreground-600;
   opacity: 0.5;
 }
+
+button {
+  outline: none !important;
+}

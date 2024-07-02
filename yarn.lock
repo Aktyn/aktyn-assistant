@@ -62,10 +62,12 @@ __metadata:
   dependencies:
     "@mdi/js": "npm:^7.4.47"
     "@mdi/react": "npm:^1.6.1"
+    "@nextui-org/breadcrumbs": "npm:^2.0.10"
     "@nextui-org/button": "npm:^2.0.34"
     "@nextui-org/card": "npm:^2.0.31"
     "@nextui-org/checkbox": "npm:^2.1.2"
     "@nextui-org/divider": "npm:^2.0.28"
+    "@nextui-org/dropdown": "npm:^2.1.26"
     "@nextui-org/input": "npm:^2.2.2"
     "@nextui-org/link": "npm:^2.0.32"
     "@nextui-org/listbox": "npm:^2.1.22"
@@ -73,11 +75,15 @@ __metadata:
     "@nextui-org/react": "npm:^2.4.2"
     "@nextui-org/scroll-shadow": "npm:^2.1.17"
     "@nextui-org/select": "npm:^2.2.2"
+    "@nextui-org/spacer": "npm:^2.0.29"
+    "@nextui-org/spinner": "npm:^2.0.30"
     "@nextui-org/switch": "npm:^2.0.31"
     "@nextui-org/system": "npm:^2.2.2"
     "@nextui-org/theme": "npm:^2.2.6"
+    "@nextui-org/tooltip": "npm:^2.0.36"
     "@types/animejs": "npm:^3.1.12"
     "@types/node": "npm:^20.14.9"
+    "@types/path-browserify": "npm:^1"
     "@types/prismjs": "npm:^1.26.4"
     "@types/react": "npm:^18.3.3"
     "@types/react-dom": "npm:^18.3.0"
@@ -97,6 +103,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.6.2"
     framer-motion: "npm:^11.2.12"
     notistack: "npm:^3.0.1"
+    path-browserify: "npm:^1.0.1"
     prettier: "npm:^3.3.2"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
@@ -3383,7 +3390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/breadcrumbs@npm:2.0.10":
+"@nextui-org/breadcrumbs@npm:2.0.10, @nextui-org/breadcrumbs@npm:^2.0.10":
   version: 2.0.10
   resolution: "@nextui-org/breadcrumbs@npm:2.0.10"
   dependencies:
@@ -3615,7 +3622,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/dropdown@npm:2.1.26":
+"@nextui-org/dropdown@npm:2.1.26, @nextui-org/dropdown@npm:^2.1.26":
   version: 2.1.26
   resolution: "@nextui-org/dropdown@npm:2.1.26"
   dependencies:
@@ -4147,7 +4154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/spacer@npm:2.0.29":
+"@nextui-org/spacer@npm:2.0.29, @nextui-org/spacer@npm:^2.0.29":
   version: 2.0.29
   resolution: "@nextui-org/spacer@npm:2.0.29"
   dependencies:
@@ -4162,7 +4169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/spinner@npm:2.0.30":
+"@nextui-org/spinner@npm:2.0.30, @nextui-org/spinner@npm:^2.0.30":
   version: 2.0.30
   resolution: "@nextui-org/spinner@npm:2.0.30"
   dependencies:
@@ -4308,7 +4315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/tooltip@npm:2.0.36":
+"@nextui-org/tooltip@npm:2.0.36, @nextui-org/tooltip@npm:^2.0.36":
   version: 2.0.36
   resolution: "@nextui-org/tooltip@npm:2.0.36"
   dependencies:
@@ -6735,6 +6742,13 @@ __metadata:
   version: 4.0.2
   resolution: "@types/parse-json@npm:4.0.2"
   checksum: 10c0/b1b863ac34a2c2172fbe0807a1ec4d5cb684e48d422d15ec95980b81475fac4fdb3768a8b13eef39130203a7c04340fc167bae057c7ebcafd7dec9fe6c36aeb1
+  languageName: node
+  linkType: hard
+
+"@types/path-browserify@npm:^1":
+  version: 1.0.2
+  resolution: "@types/path-browserify@npm:1.0.2"
+  checksum: 10c0/4140970d1d171760a63e2be7ae050e12b7035e99205d190f12b039c0afb5dc975352a913a7fde0997e38e74102f3496c73f49128c126492ca5d1498a0f1a5206
   languageName: node
   linkType: hard
 
@@ -16286,6 +16300,13 @@ __metadata:
     no-case: "npm:^3.0.4"
     tslib: "npm:^2.0.3"
   checksum: 10c0/05ff7c344809fd272fc5030ae0ee3da8e4e63f36d47a1e0a4855ca59736254192c5a27b5822ed4bae96e54048eec5f6907713cfcfff7cdf7a464eaf7490786d8
+  languageName: node
+  linkType: hard
+
+"path-browserify@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "path-browserify@npm:1.0.1"
+  checksum: 10c0/8b8c3fd5c66bd340272180590ae4ff139769e9ab79522e2eb82e3d571a89b8117c04147f65ad066dccfb42fcad902e5b7d794b3d35e0fd840491a8ddbedf8c66
   languageName: node
   linkType: hard
 

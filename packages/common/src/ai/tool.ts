@@ -20,14 +20,13 @@ export type Tool = {
   function: (data: unknown) => string | Promise<string>
 }
 
-//TODO: more advanced validation for better developer feedback
-export function isTool(tool: unknown): tool is Tool {
+export function validateTool(tool: unknown) {
   if (typeof tool !== 'object' || tool === null) {
-    return false
+    return 'Tool is not an object'
   }
 
   if (!('function' in tool) || typeof tool.function !== 'function') {
-    return false
+    return 'Tool is missing function'
   }
 
   if (
@@ -35,7 +34,7 @@ export function isTool(tool: unknown): tool is Tool {
     typeof tool.schema !== 'object' ||
     tool.schema === null
   ) {
-    return false
+    return 'Tool is missing schema'
   }
 
   const schema = tool.schema
@@ -44,8 +43,12 @@ export function isTool(tool: unknown): tool is Tool {
     typeof schema.functionName !== 'string' ||
     !schema.functionName.match(/^[a-zA-Z0-9_]{1,64}$/)
   ) {
-    return false
+    return 'Tool schema is missing functionName or it has invalid format'
   }
 
-  return true
+  return null
 }
+
+// function isTool(tool: unknown): tool is Tool {
+//   return validateTool(tool) === null
+// }
