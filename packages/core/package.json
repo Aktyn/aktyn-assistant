@@ -18,7 +18,7 @@
 		"@aktyn-assistant/common": "*",
 		"appdata-path": "^1.0.0",
 		"node-notifier": "^10.0.1",
-		"openai": "^4.52.1"
+		"openai": "^4.52.2"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
