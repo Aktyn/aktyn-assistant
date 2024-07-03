@@ -1,5 +1,5 @@
 import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
-import type { AiProviderType, ToolData } from '@aktyn-assistant/core'
+import type { AiProviderType, ToolsSourceData } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { contextBridge, ipcRenderer } from 'electron'
 
@@ -30,7 +30,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.send('promptApiKeyCallback', key),
   performChatQuery: (message: ChatMessage, model: string, messageId: string) =>
     ipcRenderer.send('performChatQuery', message, model, messageId),
-  addTool: (data: ToolData) => ipcRenderer.invoke('addTool', data),
+  addToolsSource: (data: ToolsSourceData) =>
+    ipcRenderer.invoke('addToolsSource', data),
+  loadAvailableToolsInfo: () => ipcRenderer.invoke('loadAvailableToolsInfo'),
+  setEnabledTools: (toolNames: string[]) =>
+    ipcRenderer.invoke('setEnabledTools', toolNames),
+  removeTool: (toolName: string) => ipcRenderer.invoke('removeTool', toolName),
 
   // Main to renderer
   onReady: (callback: () => void) =>

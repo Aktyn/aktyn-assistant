@@ -29,6 +29,10 @@
   opacity: 0.5;
 }
 
+.fixed-stroke path {
+  vector-effect: non-scaling-stroke;
+}
+
 button {
   outline: none !important;
 }

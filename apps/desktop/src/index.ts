@@ -1,27 +1,22 @@
 import fs from 'fs'
 import path from 'path'
 
-import { isDev, type ChatMessage } from '@aktyn-assistant/common'
+import { isDev } from '@aktyn-assistant/common'
 import {
-  addTool,
   AI,
   AiProviderType,
   getUserConfigValue,
   setUserConfigValue,
-  type ToolData,
-  type UserConfigType,
 } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {
-  app,
-  BrowserWindow,
-  globalShortcut,
-  ipcMain,
-  type IpcMainEvent,
-} from 'electron'
+import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
 
 import { setupAutoLaunch } from './autoLaunch'
-import { performChatQuery } from './chat'
+import {
+  setupAiHandlers,
+  setupToolHandlers,
+  setupUserConfigHandlers,
+} from './handlers'
 import { forceSingleInstance } from './lock'
 import { createChatWindow, createMainWindow, setupTray } from './window'
 
@@ -95,26 +90,9 @@ async function init() {
     setUserConfigValue('autoLaunch', on)
     return await setupAutoLaunch(on)
   })
-  ipcMain.handle('getUserConfigValue', (_, key: keyof UserConfigType) =>
-    getUserConfigValue(key),
-  )
-  ipcMain.on(
-    'setUserConfigValue',
-    <Key extends keyof UserConfigType>(
-      _: IpcMainEvent,
-      key: Key,
-      value: UserConfigType[Key],
-    ) => setUserConfigValue(key, value),
-  )
-  ipcMain.handle('getAvailableModels', () => ai.getAvailableModels())
-  ipcMain.handle('addTool', async (_, data: ToolData) => {
-    try {
-      await addTool(data)
-      return null
-    } catch (error) {
-      return error instanceof Error ? error.message : 'Unknown error'
-    }
-  })
+
+  setupUserConfigHandlers()
+  setupToolHandlers()
 
   const win = await createMainWindow()
 
@@ -158,17 +136,7 @@ async function init() {
     },
   })
 
-  ipcMain.on(
-    'performChatQuery',
-    async (event, message: ChatMessage, model: string, messageId: string) =>
-      performChatQuery(ai, event.sender, message, model, messageId).catch(
-        (error) => {
-          console.error(error)
-          ai.notifyError(error, 'Performing chat query error')
-          event.sender.send('chatResponse', messageId, { finished: true })
-        },
-      ),
-  )
+  setupAiHandlers(ai)
 
   ready = true
   win.webContents.send('ready')

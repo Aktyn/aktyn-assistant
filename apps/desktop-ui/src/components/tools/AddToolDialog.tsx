@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { mdiInformation, mdiRestart } from '@mdi/js'
 import Icon from '@mdi/react'
 import { Button } from '@nextui-org/button'
-import { cn, Input, Tooltip } from '@nextui-org/react'
+import { cn, Tooltip } from '@nextui-org/react'
 import anime from 'animejs'
 import { closeSnackbar, enqueueSnackbar } from 'notistack'
 import { FilesTreeView } from './FilesTreeView'
@@ -13,7 +13,7 @@ import { Dialog } from '../dialog/Dialog'
 
 type AddToolDialogProps = {
   open: boolean
-  onClose: () => void
+  onClose: (success?: boolean) => void
 }
 
 export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
@@ -23,8 +23,6 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
   const [filesTree, setFilesTree] = useState<FilesTree | null>(null)
   const [showFilesTree, setShowFilesTree] = useState(false)
   const [selectedFile, setSelectedFile] = useState<FixedFile | null>(null)
-  const [toolName, setToolName] = useState('')
-  const [toolNameError, setToolNameError] = useState('')
   const [addingTool, setAddingTool] = useState(false)
 
   const onFilesSelected = useCallback(
@@ -40,8 +38,6 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
       setFilesTree(null)
       setShowFilesTree(false)
       setSelectedFile(null)
-      setToolName('')
-      setToolNameError('')
       setAddingTool(false)
     }
   }, [open])
@@ -71,27 +67,14 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
     })
   }, [showFilesTree])
 
-  useEffect(() => {
-    if (toolName) {
-      setToolNameError('')
-    }
-  }, [toolName])
-
   const handleConfirm = useCallback(() => {
-    if (!toolName || !selectedFile || !filesTree) {
-      return
-    }
-
-    //TODO: validate in terms of uniqueness
-    if (toolName.length < 3) {
-      setToolNameError('Tool name is too short')
+    if (!selectedFile || !filesTree) {
       return
     }
 
     setAddingTool(true)
     window.electronAPI
-      .addTool({
-        toolName,
+      .addToolsSource({
         sourceDirectory: filesTree.path,
         mainFile: selectedFile.path,
       })
@@ -102,7 +85,7 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
             variant: 'success',
             message: 'Tool added',
           })
-          onClose()
+          onClose(true)
         } else {
           const key = enqueueSnackbar({
             variant: 'error',
@@ -121,7 +104,7 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
         setAddingTool(false)
         console.error(error)
       })
-  }, [filesTree, onClose, selectedFile, toolName])
+  }, [filesTree, onClose, selectedFile])
 
   return (
     <Dialog
@@ -147,7 +130,8 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
       }
       onCancel={onClose}
       onConfirm={handleConfirm}
-      disableConfirmButton={!toolName || !selectedFile}
+      // disableConfirmButton={!toolName || !selectedFile}
+      disableConfirmButton={!selectedFile}
       isLoading={addingTool}
       bodyProps={{
         className: cn(
@@ -170,7 +154,7 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
           !showFilesTree && 'pointer-events-none overflow-hidden',
         )}
       >
-        <Input
+        {/* <Input
           label={
             <div className="inline-flex flex-row items-center gap-x-1 pr-1">
               <span>Tool name</span>
@@ -196,7 +180,7 @@ export const AddToolDialog = ({ open, onClose }: AddToolDialogProps) => {
           classNames={{
             inputWrapper: 'border-1 border-divider/20',
           }}
-        />
+        /> */}
         <div
           className={cn(
             'text-lg font-semibold flex flex-row items-center gap-x-2 transition-colors',

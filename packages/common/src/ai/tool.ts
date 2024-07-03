@@ -48,7 +48,3 @@ export function validateTool(tool: unknown) {
 
   return null
 }
-
-// function isTool(tool: unknown): tool is Tool {
-//   return validateTool(tool) === null
-// }

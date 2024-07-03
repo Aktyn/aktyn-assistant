@@ -24,10 +24,17 @@ import {
 } from './api/common'
 import * as OpenAiAPI from './api/openai'
 import { mockChatStream } from './mock'
-import { loadTools } from './tools'
+import { getActiveTools } from './tools'
 
 export { AiProviderType } from './api/common'
-export { addTool, type ToolData } from './tools'
+export {
+  addToolsSource,
+  type ToolsSourceData,
+  loadAvailableToolsInfo,
+  type AvailableToolsInfo,
+  setEnabledTools,
+  removeTool,
+} from './tools'
 
 //TODO: add this to readme if say.js will be implemented: `sudo apt-get install festival festvox-kallpc16k`
 // setTimeout(async () => {
@@ -74,7 +81,9 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
   private constructor(
     private readonly providerType: ProviderType,
     private readonly providerClient: GetProviderClass<ProviderType>,
-  ) {}
+  ) {
+    this.loadTools()
+  }
 
   private static async getProviderClient<ProviderType extends AiProviderType>(
     init: InitType<ProviderType>,
@@ -143,7 +152,6 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
     const client = await AI.getProviderClient<ProviderType>(init)
     AI.instance = new AI<ProviderType>(init.providerType, client)
-    await AI.instance.init()
 
     return AI.instance
   }
@@ -152,8 +160,8 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   private tools: Array<Tool> = []
 
-  private async init() {
-    this.tools = await loadTools() //TODO: filter by list of enabled tools specified in user config
+  public loadTools() {
+    this.tools = getActiveTools()
     if (this.tools.length) {
       const plural = this.tools.length === 1 ? '' : 's'
       console.info(
@@ -237,13 +245,15 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     AI.notifyError(error, title)
   }
 
-  static notifyError(error: unknown, title = 'AI error') {
+  static notifyError(error: unknown, title?: string) {
     if (isDev()) {
       console.error(error)
     }
 
     const errorObject = {
-      title,
+      title:
+        title ??
+        (AI.instance ? `AI error (${AI.instance.providerType})` : 'AI error'),
       message: error instanceof Error ? error.message : undefined,
     }
     notify(errorObject)

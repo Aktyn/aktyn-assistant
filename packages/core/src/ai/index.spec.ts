@@ -90,7 +90,7 @@ describe(AI.notifyError.name, () => {
     process.env.NODE_ENV = 'dev'
     AI.notifyError(error)
     expect(notifyMock).toHaveBeenCalledWith({
-      title: 'AI error',
+      title: 'AI error (OpenAI)',
       message: 'Test error',
     })
   })

@@ -1,7 +1,8 @@
 import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
 import type {
   AiProviderType,
-  ToolData,
+  AvailableToolsInfo,
+  ToolsSourceData,
   UserConfigType,
 } from '@aktyn-assistant/core'
 
@@ -36,7 +37,10 @@ declare global {
         model: string,
         messageId: string,
       ) => void
-      addTool: (data: ToolData) => Promise<string | null>
+      addToolsSource: (data: ToolsSourceData) => Promise<string | null>
+      loadAvailableToolsInfo: () => Promise<Array<AvailableToolsInfo>>
+      setEnabledTools: (toolNames: string[]) => Promise<void>
+      removeTool: (toolName: string) => Promise<void>
 
       // Main to renderer
       onReady: (callback: () => void) => void

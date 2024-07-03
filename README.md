@@ -62,4 +62,3 @@ If you already have an OpenAI account, you can generate an API key [here](https:
 - Attaching screenshot or selected screen region to active chat with AI
 - Real time voice chat utilizing GPT-4o model possibilities
 - Support for multiple AI providers
-- More integration with system (eg. ability to analyze playing audio and answer questions based on it)
