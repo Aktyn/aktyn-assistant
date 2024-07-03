@@ -120,7 +120,7 @@ export function addToolsSource(toolData: ToolsSourceData) {
   }
 
   const directorySize = calculateDirectorySize(toolData.sourceDirectory)
-  const directorySizeLimit = 1024 * 1024 * 5
+  const directorySizeLimit = 1024 * 1024 * 512
   if (directorySize > directorySizeLimit) {
     throw new Error(
       `Tool source directory is too big: ${formatBytes(directorySize)}; limit is ${formatBytes(
@@ -134,7 +134,6 @@ export function addToolsSource(toolData: ToolsSourceData) {
     throw new Error(`No tools found in ${toolData.mainFile}`)
   }
 
-  // const toolId = `${toolData.toolName.replace(/\s+/g, '_').replace(/[^a-z\d_]*/gi, '') || 'noname'}-${uuidv4()}`
   const toolsSourceId = uuidv4()
 
   const availableTools = loadAvailableToolsInfo()

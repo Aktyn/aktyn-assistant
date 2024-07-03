@@ -1,4 +1,3 @@
-import { cmp } from '@aktyn-assistant/common'
 import path from 'path-browserify'
 
 export type FixedFile = File & { path: string }
@@ -6,6 +5,10 @@ export type FilesTree = {
   path: string
   files: FixedFile[]
   directories: Record<string, FilesTree>
+}
+
+export function isFixedFile(file: unknown): file is FixedFile {
+  return file instanceof File && 'path' in file
 }
 
 export async function getAllFileEntries(
@@ -64,9 +67,11 @@ async function readEntryContentAsync(entry: FileSystemEntry) {
 
     reading++
     //@ts-expect-error missing typings
-    entry.file(async (file: FixedFile) => {
+    entry.file(async (file) => {
       reading--
-      contents.push(file)
+      if (isFixedFile(file)) {
+        contents.push(file)
+      }
 
       if (reading === 0) {
         resolve(contents)
@@ -80,61 +85,48 @@ function getCommonRoot(files: FixedFile[]) {
     return ''
   }
 
-  const offset = files[0].path.lastIndexOf(files[0].name)
-  let root = offset === -1 ? files[0].path : files[0].path.substring(0, offset)
-
+  let shortestDirectory = path.dirname(files[0].path)
   for (let i = 1; i < files.length; i++) {
-    root = root.substring(0, cmp(root, files[i].path))
-  }
-  return root
-}
-
-function getRootDirectoryName(pathValue: string) {
-  if (!pathValue.includes(path.sep)) {
-    return pathValue
+    const dir = path.dirname(files[i].path)
+    if (dir.length < shortestDirectory.length) {
+      shortestDirectory = dir
+    }
   }
 
-  const firstSeparatorIndex = pathValue.indexOf(path.sep)
-  return pathValue.substring(0, firstSeparatorIndex)
+  return shortestDirectory
 }
 
 export function buildFilesTree(
   files: FixedFile[],
   root = getCommonRoot(files),
-): FilesTree {
-  const [filesInRoot, rest] = files.reduce(
-    (acc, file) => {
-      const relativePath = path.relative(root, file.path)
-      if (relativePath.includes(path.sep)) {
-        acc[1].push(file)
-      } else {
-        acc[0].push(file)
-      }
-      return acc
-    },
-    [[], []] as [FixedFile[], FixedFile[]],
-  )
-
-  const nestedLevelDirectories = new Set<string>()
-  for (const file of rest) {
-    const relativePath = path.relative(root, file.path)
-    const rootDir = getRootDirectoryName(relativePath)
-    if (rootDir) {
-      nestedLevelDirectories.add(rootDir)
-    }
-  }
-
-  const directories: Record<string, FilesTree> = {}
-  for (const dir of nestedLevelDirectories) {
-    if (dir === '.' || dir === '..') {
-      continue
-    }
-    directories[dir] = buildFilesTree(rest, path.join(root, dir))
-  }
-
-  return {
+) {
+  const rootTree: FilesTree = {
     path: root,
-    files: filesInRoot,
-    directories,
+    files: [],
+    directories: {},
   }
+
+  for (const file of files) {
+    const relativePath = path.relative(root, file.path)
+    const directoriesArray = path.dirname(relativePath).split(path.sep)
+
+    let tree = rootTree
+    for (const dir of directoriesArray) {
+      if (dir === '.' || dir === '..') {
+        continue
+      }
+
+      if (!tree.directories[dir]) {
+        tree.directories[dir] = {
+          path: path.join(tree.path, dir),
+          files: [],
+          directories: {},
+        }
+      }
+      tree = tree.directories[dir]
+    }
+    tree.files.push(file)
+  }
+
+  return rootTree
 }

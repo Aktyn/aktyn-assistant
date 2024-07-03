@@ -6,7 +6,6 @@
 @import './common/elements.css';
 @import './common/lists.css';
 @import './common/notifications.css';
-@import './views/chat.css';
 @import './common/code-blocks.css';
 
 @font-face {

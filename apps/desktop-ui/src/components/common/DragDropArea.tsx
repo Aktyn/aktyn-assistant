@@ -8,12 +8,13 @@ import {
 } from 'react'
 import { mdiFolderDownloadOutline } from '@mdi/js'
 import Icon from '@mdi/react'
-import { cn } from '@nextui-org/react'
+import { cn, Spinner } from '@nextui-org/react'
+import { useMounted } from '../../hooks/useMounted'
 import {
   buildFilesTree,
-  type FilesTree,
   getAllFileEntries,
-  type FixedFile,
+  isFixedFile,
+  type FilesTree,
 } from '../../utils/file-helpers'
 
 type DragDropAreaProps = {
@@ -23,20 +24,30 @@ type DragDropAreaProps = {
 export const DragDropArea = forwardRef<HTMLDivElement, DragDropAreaProps>(
   ({ onChange }, forwardRef) => {
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const mounted = useMounted()
 
     const [isDragOver, setIsDragOver] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>(
       async (event) => {
         event.preventDefault()
         setIsDragOver(false)
+        setLoading(true)
 
         const files = await getAllFileEntries(event.dataTransfer.items)
         if (files.length) {
-          onChange(buildFilesTree(files))
+          const tree = buildFilesTree(files)
+          if (mounted.current) {
+            setLoading(false)
+            onChange(tree)
+          }
+        } else {
+          setLoading(false)
+          console.warn('No files found in the drag and drop operation')
         }
       },
-      [onChange],
+      [mounted, onChange],
     )
 
     const handleFileSelect = useCallback<ChangeEventHandler<HTMLInputElement>>(
@@ -45,13 +56,22 @@ export const DragDropArea = forwardRef<HTMLDivElement, DragDropAreaProps>(
           return
         }
 
+        setLoading(true)
+
         const { files: fileList } = event.target
-        const files = Array.from(fileList ?? []) as FixedFile[]
-        if (files.length) {
-          onChange(buildFilesTree(files))
+        const files = Array.from(fileList ?? [])
+        if (files.length && files.every(isFixedFile)) {
+          const tree = buildFilesTree(files)
+          if (mounted.current) {
+            setLoading(false)
+            onChange(tree)
+          }
+        } else {
+          setLoading(false)
+          console.warn('No files selected')
         }
       },
-      [onChange],
+      [mounted, onChange],
     )
 
     return (
@@ -78,11 +98,17 @@ export const DragDropArea = forwardRef<HTMLDivElement, DragDropAreaProps>(
           onChange={handleFileSelect}
           style={{ display: 'none' }}
         />
-        <Icon
-          path={mdiFolderDownloadOutline}
-          size="5rem"
-          className="pointer-events-none"
-        />
+        {loading ? (
+          <div className="flex" style={{ width: '5rem', height: '5rem' }}>
+            <Spinner size="lg" color="current" />
+          </div>
+        ) : (
+          <Icon
+            path={mdiFolderDownloadOutline}
+            size="5rem"
+            className="pointer-events-none"
+          />
+        )}
         <div className="flex flex-col items-start pointer-events-none">
           <span className="font-bold text-lg text-balance">
             Choose files or directory from your device or drop it here

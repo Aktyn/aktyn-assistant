@@ -1,15 +1,8 @@
-@import './chat-menu.css';
-
 #root:has(.quick-chat-view), #root:has(.quick-chat-view)>* {
   @apply h-full;
 }
 
 .chat-view.quick-chat-view {
-  /* background: linear-gradient(to bottom,
-      color-mix(in srgb, #546E7A 95%, transparent) 0%,
-      color-mix(in srgb, #455A64 95%, transparent) 20%,
-      color-mix(in srgb, #37474F 95%, transparent) 80%,
-      color-mix(in srgb, #263238 95%, transparent) 100%); */
   @apply bg-background/50;
   box-shadow: none;
   border: none;
@@ -82,7 +75,7 @@
   margin-top: auto;
   box-sizing: border-box;
   max-width: 60rem;
-  width: calc(100% - 4rem);
+  width: 100%;
 
   display: grid;
   grid-template-columns: 100%;
@@ -135,6 +128,18 @@
   display: inline;
   margin-inline: 0.25rem;
   vertical-align: middle;
+}
+
+.chat-message a {
+  @apply font-semibold text-lightBlue-200 transition-colors;
+}
+
+.chat-message a:hover {
+  @apply text-lightBlue-50;
+}
+
+.chat-message a:active {
+  @apply text-primary-200;
 }
 
 .chat-message.user {

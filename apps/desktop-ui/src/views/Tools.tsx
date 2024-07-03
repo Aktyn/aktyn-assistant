@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { mdiDelete, mdiPlusBox } from '@mdi/js'
+import { mdiPlusBox } from '@mdi/js'
 import Icon from '@mdi/react'
 import { Button } from '@nextui-org/button'
 import { CardBody, CardHeader } from '@nextui-org/card'
-import { Checkbox, CheckboxGroup } from '@nextui-org/checkbox'
-import { Tooltip } from '@nextui-org/tooltip'
 import anime from 'animejs'
 import { GlassCard } from '../components/common/GlassCard'
 import { AddToolDialog } from '../components/tools/AddToolDialog'
+import { ToolsList } from '../components/tools/ToolsList'
 import { useCancellablePromise } from '../hooks/useCancellablePromise'
 
 type AvailableToolsInfo = Awaited<
@@ -23,8 +22,6 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
     Array<AvailableToolsInfo>
   >([])
 
-  const enabledToolsCount = availableTools.filter((tool) => tool.enabled).length
-
   const loadTools = useCallback(() => {
     cancellable(window.electronAPI.loadAvailableToolsInfo())
       .then(setAvailableTools)
@@ -36,24 +33,6 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
       loadTools()
     }
   }, [active, loadTools])
-
-  const handleEnabledToolsChange = useCallback(
-    (toolNames: string[]) => {
-      cancellable(window.electronAPI.setEnabledTools(toolNames))
-        .then(loadTools)
-        .catch(console.error)
-    },
-    [cancellable, loadTools],
-  )
-
-  const removeTool = useCallback(
-    (toolName: string) => {
-      cancellable(window.electronAPI.removeTool(toolName))
-        .then(loadTools)
-        .catch(console.error)
-    },
-    [cancellable, loadTools],
-  )
 
   useEffect(() => {
     const container = ref.current
@@ -95,61 +74,8 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
             <CardHeader className="text-xl font-bold justify-center">
               Available tools
             </CardHeader>
-            <CardBody className="gap-y-2">
-              <Checkbox
-                isIndeterminate={
-                  enabledToolsCount > 0 &&
-                  enabledToolsCount < availableTools.length
-                }
-                isSelected={enabledToolsCount === availableTools.length}
-                onValueChange={(selected) => {
-                  if (selected) {
-                    handleEnabledToolsChange(
-                      availableTools.map((tool) => tool.functionName),
-                    )
-                  } else {
-                    handleEnabledToolsChange([])
-                  }
-                }}
-              >
-                Enable all
-              </Checkbox>
-              <CheckboxGroup
-                value={availableTools.reduce((acc, tool) => {
-                  if (tool.enabled) {
-                    acc.push(tool.functionName)
-                  }
-                  return acc
-                }, [] as string[])}
-                onValueChange={handleEnabledToolsChange}
-              >
-                {availableTools.map((tool) => (
-                  <div
-                    key={`${tool.functionName}-${tool.directoryName}`}
-                    className="flex flex-row gap-x-4"
-                  >
-                    <Checkbox value={tool.functionName}>
-                      <div className="flex flex-col items-start">
-                        <strong>{tool.functionName}</strong>
-                        <span className="text-sm text-foreground-500">
-                          {tool.description}
-                        </span>
-                      </div>
-                    </Checkbox>
-                    <Tooltip content="Remove tool">
-                      <Button
-                        isIconOnly
-                        size="md"
-                        variant="light"
-                        radius="full"
-                        onClick={() => removeTool(tool.functionName)}
-                      >
-                        <Icon path={mdiDelete} size="1.5rem" />
-                      </Button>
-                    </Tooltip>
-                  </div>
-                ))}
-              </CheckboxGroup>
+            <CardBody>
+              <ToolsList tools={availableTools} onRequestReload={loadTools} />
             </CardBody>
           </GlassCard>
         )}

@@ -5,6 +5,7 @@ import { Button } from '@nextui-org/button'
 import { Checkbox } from '@nextui-org/checkbox'
 import { Divider } from '@nextui-org/divider'
 import anime from 'animejs'
+import './chat-menu.css'
 
 type ChatMenuProps = {
   onClearChat: () => void

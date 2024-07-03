@@ -27,6 +27,10 @@
 			"name": "Weather tool",
 			"path": "./tools/weather"
 		},
+		{
+			"name": "Web search tool",
+			"path": "./tools/web-search"
+		},
 	],
 	"settings": {
 		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",
@@ -42,7 +46,8 @@
 			"contenteditable",
 			"Dismissable",
 			"listbox",
-			"nextui"
+			"nextui",
+			"uddg"
 		]
 	}
 }

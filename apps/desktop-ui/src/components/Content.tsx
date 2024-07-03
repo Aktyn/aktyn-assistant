@@ -47,7 +47,7 @@ export const Content = () => {
             return (
               <ScrollShadow
                 key={viewType}
-                className="absolute left-0 top-0 w-full h-full flex flex-col justify-start items-center transition-[opacity,transform] duration-400 ease-in-out overflow-x-hidden"
+                className="absolute left-0 top-0 w-full h-full flex flex-col justify-start items-center transition-[opacity,transform] duration-400 ease-in-out overflow-x-hidden px-4"
                 style={{
                   pointerEvents: active ? 'all' : 'none',
                   opacity: active ? 1 : 0,
