@@ -52,8 +52,8 @@
     "@types/node": "^20.14.9",
     "@types/prismjs": "^1.26.4",
     "@types/showdown": "^2.0.6",
-    "@typescript-eslint/eslint-plugin": "^7.14.1",
-    "@typescript-eslint/parser": "^7.14.1",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "electron": "^31.1.0",
@@ -69,6 +69,6 @@
     "shx": "^0.3.4",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.3"
   }
 }

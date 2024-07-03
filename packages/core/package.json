@@ -18,7 +18,7 @@
 		"@aktyn-assistant/common": "*",
 		"appdata-path": "^1.0.0",
 		"node-notifier": "^10.0.1",
-		"openai": "^4.52.1",
+		"openai": "^4.52.3",
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
@@ -26,8 +26,8 @@
 		"@types/node": "^20.14.9",
 		"@types/node-notifier": "^8.0.5",
 		"@types/uuid": "^10.0.0",
-		"@typescript-eslint/eslint-plugin": "^7.14.1",
-		"@typescript-eslint/parser": "^7.13.1",
+		"@typescript-eslint/eslint-plugin": "^7.15.0",
+		"@typescript-eslint/parser": "^7.15.0",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-import-resolver-typescript": "^3.6.1",
@@ -39,6 +39,6 @@
 		"prettier-eslint": "^16.3.0",
 		"ts-jest": "^29.1.5",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.5.2"
+		"typescript": "^5.5.3"
 	}
 }
