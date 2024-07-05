@@ -9,8 +9,8 @@ import { AddToolDialog } from '../components/tools/AddToolDialog'
 import { ToolsList } from '../components/tools/ToolsList'
 import { useCancellablePromise } from '../hooks/useCancellablePromise'
 
-type AvailableToolsInfo = Awaited<
-  ReturnType<typeof window.electronAPI.loadAvailableToolsInfo>
+type ToolInfo = Awaited<
+  ReturnType<typeof window.electronAPI.loadToolsInfo>
 >[number]
 
 export const Tools = ({ in: active }: { in?: boolean }) => {
@@ -18,12 +18,10 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
   const cancellable = useCancellablePromise()
 
   const [addToolDialogOpen, setAddToolDialogOpen] = useState(false)
-  const [availableTools, setAvailableTools] = useState<
-    Array<AvailableToolsInfo>
-  >([])
+  const [availableTools, setAvailableTools] = useState<Array<ToolInfo>>([])
 
   const loadTools = useCallback(() => {
-    cancellable(window.electronAPI.loadAvailableToolsInfo())
+    cancellable(window.electronAPI.loadToolsInfo())
       .then(setAvailableTools)
       .catch(console.error)
   }, [cancellable])

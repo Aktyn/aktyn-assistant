@@ -246,6 +246,7 @@ const components = [
   'dropdown',
   'tooltip',
   'spinner',
+  'chip',
 ]
 
 /** @type {import('tailwindcss').Config} */

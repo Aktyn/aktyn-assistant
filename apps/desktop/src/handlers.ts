@@ -3,7 +3,7 @@ import {
   addToolsSource,
   type AI,
   getUserConfigValue,
-  loadAvailableToolsInfo,
+  loadToolsInfo,
   removeTool,
   setEnabledTools,
   setUserConfigValue,
@@ -53,7 +53,7 @@ export function setupToolHandlers() {
       return error instanceof Error ? error.message : 'Unknown error'
     }
   })
-  ipcMain.handle('loadAvailableToolsInfo', () => loadAvailableToolsInfo())
+  ipcMain.handle('loadToolsInfo', () => loadToolsInfo())
   ipcMain.handle('setEnabledTools', (_, toolNames: string[]) =>
     setEnabledTools(toolNames),
   )

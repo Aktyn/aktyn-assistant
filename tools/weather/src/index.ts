@@ -1,10 +1,12 @@
 type ToolSchema = {
+  version?: string
   functionName: string
   description?: string
   parameters?: Record<string, unknown>
 }
 
 const toolSchema: ToolSchema = {
+  version: '1.0.0',
   functionName: 'get_current_weather',
   description: 'Get the current weather in a given location',
   parameters: {

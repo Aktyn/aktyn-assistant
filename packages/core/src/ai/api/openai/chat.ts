@@ -20,7 +20,7 @@ function updateConversationHistory(
   })
 }
 
-function deleteOldConversations() {
+function deleteExpiredConversations() {
   const now = Date.now()
   const lifetime = 1000 * 60 * 60 * 40 // 4 hours
   for (const [conversationId, conversation] of conversationsHistory) {
@@ -76,7 +76,7 @@ export async function performChatQuery(
       ? { role: 'user', content: message.contents[0].content }
       : mapUserMessagesContent(message.contents)
 
-  deleteOldConversations()
+  deleteExpiredConversations()
 
   const messages = [...previousMessages, openAiMessage]
   updateConversationHistory(message.conversationId, messages)

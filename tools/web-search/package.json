@@ -2,16 +2,19 @@
   "name": "@aktyn-assistant-tools/web-search",
   "version": "0.1.0",
   "main": "./dist/index.js",
+  "private": true,
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "start": "node ./dist/index.js",
-    "dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start:test || exit 1\" -e ts,html",
+    "dev:test": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start:test || exit 1\" -e ts,html",
+    "dev": "nodemon --watch ./src --exec \"yarn run build\" --ignore dist/ -e ts",
     "start:test": "node ./dist/test.js",
     "format": "prettier --write src/**/*{.ts,.tsx}",
     "lint": "eslint src/**/*.ts --fix",
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "dependencies": {
+    "@aktyn-assistant/common": "*",
     "cheerio": "^1.0.0-rc.12"
   },
   "devDependencies": {

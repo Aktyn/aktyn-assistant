@@ -6,7 +6,9 @@ import {
   once,
   validateTool,
   type Tool,
+  type ToolSchema,
 } from '@aktyn-assistant/common'
+import WebSearchTool from '@aktyn-assistant-tools/web-search'
 import { v4 as uuidv4 } from 'uuid'
 
 import { getDataDirectory } from '../utils'
@@ -14,13 +16,21 @@ import { calculateDirectorySize } from '../utils/file-helpers'
 
 import { AI } from '.'
 
-export type AvailableToolsInfo = {
-  functionName: string
-  description?: string
+type ToolInfoBase = {
+  schema: ToolSchema
   enabled: boolean
+}
+type BuiltInToolInfo = ToolInfoBase & {
+  builtIn: true
+}
+type ImportedToolInfo = ToolInfoBase & {
   directoryName: string
   mainFileRelativePath: string
+  builtIn: false
 }
+export type ToolInfo = BuiltInToolInfo | ImportedToolInfo
+
+const builtInTools: Tool[] = [...WebSearchTool()]
 
 const getToolsDirectoryPath = once(() => path.join(getDataDirectory(), 'tools'))
 
@@ -48,31 +58,30 @@ function loadToolsFromExternalSource(indexPath: string) {
   return tools
 }
 
-//TODO: test by mocking file system
 export function getActiveTools(): Array<Tool> {
-  const availableTools = loadAvailableToolsInfo()
+  const toolInfos = loadToolsInfo()
 
   const moduleToolsBuffer = new Map<string, Array<Tool>>()
 
-  const tools: Array<Tool> = []
-  for (const availableTool of availableTools) {
-    if (!availableTool.enabled) {
+  const tools: Array<Tool> = [...builtInTools]
+  for (const toolInfo of toolInfos) {
+    if (!toolInfo.enabled || toolInfo.builtIn) {
       continue
     }
 
     const mainFilePath = path.join(
       getToolsDirectoryPath(),
-      availableTool.directoryName,
-      availableTool.mainFileRelativePath,
+      toolInfo.directoryName,
+      toolInfo.mainFileRelativePath,
     )
     try {
       const moduleTools =
-        moduleToolsBuffer.get(availableTool.directoryName) ??
+        moduleToolsBuffer.get(toolInfo.directoryName) ??
         loadToolsFromExternalSource(mainFilePath)
-      moduleToolsBuffer.set(availableTool.directoryName, moduleTools)
+      moduleToolsBuffer.set(toolInfo.directoryName, moduleTools)
 
       const extractedTool = moduleTools.find(
-        (tool) => tool.schema.functionName === availableTool.functionName,
+        (tool) => tool.schema.functionName === toolInfo.schema.functionName,
       )
       if (extractedTool) {
         tools.push(extractedTool)
@@ -87,21 +96,52 @@ export function getActiveTools(): Array<Tool> {
   return tools
 }
 
-export function loadAvailableToolsInfo(): Array<AvailableToolsInfo> {
+export function loadToolsInfo() {
   try {
-    const data = JSON.parse(
-      fs.readFileSync(path.join(getToolsDirectoryPath(), 'index.json'), 'utf8'),
-    )
-    return data
+    const indexPath = path.join(getToolsDirectoryPath(), 'index.json')
+    if (!fs.existsSync(indexPath)) {
+      const builtInToolInfos = builtInTools.map(
+        (tool) =>
+          ({
+            schema: tool.schema,
+            enabled: true,
+            builtIn: true,
+          }) satisfies BuiltInToolInfo,
+      )
+      saveToolsInfo(builtInToolInfos)
+      return builtInToolInfos
+    }
+    const toolInfos: ToolInfo[] = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
+    for (const builtInTool of builtInTools) {
+      if (
+        !toolInfos.some(
+          (tool) =>
+            tool.schema.functionName === builtInTool.schema.functionName,
+        )
+      ) {
+        toolInfos.push({
+          schema: builtInTool.schema,
+          enabled: true,
+          builtIn: true,
+        })
+      }
+    }
+    return toolInfos
   } catch {
     return []
   }
 }
-function saveAvailableToolsInfo(data: Array<AvailableToolsInfo>) {
+
+function saveToolsInfo(data: Array<ToolInfo>) {
+  if (!fs.existsSync(getToolsDirectoryPath())) {
+    fs.mkdirSync(getToolsDirectoryPath(), { recursive: true })
+  }
   fs.writeFileSync(
     path.join(getToolsDirectoryPath(), 'index.json'),
     JSON.stringify(data, null, 2),
-    'utf8',
+    {
+      encoding: 'utf8',
+    },
   )
 }
 
@@ -136,10 +176,10 @@ export function addToolsSource(toolData: ToolsSourceData) {
 
   const toolsSourceId = uuidv4()
 
-  const availableTools = loadAvailableToolsInfo()
+  const toolInfos = loadToolsInfo()
   for (const tool of tools) {
     if (
-      availableTools.some((t) => t.functionName === tool.schema.functionName)
+      toolInfos.some((t) => t.schema.functionName === tool.schema.functionName)
     ) {
       if (tools.length === 1) {
         throw new Error(
@@ -156,16 +196,17 @@ export function addToolsSource(toolData: ToolsSourceData) {
       }
     }
 
-    availableTools.push({
-      functionName: tool.schema.functionName,
-      description: tool.schema.description,
+    const importedTool: ImportedToolInfo = {
+      schema: tool.schema,
       enabled: true,
       directoryName: toolsSourceId,
       mainFileRelativePath: path.relative(
         toolData.sourceDirectory,
         toolData.mainFile,
       ),
-    })
+      builtIn: false,
+    }
+    toolInfos.push(importedTool)
   }
 
   const toolsDirectory = getToolsDirectoryPath()
@@ -179,7 +220,7 @@ export function addToolsSource(toolData: ToolsSourceData) {
     dereference: true,
     force: true,
   })
-  saveAvailableToolsInfo(availableTools)
+  saveToolsInfo(toolInfos)
 
   AI.client()
     .then((client) => client.loadTools())
@@ -187,11 +228,11 @@ export function addToolsSource(toolData: ToolsSourceData) {
 }
 
 export function setEnabledTools(toolNames: string[]) {
-  const availableTools = loadAvailableToolsInfo()
-  for (const tool of availableTools) {
-    tool.enabled = toolNames.includes(tool.functionName)
+  const toolInfos = loadToolsInfo()
+  for (const tool of toolInfos) {
+    tool.enabled = toolNames.includes(tool.schema.functionName)
   }
-  saveAvailableToolsInfo(availableTools)
+  saveToolsInfo(toolInfos)
 
   AI.client()
     .then((client) => client.loadTools())
@@ -199,16 +240,19 @@ export function setEnabledTools(toolNames: string[]) {
 }
 
 export function removeTool(toolName: string) {
-  const availableTools = loadAvailableToolsInfo()
-  const tool = availableTools.find((tool) => tool.functionName === toolName)
+  const toolInfos = loadToolsInfo()
+  const tool = toolInfos.find(
+    (tool) => !tool.builtIn && tool.schema.functionName === toolName,
+  ) as ImportedToolInfo | undefined
   if (!tool) {
-    throw new Error(`Tool with name "${toolName}" not found`)
+    throw new Error(`Imported tool with name "${toolName}" not found`)
   }
-  availableTools.splice(availableTools.indexOf(tool), 1)
-  saveAvailableToolsInfo(availableTools)
+  toolInfos.splice(toolInfos.indexOf(tool), 1)
+  saveToolsInfo(toolInfos)
 
+  const importedToolInfos = toolInfos.filter((tool) => !tool.builtIn)
   if (
-    !availableTools.some((tool) => tool.directoryName === tool.directoryName)
+    !importedToolInfos.some((tool) => tool.directoryName === tool.directoryName)
   ) {
     fs.rm(
       path.join(getToolsDirectoryPath(), tool.directoryName),

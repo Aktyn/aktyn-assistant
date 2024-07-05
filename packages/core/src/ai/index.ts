@@ -29,11 +29,11 @@ import { getActiveTools } from './tools'
 export { AiProviderType } from './api/common'
 export {
   addToolsSource,
-  type ToolsSourceData,
-  loadAvailableToolsInfo,
-  type AvailableToolsInfo,
-  setEnabledTools,
+  loadToolsInfo,
   removeTool,
+  setEnabledTools,
+  type ToolInfo,
+  type ToolsSourceData,
 } from './tools'
 
 //TODO: add this to readme if say.js will be implemented: `sudo apt-get install festival festvox-kallpc16k`

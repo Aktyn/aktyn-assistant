@@ -15,6 +15,7 @@
 		"typecheck": "tsc --noEmit --skipLibCheck"
 	},
 	"dependencies": {
+		"@aktyn-assistant-tools/web-search": "*",
 		"@aktyn-assistant/common": "*",
 		"appdata-path": "^1.0.0",
 		"node-notifier": "^10.0.1",

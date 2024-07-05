@@ -32,7 +32,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.send('performChatQuery', message, model, messageId),
   addToolsSource: (data: ToolsSourceData) =>
     ipcRenderer.invoke('addToolsSource', data),
-  loadAvailableToolsInfo: () => ipcRenderer.invoke('loadAvailableToolsInfo'),
+  loadToolsInfo: () => ipcRenderer.invoke('loadToolsInfo'),
   setEnabledTools: (toolNames: string[]) =>
     ipcRenderer.invoke('setEnabledTools', toolNames),
   removeTool: (toolName: string) => ipcRenderer.invoke('removeTool', toolName),

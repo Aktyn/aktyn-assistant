@@ -1,5 +1,7 @@
 /** @see https://platform.openai.com/docs/guides/function-calling */
 export type ToolSchema = {
+  version?: string
+
   /**
    * Allowed symbols: a-z, A-Z, 0-9, underscores and dashes\
    * Maximum length: 64 characters
