@@ -99,82 +99,84 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
   }
 
   return (
-    <GlassCard className="my-auto overflow-visible">
-      <CardBody className="gap-y-2">
-        <Select
-          label="AI provider"
-          selectedKeys={['OpenAI']}
-          variant="underlined"
-        >
-          <SelectItem key="OpenAI" value="OpenAI">
-            OpenAI
-          </SelectItem>
-        </Select>
-
-        <Select
-          label="Chat model"
-          variant="underlined"
-          selectedKeys={
-            chatModel && models.includes(chatModel) ? [chatModel] : []
-          }
-          onSelectionChange={(keys) => {
-            if (keys instanceof Set) {
-              setChatModel(keys.values().next().value)
-            }
-          }}
-        >
-          {models.map((model) => (
-            <SelectItem key={model} value={model}>
-              {model}
+    <div className="my-auto py-4">
+      <GlassCard className=" overflow-visible">
+        <CardBody className="gap-y-2">
+          <Select
+            label="AI provider"
+            selectedKeys={['OpenAI']}
+            variant="underlined"
+          >
+            <SelectItem key="OpenAI" value="OpenAI">
+              OpenAI
             </SelectItem>
-          ))}
-        </Select>
+          </Select>
 
-        <Checkbox
-          color="default"
-          isSelected={!!mockPaidRequests}
-          onValueChange={setMockPaidRequests}
-        >
-          Mock paid requests
-        </Checkbox>
+          <Select
+            label="Chat model"
+            variant="underlined"
+            selectedKeys={
+              chatModel && models.includes(chatModel) ? [chatModel] : []
+            }
+            onSelectionChange={(keys) => {
+              if (keys instanceof Set) {
+                setChatModel(keys.values().next().value)
+              }
+            }}
+          >
+            {models.map((model) => (
+              <SelectItem key={model} value={model}>
+                {model}
+              </SelectItem>
+            ))}
+          </Select>
 
-        <Checkbox
-          color="default"
-          isSelected={!!launchOnStartup}
-          onValueChange={toggleLaunchOnStartup}
-        >
-          Launch on startup
-        </Checkbox>
+          <Checkbox
+            color="default"
+            isSelected={!!mockPaidRequests}
+            onValueChange={setMockPaidRequests}
+          >
+            Mock paid requests
+          </Checkbox>
 
-        <Checkbox
-          color="default"
-          isSelected={!!launchHidden}
-          onValueChange={setLaunchHidden}
-        >
-          Launch hidden
-        </Checkbox>
+          <Checkbox
+            color="default"
+            isSelected={!!launchOnStartup}
+            onValueChange={toggleLaunchOnStartup}
+          >
+            Launch on startup
+          </Checkbox>
 
-        <Checkbox
-          color="default"
-          isSelected={!!useHistory}
-          onValueChange={setUseHistory}
-        >
-          Include history
-        </Checkbox>
+          <Checkbox
+            color="default"
+            isSelected={!!launchHidden}
+            onValueChange={setLaunchHidden}
+          >
+            Launch hidden
+          </Checkbox>
 
-        <Input
-          className="min-w-56"
-          variant="underlined"
-          type="number"
-          min="1"
-          max="32"
-          value={(maxHistoryLength ?? 8).toString()}
-          onChange={handleMaxHistoryLengthChange}
-          label={
-            <span className="text-nowrap">Previous messages sent to AI</span>
-          }
-        />
-      </CardBody>
-    </GlassCard>
+          <Checkbox
+            color="default"
+            isSelected={!!useHistory}
+            onValueChange={setUseHistory}
+          >
+            Include history
+          </Checkbox>
+
+          <Input
+            className="min-w-56"
+            variant="underlined"
+            type="number"
+            min="1"
+            max="32"
+            value={(maxHistoryLength ?? 8).toString()}
+            onChange={handleMaxHistoryLengthChange}
+            label={
+              <span className="text-nowrap">Previous messages sent to AI</span>
+            }
+          />
+        </CardBody>
+      </GlassCard>
+    </div>
   )
 }

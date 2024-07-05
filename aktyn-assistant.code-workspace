@@ -42,11 +42,18 @@
 		"jest.monitorLongRun": 30000,
 		"jest.runMode": "watch",
 		"cSpell.words": [
+			"afplay",
+			"aplay",
+			"Audic",
 			"autoloader",
+			"cmdmp",
 			"contenteditable",
 			"Dismissable",
+			"gtts",
 			"listbox",
+			"mplayer",
 			"nextui",
+			"omxplayer",
 			"uddg"
 		]
 	}

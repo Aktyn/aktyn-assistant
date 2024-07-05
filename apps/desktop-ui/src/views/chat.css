@@ -29,6 +29,10 @@
   mask-image: linear-gradient(to bottom, #000c 0%, #000 60%);
 }
 
+.chat-view.quick-chat-view>.chat-output {
+  padding-top: 2.5rem;
+}
+
 .chat-view.quick-chat-view>.handle-container {
   position: absolute;
   top: 0;
@@ -71,7 +75,7 @@
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-bottom: none;
-  max-height: calc(100% - 2rem);
+  max-height: 100%;
   margin-top: auto;
   box-sizing: border-box;
   max-width: 60rem;

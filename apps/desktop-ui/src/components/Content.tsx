@@ -14,6 +14,33 @@ export const Content = () => {
   const viewIndex = view ? views.indexOf(view) : -1
 
   const [ready, setReady] = useState(false)
+  const [contentHeaderHeight, setContentHeaderHeight] = useState(0)
+
+  useEffect(() => {
+    setTimeout(() => {
+      const contentHeader = document.getElementById('content-header')
+      if (!contentHeader) {
+        return
+      }
+      const updateSize = () =>
+        setContentHeaderHeight(contentHeader.getBoundingClientRect().height)
+
+      if ('ResizeObserver' in window) {
+        try {
+          const tabsObserver = new ResizeObserver(updateSize)
+          tabsObserver.observe(contentHeader)
+
+          return () => {
+            tabsObserver.disconnect()
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      } else {
+        updateSize()
+      }
+    }, 16)
+  }, [])
 
   const isAnyViewEntered = !!view
   useEffect(() => {
@@ -23,7 +50,7 @@ export const Content = () => {
 
     const timeout = setTimeout(() => {
       setReady(true)
-    }, 700)
+    }, 700) //700
 
     return () => {
       clearTimeout(timeout)
@@ -55,6 +82,8 @@ export const Content = () => {
                     viewType === ViewType.Chat
                       ? `translate(${diff}%, ${Math.abs(diff)}%)`
                       : `translateX(${diff}%) scale(${diff === 0 ? 1 : 0.618})`,
+                  paddingTop:
+                    viewType === ViewType.Chat ? '2rem' : contentHeaderHeight,
                 }}
               >
                 {viewType === ViewType.Chat && <Chat in={active} />}
