@@ -42,6 +42,9 @@ export function setupAiHandlers(ai: AI) {
         },
       ),
   )
+  ipcMain.on('cancelSpeaking', () => {
+    ai.cancelSpeaking()
+  })
 }
 
 export function setupToolHandlers() {

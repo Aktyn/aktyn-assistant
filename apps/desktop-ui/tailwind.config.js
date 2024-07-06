@@ -234,6 +234,7 @@ const colors = {
 const components = [
   'button',
   'input',
+  'textarea',
   'divider',
   'card',
   'scroll-shadow',

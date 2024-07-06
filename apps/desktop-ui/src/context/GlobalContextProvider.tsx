@@ -6,11 +6,11 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { Input } from '@nextui-org/input'
-import { Listbox, ListboxItem } from '@nextui-org/listbox'
 import { closeSnackbar, enqueueSnackbar } from 'notistack'
 import { NotificationMessage } from '../components/common/NotificationMessage'
-import { Dialog } from '../components/dialog/Dialog'
+import { AiProviderSelectDialog } from '../components/dialog/AiProviderSelectDialog'
+import { ApiKeyInputDialog } from '../components/dialog/ApiKeyInputDialog'
+import { ChatModelSelectDialog } from '../components/dialog/ChatModelSelectDialog'
 import type { ViewType } from '../utils/navigation'
 
 type InitData = Awaited<ReturnType<typeof window.electronAPI.getInitData>>
@@ -27,18 +27,23 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [view, setView] = useState<ViewType | null>(null)
   const [aiProviderDialogOpen, setAiProviderDialogOpen] = useState(false)
   const [aiProviders, setAiProviders] = useState<string[]>([])
-  const [selectedAiProvider, setSelectedAiProvider] = useState<string | null>(
-    null,
-  )
+  const [selectModelDialogOpen, setSelectModelDialogOpen] = useState(false)
+
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false)
   const [apiKeyProviderType, setApiKeyProviderType] = useState<string | null>(
     null,
   )
-  const [apiKeyValue, setApiKeyValue] = useState<string | null>(null)
 
   const init = useCallback(async () => {
     const initData = await window.electronAPI.getInitData()
     setInitData(initData)
+
+    const chatModel =
+      await window.electronAPI.getUserConfigValue('selectedChatModel')
+    if (!chatModel) {
+      console.warn('No chat model selected, requesting user to select one')
+      setSelectModelDialogOpen(true)
+    }
   }, [])
 
   useEffect(() => {
@@ -88,64 +93,24 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <GlobalContext.Provider value={{ initData, view, setView }}>
       {children}
-      <Dialog
-        isOpen={aiProviderDialogOpen}
-        isDismissable={false}
-        isKeyboardDismissDisabled
-        title="Select AI provider"
-        disableConfirmButton={!selectedAiProvider}
-        onConfirm={() => {
-          if (!selectedAiProvider) {
-            return
-          }
-          window.electronAPI.promptAiProviderCallback(
-            selectedAiProvider as never,
-          )
-          setAiProviderDialogOpen(false)
-        }}
-      >
-        <Listbox
-          aria-label="Single selection example"
-          variant="flat"
-          color="primary"
-          disallowEmptySelection
-          selectionMode="single"
-          selectedKeys={selectedAiProvider ? [selectedAiProvider] : []}
-          onSelectionChange={(selection) =>
-            selection !== 'all' &&
-            setSelectedAiProvider(selection.values().next().value)
-          }
-        >
-          {aiProviders.map((provider) => (
-            <ListboxItem key={provider} value={provider}>
-              {provider}
-            </ListboxItem>
-          ))}
-        </Listbox>
-      </Dialog>
-      <Dialog
-        isOpen={apiKeyDialogOpen}
-        isDismissable={false}
-        isKeyboardDismissDisabled
-        title={`Enter API key for ${apiKeyProviderType}`}
-        disableConfirmButton={!apiKeyValue}
-        onConfirm={() => {
-          if (!apiKeyValue) {
-            return
-          }
-          window.electronAPI.promptApiKeyCallback(apiKeyValue)
-          setApiKeyDialogOpen(false)
-        }}
-      >
-        <Input
-          size="lg"
-          variant="bordered"
-          label="API key"
-          isRequired
-          value={apiKeyValue ?? ''}
-          onChange={(value) => setApiKeyValue(value.target.value)}
+      <AiProviderSelectDialog
+        open={aiProviderDialogOpen}
+        onClose={() => setAiProviderDialogOpen(false)}
+        aiProviders={aiProviders}
+      />
+      {!aiProviderDialogOpen && apiKeyProviderType && (
+        <ApiKeyInputDialog
+          open={apiKeyDialogOpen}
+          onClose={() => setApiKeyDialogOpen(false)}
+          apiKeyProviderType={apiKeyProviderType}
         />
-      </Dialog>
+      )}
+      {!aiProviderDialogOpen && !apiKeyDialogOpen && (
+        <ChatModelSelectDialog
+          open={selectModelDialogOpen}
+          onClose={() => setSelectModelDialogOpen(false)}
+        />
+      )}
     </GlobalContext.Provider>
   )
 }

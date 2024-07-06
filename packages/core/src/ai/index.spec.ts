@@ -53,7 +53,7 @@ describe('AI class', () => {
           conversationId: '1',
           contents: [{ type: 'text', content: 'Example query' }],
         },
-        'gpt-3.5-turbo',
+        { model: 'gpt-3.5-turbo' },
       )
       let i = 30
       for await (const response of chatStream) {

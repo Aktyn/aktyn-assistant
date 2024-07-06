@@ -76,6 +76,7 @@ __metadata:
     openai: "npm:^4.52.3"
     prettier: "npm:^3.3.2"
     prettier-eslint: "npm:^16.3.0"
+    sentence-tokenizer: "npm:^1.0.1"
     ts-jest: "npm:^29.1.5"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.5.3"
@@ -10140,6 +10141,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debug@npm:4.1.0":
+  version: 4.1.0
+  resolution: "debug@npm:4.1.0"
+  dependencies:
+    ms: "npm:^2.1.1"
+  checksum: 10c0/9e7e9cfaa202c080962447038e3d1423a8731f612f8bed72f8ac34ce4c2c2d24d612bf3341c26b6765c6d432eb5b20eec2879385b7e1f227950ccfcbae80ffe1
+  languageName: node
+  linkType: hard
+
 "debug@npm:^3.2.7":
   version: 3.2.7
   resolution: "debug@npm:3.2.7"
@@ -19905,6 +19915,15 @@ __metadata:
     range-parser: "npm:~1.2.1"
     statuses: "npm:2.0.1"
   checksum: 10c0/0eb134d6a51fc13bbcb976a1f4214ea1e33f242fae046efc311e80aff66c7a43603e26a79d9d06670283a13000e51be6e0a2cb80ff0942eaf9f1cd30b7ae736a
+  languageName: node
+  linkType: hard
+
+"sentence-tokenizer@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "sentence-tokenizer@npm:1.0.1"
+  dependencies:
+    debug: "npm:4.1.0"
+  checksum: 10c0/11d584a3faf38cd9cad43c67ba0a3c8d72f034ddf19612336156052cf5f7b848d89c9014db060a213c679bab3450000c5ca01a15129e3ec193f30bf6bfe0f993
   languageName: node
   linkType: hard
 

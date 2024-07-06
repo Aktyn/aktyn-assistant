@@ -36,6 +36,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setEnabledTools: (toolNames: string[]) =>
     ipcRenderer.invoke('setEnabledTools', toolNames),
   removeTool: (toolName: string) => ipcRenderer.invoke('removeTool', toolName),
+  cancelSpeaking: () => ipcRenderer.send('cancelSpeaking'),
 
   // Main to renderer
   onReady: (callback: () => void) =>
@@ -65,5 +66,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
         messageId: string,
         chunk: ChatResponse | { finished: true; conversationId: string },
       ) => callback(messageId, chunk),
+    ),
+  onSpeakingState: (
+    callback: (
+      conversationId: string,
+      messageId: string,
+      finished: boolean,
+    ) => void,
+  ) =>
+    ipcRenderer.on(
+      'speakingState',
+      (_, conversationId: string, messageId: string, finished: boolean) =>
+        callback(conversationId, messageId, finished),
     ),
 })

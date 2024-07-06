@@ -9,7 +9,17 @@ export async function performChatQuery(
   model: string,
   messageId: string,
 ) {
-  const stream = await ai.performChatQuery(message, model)
+  const stream = await ai.performChatQuery(message, {
+    model,
+    onSpeaking: (finished) => {
+      webContents.send(
+        'speakingState',
+        message.conversationId,
+        messageId,
+        finished,
+      )
+    },
+  })
 
   let finished = false
   for await (const chunk of stream) {

@@ -41,6 +41,7 @@ declare global {
       loadToolsInfo: () => Promise<Array<ToolInfo>>
       setEnabledTools: (toolNames: string[]) => Promise<void>
       removeTool: (toolName: string) => Promise<void>
+      cancelSpeaking: () => void
 
       // Main to renderer
       onReady: (callback: () => void) => void
@@ -56,9 +57,14 @@ declare global {
             Required<Pick<ChatResponse, 'finished' | 'conversationId'>>,
         ) => void,
       ) => void
+      onSpeakingState: (
+        callback: (
+          conversationId: string,
+          messageId: string,
+          finished: boolean,
+        ) => void,
+      ) => void
     }
-    initMain: () => Promise<void>
-    initQuickChat: () => Promise<void>
   }
 }
 

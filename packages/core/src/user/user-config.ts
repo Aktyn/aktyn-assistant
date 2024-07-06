@@ -14,12 +14,14 @@ import { getDataDirectory } from '../utils/external-data'
 const USER_CONFIG = {
   selectedAiProvider: null as AiProviderType | null,
   selectedChatModel: null as string | null,
-  mockPaidRequests: null as boolean | null,
+  mockPaidRequests: false,
   autoLaunch: false,
   launchHidden: false,
   showRawResponse: false,
   includeHistory: false,
   maxChatHistoryLength: 8,
+  readChatResponses: false,
+  initialSystemMessage: '',
 }
 
 export type UserConfigType = typeof USER_CONFIG

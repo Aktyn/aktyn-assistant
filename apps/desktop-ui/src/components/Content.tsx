@@ -74,13 +74,13 @@ export const Content = () => {
             return (
               <ScrollShadow
                 key={viewType}
-                className="absolute left-0 top-0 w-full h-full flex flex-col justify-start items-center transition-[opacity,transform] duration-400 ease-in-out overflow-x-hidden px-4"
+                className="absolute left-0 top-0 w-full h-full flex flex-col justify-start items-start transition-[opacity,transform] duration-400 ease-in-out px-4 *:mx-auto"
                 style={{
                   pointerEvents: active ? 'all' : 'none',
                   opacity: active ? 1 : 0,
                   transform:
                     viewType === ViewType.Chat
-                      ? `translate(${diff}%, ${Math.abs(diff)}%)`
+                      ? `translate(${diff}%, ${Math.abs(diff)}%) scale(${diff === 0 ? 1 : 0.618})`
                       : `translateX(${diff}%) scale(${diff === 0 ? 1 : 0.618})`,
                   paddingTop:
                     viewType === ViewType.Chat ? '2rem' : contentHeaderHeight,

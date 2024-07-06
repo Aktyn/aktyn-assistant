@@ -20,6 +20,7 @@ import {
 } from '../components/chat/AdvancedInput'
 import { ChatMenu } from '../components/chat/ChatMenu'
 import { GlassCard } from '../components/common/GlassCard'
+import { SpeechSynthesisIndicator } from '../components/common/SpeechSynthesisIndicator'
 import { useStateToRef } from '../hooks/useStateToRef'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
 import { format } from '../utils/contentFormatters'
@@ -50,6 +51,9 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   const [conversationId, setConversationId] = useState(uuidv4())
   const [loading, setLoading] = useState(false)
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null)
+  const [speakingConversationId, setSpeakingConversationId] = useState<
+    string | null
+  >(null)
   const [useHistory, setUseHistory, syncUseHistory] =
     useUserConfigValue('includeHistory')
   const [showRawResponse, setShowRawResponse, syncShowRawResponse] =
@@ -270,6 +274,11 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         setLoading(false)
       }
     })
+    window.electronAPI.onSpeakingState(
+      (conversationId, messageId, finished) => {
+        setSpeakingConversationId(finished ? null : conversationId)
+      },
+    )
   }, [
     activeMessageIdRef,
     conversationIdRef,
@@ -354,6 +363,15 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         <AdvancedInput ref={inputRef} onSend={handleSend} disabled={loading} />
         <div className="chat-spinner" style={{ opacity: loading ? 1 : 0 }}>
           <Icon path={mdiLoading} spin size="1.5rem" />
+        </div>
+        <div
+          className="chat-speaking-indicator"
+          style={{ opacity: speakingConversationId ? 1 : 0 }}
+        >
+          <SpeechSynthesisIndicator
+            active={!!speakingConversationId}
+            onCancel={() => window.electronAPI.cancelSpeaking()}
+          />
         </div>
       </div>
       <div className="handle-container">

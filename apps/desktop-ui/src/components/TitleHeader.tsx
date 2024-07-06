@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import anime from 'animejs'
 import { GlobalContext } from '../context/GlobalContextProvider'
 import { ViewType } from '../utils/navigation'
@@ -10,11 +10,14 @@ export const TitleHeader = () => {
   const ref = useRef<HTMLHeadingElement>(null)
   const { view } = useContext(GlobalContext)
 
+  const [isReady, setIsReady] = useState(false)
+
   const visible = view !== ViewType.Chat
+  const isAnyViewEntered = !!view
 
   useEffect(() => {
     const header = ref.current
-    if (!header) {
+    if (!header || !isReady) {
       return
     }
 
@@ -23,21 +26,28 @@ export const TitleHeader = () => {
       targets: header.childNodes,
       easing: 'spring(1, 80, 10, 0)',
       delay: anime.stagger(100, { from: visible ? 'last' : 'first' }),
-      translateY: visible ? 0 : -height,
+      translateY: visible
+        ? isAnyViewEntered
+          ? 0
+          : (window.innerHeight - height) / 2
+        : -height,
       opacity: visible ? 1 : 0,
     })
-    // const marginAnimation = anime({
-    //   targets: header,
-    //   easing: 'easeInOutQuad',
-    //   duration: 400,
-    //   marginBottom: visible ? 0 : -height,
-    // })
 
     return () => {
       anime.remove(animation)
-      // anime.remove(marginAnimation)
     }
-  }, [visible])
+  }, [isAnyViewEntered, isReady, visible])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsReady(true)
+    }, 200)
+
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [])
 
   return (
     <div className="absolute top-0 left-0 w-full h-full pt-8">

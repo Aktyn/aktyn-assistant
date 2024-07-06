@@ -14,6 +14,7 @@ import {
 import { notify } from 'node-notifier'
 import { AuthenticationError, OpenAI } from 'openai'
 
+import { BufferedSpeech } from '../audio/buffered'
 import { getUserConfigValue } from '../user/user-config'
 
 import {
@@ -159,6 +160,14 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
   // --------------------------------------------------------------------------------
 
   private tools: Array<Tool> = []
+  private recentSpeech: BufferedSpeech | null = null
+
+  public cancelSpeaking() {
+    if (this.recentSpeech) {
+      this.recentSpeech.abort()
+      this.recentSpeech = null
+    }
+  }
 
   public loadTools() {
     this.tools = getActiveTools()
@@ -184,7 +193,10 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     }
   })
 
-  async performChatQuery(message: ChatMessage, model: string) {
+  async performChatQuery(
+    message: ChatMessage,
+    options: { model: string; onSpeaking?: (finished: boolean) => void }, //TODO: use onSpeaking listener
+  ) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
     assert(
       typeof mockPaidRequests === 'boolean',
@@ -193,6 +205,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
     const useHistory = getUserConfigValue('includeHistory')
     const maxChatHistoryLength = getUserConfigValue('maxChatHistoryLength') ?? 8
+    const readChatResponses = getUserConfigValue('readChatResponses')
 
     switch (this.providerType) {
       case AiProviderType.openai: {
@@ -203,7 +216,6 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
                 delta: {
                   content,
                   role: 'assistant',
-                  //tool_calls: []
                 },
                 finish_reason: isLast ? 'stop' : null,
               }),
@@ -211,7 +223,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           : await OpenAiAPI.performChatQuery(
               this.providerClient,
               message,
-              model,
+              options.model,
               this.tools,
               useHistory ? maxChatHistoryLength : 0,
             )
@@ -219,20 +231,33 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
         const timeout = setTimeout(() => {
           stream.controller.abort('Timeout')
         }, 60_000)
+
+        this.recentSpeech?.abort()
+        const speech = readChatResponses
+          ? new BufferedSpeech(options.onSpeaking)
+          : null
+        this.recentSpeech = speech
+
         return new Stream<ChatResponse>(async function* transformStream() {
           for await (const choice of stream) {
             if (stream.controller.signal.aborted) {
+              speech?.abort()
               break
             }
 
+            const content = choice.delta.content ?? ''
+            speech?.append(content)
+
             yield {
               conversationId: message.conversationId,
-              content: choice.delta.content ?? '',
+              content,
               timestamp: Date.now(),
               finished: !!choice.finish_reason,
               role: choice.delta.role ?? null,
             } satisfies ChatResponse
           }
+
+          speech?.finalize()
           clearTimeout(timeout)
         }, stream.controller)
       }

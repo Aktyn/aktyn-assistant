@@ -55,6 +55,10 @@
 			"nextui",
 			"omxplayer",
 			"uddg"
-		]
+		],
+		"editor.foldingImportsByDefault": true,
+		"autoimport.showNotifications": false,
+		"autoimport.useSemiColon": false,
+		"typescript.preferences.preferTypeOnlyAutoImports": true
 	}
 }
