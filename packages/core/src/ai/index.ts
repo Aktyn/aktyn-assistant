@@ -37,16 +37,6 @@ export {
   type ToolsSourceData,
 } from './tools'
 
-//TODO: add this to readme if say.js will be implemented: `sudo apt-get install festival festvox-kallpc16k`
-// setTimeout(async () => {
-//   say.speak("This is example spoken text", undefined, 1.0, (err) => {
-//     if (err) {
-//       return console.error(err)
-//     }
-//     console.log('Text has been spoken.')
-//   })
-// }, 5000)
-
 class UnsupportedProviderError extends Error {
   constructor(providerType: AiProviderType) {
     super(`Unsupported AI provider: ${providerType}`)
