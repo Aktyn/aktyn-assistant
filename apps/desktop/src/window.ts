@@ -30,8 +30,8 @@ const getStore = once(() =>
 
 export async function createMainWindow() {
   const win = new BrowserWindow({
-    width: 1080,
-    height: 640 + (isDev() ? 450 : 0),
+    width: 1280,
+    height: 720 + (isDev() ? 450 : 0),
     autoHideMenuBar: true,
     title: 'Aktyn Assistant',
     icon: iconPath,
