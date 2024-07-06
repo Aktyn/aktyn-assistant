@@ -60,10 +60,19 @@ function mapUserMessagesContent(
 //istanbul ignore next
 export async function performChatQuery(
   client: OpenAI,
-  message: ChatMessage,
-  model: string,
-  tools: Array<Tool>,
-  numberOfPreviousMessagesToInclude = 0,
+  {
+    message,
+    model,
+    tools,
+    numberOfPreviousMessagesToInclude = 0,
+    initialSystemMessage,
+  }: {
+    message: ChatMessage
+    model: string
+    tools: Array<Tool>
+    numberOfPreviousMessagesToInclude?: number
+    initialSystemMessage?: string
+  },
 ) {
   const previousMessages =
     numberOfPreviousMessagesToInclude > 0
@@ -79,6 +88,20 @@ export async function performChatQuery(
   deleteExpiredConversations()
 
   const messages = [...previousMessages, openAiMessage]
+
+  if (
+    initialSystemMessage &&
+    !messages.some(
+      (message) =>
+        message.role === 'system' && message.content === initialSystemMessage,
+    )
+  ) {
+    messages.unshift({
+      role: 'system',
+      content: initialSystemMessage,
+    })
+  }
+
   updateConversationHistory(message.conversationId, messages)
 
   if (isDev()) {

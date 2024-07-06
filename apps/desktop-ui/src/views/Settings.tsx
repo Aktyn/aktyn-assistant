@@ -175,6 +175,8 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
             >
               Read chat responses
             </Checkbox>
+
+            {/* TODO: language selection */}
           </Section>
 
           <Section title="Chat">

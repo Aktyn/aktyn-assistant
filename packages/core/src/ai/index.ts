@@ -206,6 +206,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     const useHistory = getUserConfigValue('includeHistory')
     const maxChatHistoryLength = getUserConfigValue('maxChatHistoryLength') ?? 8
     const readChatResponses = getUserConfigValue('readChatResponses')
+    const initialSystemMessage = getUserConfigValue('initialSystemMessage')
 
     switch (this.providerType) {
       case AiProviderType.openai: {
@@ -220,13 +221,15 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
                 finish_reason: isLast ? 'stop' : null,
               }),
             )
-          : await OpenAiAPI.performChatQuery(
-              this.providerClient,
+          : await OpenAiAPI.performChatQuery(this.providerClient, {
               message,
-              options.model,
-              this.tools,
-              useHistory ? maxChatHistoryLength : 0,
-            )
+              model: options.model,
+              tools: this.tools,
+              numberOfPreviousMessagesToInclude: useHistory
+                ? maxChatHistoryLength
+                : 0,
+              initialSystemMessage,
+            })
 
         const timeout = setTimeout(() => {
           stream.controller.abort('Timeout')
