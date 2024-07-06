@@ -238,6 +238,10 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           : null
         this.recentSpeech = speech
 
+        speech?.controller.signal.addEventListener('abort', () => {
+          options.onSpeaking?.(true)
+        })
+
         return new Stream<ChatResponse>(async function* transformStream() {
           for await (const choice of stream) {
             if (stream.controller.signal.aborted) {

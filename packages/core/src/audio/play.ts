@@ -30,6 +30,7 @@ const findMediaPlayer = once(() => {
 export async function playAudioFile(
   filePath: string,
   abortSignal?: AbortSignal,
+  attempt = 0,
 ) {
   const mediaPlayer = findMediaPlayer()
   if (mediaPlayer) {
@@ -51,9 +52,11 @@ export async function playAudioFile(
       })
       childProcess.on('exit', (code) => {
         if (code === 0) {
-          if (Date.now() - start < 400) {
+          if (Date.now() - start < 400 && attempt < 64) {
             console.warn('Media player exited too early. Retrying...')
-            playAudioFile(filePath, abortSignal).then(resolve).catch(reject)
+            playAudioFile(filePath, abortSignal, attempt + 1)
+              .then(resolve)
+              .catch(reject)
           } else {
             resolve()
           }

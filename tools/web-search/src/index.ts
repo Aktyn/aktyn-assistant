@@ -3,11 +3,11 @@ import type { Tool, ToolSchema } from '@aktyn-assistant/common'
 import { scrapeSearchResults } from './scraper'
 
 const toolSchema: ToolSchema = {
-  version: '1.0.0', //TODO: add versioning
+  version: '1.0.0',
   functionName: 'search_web',
   //TODO: make it user editable (with option to restore original description)
   description:
-    'Run a search on the web to find information required to answer the question or to retrieve recent information about the topic',
+    'Use this function to search the web for missing information necessary to answer the question. It will return a few most relevant results from the web search engine.',
   parameters: {
     type: 'object',
     properties: {

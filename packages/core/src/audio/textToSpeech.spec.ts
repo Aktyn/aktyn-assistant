@@ -3,7 +3,7 @@ import { formatTextForSpeech } from './textToSpeech'
 describe(formatTextForSpeech.name, () => {
   it('should format text for speech', () => {
     expect(formatTextForSpeech('foo')).toBe('foo')
-    expect(formatTextForSpeech('foo\nbar')).toBe('foo bar')
+    expect(formatTextForSpeech('foo\nbar')).toBe('foo\nbar')
     expect(formatTextForSpeech('**foo**')).toBe('foo')
     expect(formatTextForSpeech('### foo')).toBe('foo')
     expect(formatTextForSpeech('`foo`')).toBe('given code or command')
@@ -19,5 +19,12 @@ stat --format="%y %n" * | sort -k1 | awk '{print $1, $2}' | awk '{print $1}' FS=
     expect(
       formatTextForSpeech('\\[ (x+1)^4 - (x-9)^2 + \\frac{x}{2} = 0 \\]'),
     ).toBe('given math expression')
+    expect(
+      formatTextForSpeech('foo [GitHub - Aktyn](https://github.com/Aktyn) bar'),
+    ).toBe('foo GitHub - Aktyn link bar')
+  })
+
+  it('should not format empty text', () => {
+    expect(formatTextForSpeech('')).toBe('')
   })
 })

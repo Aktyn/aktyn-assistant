@@ -75,6 +75,14 @@ stat --format="%y %n" * | sort -k1 | awk '{print $1, $2}' | awk '{print $1}' FS=
 
 end`
 
+const RESPONSE_WITH_LINKS = `There are a few possible references to "Aktyn" based on the context, but here are the most relevant ones:
+
+1. **Aktyn as a GitHub User**: Radosław Krajewski, who uses the handle "Aktyn" on GitHub, has developed various projects, including a multi-player browser game, a website project for a GTA V Role Play server, and a neural network evolving with a genetic algorithm. [GitHub - Aktyn](https://github.com/Aktyn)
+
+2. **Aktyn Training System**: A technologically advanced simulator designed for tactical and shooting training used by military personnel. It involves training with pneumatic training carbines or standard-issue weapons loaded with training ammunition. [Aktyn Training System](https://fabrykabroni.pl/en/en/offer/training-systems/aktyn-training-system)
+
+If you were referring to a specific context or individual, could you please provide more details for a precise explanation?`
+
 export const LOREM_IPSUM_WORDS = LOREM_IPSUM.trim()
   .replace(/\.\s/g, '.\n')
   .split(' ')
@@ -88,6 +96,10 @@ export const RESPONSE_WITH_MARKDOWN_WORDS = RESPONSE_WITH_MARKDOWN.trim()
   .split(' ')
   .map((word) => word + ' ')
 
+export const RESPONSE_WITH_LINKS_WORDS = RESPONSE_WITH_LINKS.trim()
+  .split(' ')
+  .map((word) => word + ' ')
+
 export function mockChatStream<ResponseType extends object | string>(
   parser: (content: string, isLast: boolean) => ResponseType,
   length?: number,
@@ -96,9 +108,11 @@ export function mockChatStream<ResponseType extends object | string>(
   const source =
     randomInt(0, 10) > 9
       ? LOREM_IPSUM_WORDS
-      : [RESPONSE_WITH_CODE_WORDS, RESPONSE_WITH_MARKDOWN_WORDS][
-          randomInt(0, 1)
-        ]
+      : [
+          RESPONSE_WITH_CODE_WORDS,
+          RESPONSE_WITH_MARKDOWN_WORDS,
+          RESPONSE_WITH_LINKS_WORDS,
+        ][randomInt(0, 2)]
 
   length = Math.min(length ?? source.length, source.length)
 

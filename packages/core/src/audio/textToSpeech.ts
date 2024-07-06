@@ -37,7 +37,7 @@ export async function speak(content: string, abortSignal?: AbortSignal) {
       console.error(error)
     }
   })
-  removeOutdatedAudioFiles()
+  setTimeout(removeOutdatedAudioFiles, 1000 * 60)
 }
 
 function removeOutdatedAudioFiles() {
@@ -57,7 +57,7 @@ function removeOutdatedAudioFiles() {
   }
 }
 
-export function formatTextForSpeech(text: string) {
+export function formatTextForSpeech(text: string, lineBreaksToSpaces = false) {
   return text
     .replace(/```([^\n]+)?\n.*\n```/g, 'given code block')
     .replace(/```[\s\S]*?```/g, 'given code block')
@@ -68,10 +68,18 @@ export function formatTextForSpeech(text: string) {
         .replace(/`.+`/g, 'given code or command')
         .replace(/\\\[.*\\\]/g, 'given math expression')
         .replace(/\\\(.*\\\)/g, 'given math expression')
+        .replace(
+          /\[(.*)\]\(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)\)/g,
+          '$1 link',
+        )
+        .replace(
+          /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g,
+          'link',
+        )
         .replace(/\*\*(.+)\*\*/g, '$1')
         .replace(/^#+\s(.*)$/g, '$1')
         .replace('---', '')
     })
     .filter(Boolean)
-    .join(' ')
+    .join(lineBreaksToSpaces ? ' ' : '\n')
 }

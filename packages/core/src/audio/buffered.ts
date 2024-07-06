@@ -15,6 +15,10 @@ export class BufferedSpeech {
     return this.finished
   }
 
+  get controller() {
+    return this.abortController
+  }
+
   private isViableForSpeechSynthesis() {
     if (this.finished) {
       return false
@@ -25,10 +29,35 @@ export class BufferedSpeech {
     )
   }
 
+  private preventToLargeContent(content: string) {
+    const limit = 384
+
+    if (
+      content.length > limit &&
+      content.includes('\n') &&
+      !content.match(/```([^\n]+)?\n.*\n```/g) &&
+      !content.match(/```[\s\S]*?```/g)
+    ) {
+      const lines = content.split('\n')
+      let includeLines = lines.length
+      let lengthSum = lines.reduce((acc, line) => acc + line.length, 0)
+      while (includeLines > 1 && lengthSum > limit) {
+        lengthSum -= lines[includeLines - 1].length
+        includeLines--
+      }
+      return lines.slice(0, includeLines).join('\n')
+    }
+
+    return content
+  }
+
   private speak(content: string) {
     if (this.abortController.signal.aborted) {
       return
     }
+
+    content = this.preventToLargeContent(content)
+    this.buffer = this.buffer.slice(content.length)
 
     this.onSpeaking?.(false)
     this.speakPromise = speak(content, this.abortController.signal)
@@ -53,7 +82,6 @@ export class BufferedSpeech {
 
     if (force) {
       this.speak(this.buffer)
-      this.buffer = ''
       return
     }
 
@@ -63,7 +91,6 @@ export class BufferedSpeech {
     }
     if (lineBreakIndex >= 32) {
       const content = this.buffer.slice(0, lineBreakIndex + 1)
-      this.buffer = this.buffer.slice(content.length)
       this.speak(content)
       return
     }
@@ -72,20 +99,17 @@ export class BufferedSpeech {
     const sentencesContent = sentences.join('')
     if (sentences.length > 1 && sentencesContent.length >= 32) {
       const sentencesContent = sentences.join('')
-      const breakIndex =
-        this.buffer.lastIndexOf(sentences.at(-1)!) + sentences.at(-1)!.length
-      this.buffer = this.buffer.slice(breakIndex)
       this.speak(sentencesContent)
       return
     }
   }
 
-  append(content: string) {
+  append(value: string) {
     if (this.finished || this.abortController.signal.aborted) {
       return
     }
 
-    this.tokenizer.setEntry((this.buffer += content))
+    this.tokenizer.setEntry((this.buffer += value))
     if (this.isViableForSpeechSynthesis()) {
       this.synthesize()
     }

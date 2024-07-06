@@ -33,6 +33,7 @@ import { AI, AiProviderType } from '.'
 import {
   LOREM_IPSUM_WORDS,
   RESPONSE_WITH_CODE_WORDS,
+  RESPONSE_WITH_LINKS_WORDS,
   RESPONSE_WITH_MARKDOWN_WORDS,
 } from './mock'
 
@@ -62,6 +63,7 @@ describe('AI class', () => {
           ...LOREM_IPSUM_WORDS,
           ...RESPONSE_WITH_CODE_WORDS,
           ...RESPONSE_WITH_MARKDOWN_WORDS,
+          ...RESPONSE_WITH_LINKS_WORDS,
         ])
         expect(response.timestamp).toBeGreaterThanOrEqual(now)
 
