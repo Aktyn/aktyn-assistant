@@ -99,7 +99,7 @@ export class SettingsView extends View {
   private async selectChatModel() {
     terminal.clear()
 
-    const models = (await this.ai.getAvailableModels()).sort()
+    const models = (await this.ai.getAvailableModels()).chatModels.sort()
     terminal.moveTo(1, terminal.height - 2 - models.length)
 
     const currentModel = getUserConfigValue('selectedChatModel')

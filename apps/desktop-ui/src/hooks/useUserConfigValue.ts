@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { UserConfigType } from '@aktyn-assistant/core'
+import { useMounted } from './useMounted'
 
 export function useUserConfigValue<Key extends keyof UserConfigType>(
   key: Key,
@@ -8,16 +9,20 @@ export function useUserConfigValue<Key extends keyof UserConfigType>(
   (value: UserConfigType[Key], onlyInternally?: boolean) => void,
   () => Promise<void>,
 ] {
+  const mounted = useMounted()
+
   const [value, internalSetValue] = useState<UserConfigType[Key] | null>(null)
 
   const sync = useCallback(async () => {
     try {
       const value = await window.electronAPI.getUserConfigValue(key)
-      internalSetValue(value)
+      if (mounted.current) {
+        internalSetValue(value)
+      }
     } catch (error) {
       console.error(error)
     }
-  }, [key])
+  }, [key, mounted])
 
   const setValue = useCallback(
     (value: UserConfigType[Key], onlyInternally = false) => {

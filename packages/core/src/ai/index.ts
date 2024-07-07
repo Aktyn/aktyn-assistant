@@ -3,7 +3,6 @@
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
 import {
-  assert,
   isDev,
   once,
   Stream,
@@ -24,7 +23,8 @@ import {
   saveProviderApiKey,
 } from './api/common'
 import * as OpenAiAPI from './api/openai'
-import { mockChatStream } from './mock'
+import { mockChatStream } from './chatMock'
+import { MOCKED_BASE64_IMAGE } from './imageMock'
 import { getActiveTools } from './tools'
 
 export { AiProviderType } from './api/common'
@@ -176,7 +176,18 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     switch (this.providerType) {
       case AiProviderType.openai:
         return await OpenAiAPI.getAvailableModels(this.providerClient).then(
-          (models) => models.map((model) => model.id),
+          (models) =>
+            Object.keys(models).reduce(
+              (acc, key) => {
+                return {
+                  ...acc,
+                  [key]: models[key as keyof typeof models]
+                    .map((model) => model.id)
+                    .sort((a, b) => b.localeCompare(a)),
+                }
+              },
+              {} as Record<keyof typeof models, string[]>,
+            ),
         )
       default:
         throw throwUnsupportedProviderError(this.providerType)
@@ -185,13 +196,9 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   async performChatQuery(
     message: ChatMessage,
-    options: { model: string; onSpeaking?: (finished: boolean) => void }, //TODO: use onSpeaking listener
+    options: { model: string; onSpeaking?: (finished: boolean) => void },
   ) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
-    assert(
-      typeof mockPaidRequests === 'boolean',
-      'Mock paid requests is not set',
-    )
 
     const useHistory = getUserConfigValue('includeHistory')
     const maxChatHistoryLength = getUserConfigValue('maxChatHistoryLength') ?? 8
@@ -258,6 +265,24 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           clearTimeout(timeout)
         }, stream.controller)
       }
+      default:
+        throw throwUnsupportedProviderError(this.providerType)
+    }
+  }
+
+  async generateImage(query: string, options: { model: string }) {
+    const mockPaidRequests = getUserConfigValue('mockPaidRequests')
+
+    switch (this.providerType) {
+      case AiProviderType.openai:
+        if (mockPaidRequests) {
+          return MOCKED_BASE64_IMAGE
+        }
+
+        return await OpenAiAPI.generateImage(this.providerClient, {
+          prompt: query,
+          model: options.model,
+        })
       default:
         throw throwUnsupportedProviderError(this.providerType)
     }

@@ -35,6 +35,6 @@ body {
   overflow-y: auto;
 }
 
-.reset-tw>*:not(pre):not(code):not(hr) {
+.reset-tw>*:not(pre):not(code):not(hr):not(.image-generation-container) {
   all: revert !important;
 }

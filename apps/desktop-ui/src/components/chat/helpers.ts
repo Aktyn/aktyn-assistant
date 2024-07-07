@@ -1,3 +1,23 @@
+import { mdiForum, mdiImageMultiple } from '@mdi/js'
+
+export enum ChatMode {
+  Assistant = 'assistant',
+  ImageGeneration = 'image-generation',
+}
+
+export const chatModeProps: {
+  [key in ChatMode]: { title: string; icon: string }
+} = {
+  [ChatMode.Assistant]: {
+    title: 'Assistant',
+    icon: mdiForum,
+  },
+  [ChatMode.ImageGeneration]: {
+    title: 'Image generation',
+    icon: mdiImageMultiple,
+  },
+}
+
 export function autoHeight(element: HTMLElement) {
   setTimeout(() => {
     element.style.height = '1px'

@@ -30,6 +30,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.send('promptApiKeyCallback', key),
   performChatQuery: (message: ChatMessage, model: string, messageId: string) =>
     ipcRenderer.send('performChatQuery', message, model, messageId),
+  generateImage: (query: string, model: string) =>
+    ipcRenderer.invoke('generateImage', query, model),
   addToolsSource: (data: ToolsSourceData) =>
     ipcRenderer.invoke('addToolsSource', data),
   loadToolsInfo: () => ipcRenderer.invoke('loadToolsInfo'),

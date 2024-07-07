@@ -5,12 +5,13 @@ import {
   useState,
   type WheelEventHandler,
 } from 'react'
-import { type ChatMessage } from '@aktyn-assistant/common'
-import { mdiCursorMove, mdiLoading } from '@mdi/js'
+import type { ChatMessage } from '@aktyn-assistant/common'
+import { mdiCursorMove, mdiDownload, mdiLoading } from '@mdi/js'
 import Icon from '@mdi/react'
 import { cn } from '@nextui-org/react'
 import { ScrollShadow } from '@nextui-org/scroll-shadow'
 import anime from 'animejs'
+import { enqueueSnackbar } from 'notistack'
 import { Converter } from 'showdown'
 import { v4 as uuidv4 } from 'uuid'
 import {
@@ -19,8 +20,10 @@ import {
   type AdvancedInputProps,
 } from '../components/chat/AdvancedInput'
 import { ChatMenu } from '../components/chat/ChatMenu'
+import { ChatMode, chatModeProps } from '../components/chat/helpers'
 import { GlassCard } from '../components/common/GlassCard'
 import { SpeechSynthesisIndicator } from '../components/common/SpeechSynthesisIndicator'
+import { useCancellablePromise } from '../hooks/useCancellablePromise'
 import { useStateToRef } from '../hooks/useStateToRef'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
 import { format } from '../utils/contentFormatters'
@@ -46,7 +49,9 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   )
   const scrollToBottomTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const listenersReadyRef = useRef(false)
+  const cancellable = useCancellablePromise()
 
+  const [mode, setMode] = useState(ChatMode.Assistant)
   const [stickToBottom, setStickToBottom] = useState(true)
   const [conversationId, setConversationId] = useState(uuidv4())
   const [loading, setLoading] = useState(false)
@@ -58,14 +63,36 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     useUserConfigValue('includeHistory')
   const [showRawResponse, setShowRawResponse, syncShowRawResponse] =
     useUserConfigValue('showRawResponse')
+  const [readChatResponses, setReadChatResponses, syncReadChatResponses] =
+    useUserConfigValue('readChatResponses')
+  const [selectedChatModel, , syncSelectedChatModel] =
+    useUserConfigValue('selectedChatModel')
+  const [imageGenerationModel, , syncImageGenerationModel] = useUserConfigValue(
+    'selectedImageGenerationModel',
+  )
+  const [mockPaidRequests, , syncMockPaidRequests] =
+    useUserConfigValue('mockPaidRequests')
 
   useEffect(() => {
     if (active) {
-      Promise.all([syncUseHistory(), syncShowRawResponse()]).catch(
-        console.error,
-      )
+      Promise.all([
+        syncUseHistory(),
+        syncShowRawResponse(),
+        syncReadChatResponses(),
+        syncSelectedChatModel(),
+        syncImageGenerationModel(),
+        syncMockPaidRequests(),
+      ]).catch(console.error)
     }
-  }, [active, syncShowRawResponse, syncUseHistory])
+  }, [
+    active,
+    syncMockPaidRequests,
+    syncReadChatResponses,
+    syncSelectedChatModel,
+    syncImageGenerationModel,
+    syncShowRawResponse,
+    syncUseHistory,
+  ])
 
   useEffect(() => {
     if (!loading && active) {
@@ -109,8 +136,14 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     [],
   )
 
-  const sendChatMessage = useCallback(
-    async (message: ChatMessage) => {
+  const stickToBottomRef = useStateToRef(stickToBottom)
+  const activeMessageIdRef = useStateToRef(activeMessageId)
+  const conversationIdRef = useStateToRef(conversationId)
+  const scrollToBottomRef = useStateToRef(scrollToBottom)
+  const showRawResponseRef = useStateToRef(showRawResponse)
+
+  const sendMessageBase = useCallback(
+    (message: ChatMessage, id: string) => {
       if ((messagesContainerRef.current?.childNodes.length ?? 0) > 1) {
         const hr = document.createElement('hr')
         messagesContainerRef.current?.appendChild(hr)
@@ -142,13 +175,6 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
       messagesContainerRef.current?.appendChild(messageElement)
       messagesContainerRef.current?.classList.remove('empty')
 
-      const model =
-        await window.electronAPI.getUserConfigValue('selectedChatModel')
-      if (!model) {
-        throw new Error('Chat model is not set')
-      }
-      const id = uuidv4()
-
       const activeAiMessageElement = document.createElement('div')
       activeAiMessageElement.className = 'chat-message ai reset-tw'
       activeAiMessageElement.dataset.messageId = id
@@ -169,27 +195,145 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
       setStickToBottom(true)
       setLoading(true)
       setActiveMessageId(id)
-      window.electronAPI.performChatQuery(message, model, id)
     },
     [scrollToBottom],
   )
 
-  const handleSend = useCallback<AdvancedInputProps['onSend']>(
-    (contents) => {
-      sendChatMessage({
-        conversationId,
-        contents,
-      }).catch(console.error)
-      inputRef.current?.clear()
+  const sendChatMessage = useCallback(
+    async (message: ChatMessage) => {
+      const model =
+        await window.electronAPI.getUserConfigValue('selectedChatModel')
+      if (!model) {
+        throw new Error('Chat model is not set')
+      }
+
+      const id = uuidv4()
+      sendMessageBase(message, id)
+      window.electronAPI.performChatQuery(message, model, id)
     },
-    [sendChatMessage, conversationId],
+    [sendMessageBase],
   )
 
-  const stickToBottomRef = useStateToRef(stickToBottom)
-  const activeMessageIdRef = useStateToRef(activeMessageId)
-  const conversationIdRef = useStateToRef(conversationId)
-  const scrollToBottomRef = useStateToRef(scrollToBottom)
-  const showRawResponseRef = useStateToRef(showRawResponse)
+  const sendImageGenerationMessage = useCallback(
+    async (message: ChatMessage) => {
+      const model = await window.electronAPI.getUserConfigValue(
+        'selectedImageGenerationModel',
+      )
+      if (!model) {
+        throw new Error('Image generation model is not set')
+      }
+
+      const id = uuidv4()
+      sendMessageBase(message, id)
+
+      const imageGenerationQuery = message.contents.reduce(
+        (acc, contentItem) =>
+          contentItem.type === 'text' ? acc + contentItem.content : acc,
+        '',
+      )
+
+      cancellable(window.electronAPI.generateImage(imageGenerationQuery, model))
+        .then((imageData) => {
+          if (
+            !activeMessageIdRef.current ||
+            !activeAiMessageElementRef.current
+          ) {
+            console.warn('Received unexpected chat response', id)
+            return
+          }
+          if (activeMessageIdRef.current !== id) {
+            console.warn('Received unexpected image generation response', id)
+            return
+          }
+
+          const container = document.createElement('div')
+          container.className = 'image-generation-container'
+
+          const image = document.createElement('img')
+          const imgSrc = `data:image/png;base64,${imageData}`
+          image.src = imgSrc
+          image.style.maxWidth = '100%'
+          image.style.width = 'auto'
+          image.style.height = 'auto'
+          container.appendChild(image)
+
+          const downloadButton = document.createElement('button')
+          downloadButton.className = 'image-generation-download-button'
+          downloadButton.onclick = () => {
+            const a = document.createElement('a')
+            a.href = imgSrc
+            a.setAttribute('download', 'image.png')
+            a.click()
+          }
+          container.appendChild(downloadButton)
+
+          const downloadIcon = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'svg',
+          )
+          downloadIcon.setAttributeNS(
+            'http://www.w3.org/2000/svg',
+            'viewBox',
+            '0 0 24 24',
+          )
+          downloadIcon.style.width = '24'
+          downloadIcon.style.height = '24'
+
+          const path = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path',
+          )
+          path.setAttributeNS(null, 'd', mdiDownload)
+
+          downloadIcon.appendChild(path)
+          downloadButton.appendChild(downloadIcon)
+
+          activeAiMessageElementRef.current.appendChild(container)
+
+          if (stickToBottomRef.current) {
+            scrollToBottomRef.current()
+          }
+
+          setActiveMessageId(null)
+          activeAiMessageElementRef.current = null
+          setLoading(false)
+        })
+        .catch((error) => {
+          if (error) {
+            enqueueSnackbar({
+              variant: 'error',
+              message: error instanceof Error ? error.message : String(error),
+            })
+          }
+        })
+    },
+    [
+      activeMessageIdRef,
+      cancellable,
+      scrollToBottomRef,
+      sendMessageBase,
+      stickToBottomRef,
+    ],
+  )
+
+  const handleSend = useCallback<AdvancedInputProps['onSend']>(
+    (contents) => {
+      inputRef.current?.clear()
+      if (mode === ChatMode.Assistant) {
+        sendChatMessage({
+          conversationId,
+          contents,
+        }).catch(console.error)
+      } else {
+        sendImageGenerationMessage({
+          conversationId,
+          contents,
+        }).catch(console.error)
+      }
+    },
+    [mode, sendChatMessage, conversationId, sendImageGenerationMessage],
+  )
+
   useEffect(() => {
     let formatCodeBlocksTimeout: number | null = null
     if (listenersReadyRef.current) {
@@ -287,7 +431,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     showRawResponseRef,
   ])
 
-  const handleClearChat = useCallback(() => {
+  const handleClearChat = useCallback((focusInput = true) => {
     if (!messagesContainerRef.current) {
       return
     }
@@ -304,7 +448,9 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     activeAiMessageElementRef.current = null
     activeAiMessageBuffersRef.current.clear()
     setLoading(false)
-    inputRef.current?.focus()
+    if (focusInput) {
+      inputRef.current?.focus()
+    }
   }, [])
 
   const handleRawResponseToggle = useCallback(
@@ -338,11 +484,19 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     [setShowRawResponse],
   )
 
+  useEffect(() => {
+    if (mode) {
+      handleClearChat(false)
+      window.electronAPI.cancelSpeaking()
+    }
+  }, [handleClearChat, mode])
+
   return (
     <GlassCard
       className={cn(
         'chat-view border-b-0 rounded-b-none',
         quickChatMode && 'quick-chat-view',
+        mode,
       )}
     >
       <ScrollShadow
@@ -351,16 +505,39 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         ref={messagesContainerRef}
         className="chat-output empty"
         onWheel={handleWheel}
+        onClick={(event) => {
+          if ((event.target as HTMLElement).children.length === 0) {
+            inputRef.current?.focus()
+          }
+        }}
       />
+      <div className="small-info flex flex-row items-center gap-x-2 text-sm text-foreground-600">
+        <Icon path={chatModeProps[mode].icon} size="1.25rem" />
+        <span>
+          {mode === ChatMode.Assistant
+            ? selectedChatModel
+            : imageGenerationModel}
+        </span>
+        {mockPaidRequests && <span className="text-xs">(mock)</span>}
+      </div>
       <ChatMenu
+        mode={mode}
+        setMode={setMode}
         showRawResponse={!!showRawResponse}
         setShowRawResponse={handleRawResponseToggle}
         useHistory={!!useHistory}
         setUseHistory={setUseHistory}
+        readChatResponses={!!readChatResponses}
+        setReadChatResponses={setReadChatResponses}
         onClearChat={handleClearChat}
       />
       <div className="chat-view-input-container">
-        <AdvancedInput ref={inputRef} onSend={handleSend} disabled={loading} />
+        <AdvancedInput
+          ref={inputRef}
+          onSend={handleSend}
+          disabled={loading}
+          textOnly={mode === ChatMode.ImageGeneration}
+        />
         <div className="chat-spinner" style={{ opacity: loading ? 1 : 0 }}>
           <Icon path={mdiLoading} spin size="1.5rem" />
         </div>

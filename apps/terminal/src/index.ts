@@ -50,9 +50,9 @@ async function run() {
     const spinner = await showSpinner('Loading available models...')
     const availableModels = await ai.getAvailableModels()
     spinner.stop()
-    if (!chatModel || !availableModels.includes(chatModel)) {
+    if (!chatModel || !availableModels.chatModels.includes(chatModel)) {
       chatModel = await selectOption(
-        availableModels.sort(),
+        availableModels.chatModels.sort(),
         'Select model you want to use for chat:',
       )
       setUserConfigValue('selectedChatModel', chatModel)

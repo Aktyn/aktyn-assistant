@@ -101,13 +101,14 @@ __metadata:
     "@nextui-org/link": "npm:^2.0.32"
     "@nextui-org/listbox": "npm:^2.1.22"
     "@nextui-org/modal": "npm:^2.0.36"
+    "@nextui-org/popover": "npm:^2.1.24"
     "@nextui-org/react": "npm:^2.4.2"
     "@nextui-org/scroll-shadow": "npm:^2.1.17"
     "@nextui-org/select": "npm:^2.2.2"
     "@nextui-org/spacer": "npm:^2.0.29"
     "@nextui-org/spinner": "npm:^2.0.30"
-    "@nextui-org/switch": "npm:^2.0.31"
     "@nextui-org/system": "npm:^2.2.2"
+    "@nextui-org/tabs": "npm:^2.0.32"
     "@nextui-org/theme": "npm:^2.2.6"
     "@nextui-org/tooltip": "npm:^2.0.36"
     "@types/animejs": "npm:^3.1.12"
@@ -3896,7 +3897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/popover@npm:2.1.24":
+"@nextui-org/popover@npm:2.1.24, @nextui-org/popover@npm:^2.1.24":
   version: 2.1.24
   resolution: "@nextui-org/popover@npm:2.1.24"
   dependencies:
@@ -4213,7 +4214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/switch@npm:2.0.31, @nextui-org/switch@npm:^2.0.31":
+"@nextui-org/switch@npm:2.0.31":
   version: 2.0.31
   resolution: "@nextui-org/switch@npm:2.0.31"
   dependencies:
@@ -4294,7 +4295,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nextui-org/tabs@npm:2.0.32":
+"@nextui-org/tabs@npm:2.0.32, @nextui-org/tabs@npm:^2.0.32":
   version: 2.0.32
   resolution: "@nextui-org/tabs@npm:2.0.32"
   dependencies:

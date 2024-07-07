@@ -177,6 +177,7 @@ export async function performChatQuery(
     })
 
     for (const toolCall of toolCalls) {
+      //TODO: if function response contains image, add it to messages as new user message
       const functionResponse = await tryCallToolFunction(
         tools,
         toolCall.function,

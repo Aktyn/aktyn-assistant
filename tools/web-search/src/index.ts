@@ -23,6 +23,7 @@ const toolSchema: ToolSchema = {
 async function searchWeb(data: { query: string }) {
   const { query } = data
 
+  //TODO: fetch and scrape from full duckduckgo search results (appearing summaries can be extra useful
   const res = await fetch(
     `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`,
   )

@@ -10,7 +10,7 @@ export const GlassCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
       ref={ref}
       isBlurred
       className={cn(
-        'backdrop-blur-[8px] border-1 border-divider bg-gradient-to-br from-primary-200/10 to-secondary-200/10 !transition-none',
+        'backdrop-blur-[8px] border-1 border-divider bg-gradient-to-br from-primary-200/10 to-secondary-200/10 !transition-colors',
         props.className,
       )}
     />

@@ -248,6 +248,8 @@ const components = [
   'tooltip',
   'spinner',
   'chip',
+  'popover',
+  'tabs',
 ]
 
 /** @type {import('tailwindcss').Config} */

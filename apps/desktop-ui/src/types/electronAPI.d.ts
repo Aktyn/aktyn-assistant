@@ -29,7 +29,9 @@ declare global {
         key: Key,
         value: UserConfigType[Key],
       ) => void
-      getAvailableModels: PromisyfyFunction<() => Promise<string[]>>
+      getAvailableModels: PromisyfyFunction<
+        () => Record<'chatModels' | 'imageModels', string[]>
+      >
       promptAiProviderCallback: (provider: AiProviderType) => void
       promptApiKeyCallback: (key: string) => void
       performChatQuery: (
@@ -37,6 +39,7 @@ declare global {
         model: string,
         messageId: string,
       ) => void
+      generateImage: (query: string, model: string) => Promise<string>
       addToolsSource: (data: ToolsSourceData) => Promise<string | null>
       loadToolsInfo: () => Promise<Array<ToolInfo>>
       setEnabledTools: (toolNames: string[]) => Promise<void>

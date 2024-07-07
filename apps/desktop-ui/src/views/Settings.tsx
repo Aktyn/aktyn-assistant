@@ -20,10 +20,17 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
   const ref = useRef<HTMLDivElement>(null)
   const { initData } = useContext(GlobalContext)
 
-  const [models, setModels] = useState<string[]>([])
+  const [models, setModels] = useState<
+    Record<'chatModels' | 'imageModels', string[]>
+  >({ chatModels: [], imageModels: [] })
 
   const [chatModel, setChatModel, syncChatModel] =
     useUserConfigValue('selectedChatModel')
+  const [
+    imageGenerationModel,
+    setImageGenerationModel,
+    syncImageGenerationModel,
+  ] = useUserConfigValue('selectedImageGenerationModel')
   const [mockPaidRequests, setMockPaidRequests, syncMockPaidRequests] =
     useUserConfigValue('mockPaidRequests')
   const [launchOnStartup, setLaunchOnStartup, syncLaunchOnStartup] =
@@ -44,6 +51,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
   const syncSettings = useCallback(async () => {
     void syncChatModel()
+    void syncImageGenerationModel()
     void syncMockPaidRequests()
     void syncLaunchOnStartup()
     void syncLaunchHidden()
@@ -53,6 +61,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
     void syncInitialSystemMessage()
   }, [
     syncChatModel,
+    syncImageGenerationModel,
     syncLaunchHidden,
     syncLaunchOnStartup,
     syncMaxHistoryLength,
@@ -71,8 +80,8 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       const models = await window.electronAPI.getAvailableModels()
-      if (!models.length) {
-        throw new Error('No AI models available')
+      if (!models.chatModels.length) {
+        throw new Error('No AI chat models available')
       }
       setModels(models)
 
@@ -167,7 +176,28 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
             </Checkbox>
           </Section>
 
-          <Section title="Audio">
+          <Section title="Media">
+            <Select
+              label="Image generation model"
+              variant="underlined"
+              selectedKeys={
+                imageGenerationModel &&
+                models.imageModels.includes(imageGenerationModel)
+                  ? [imageGenerationModel]
+                  : []
+              }
+              onSelectionChange={(keys) => {
+                if (keys instanceof Set) {
+                  setImageGenerationModel(keys.values().next().value)
+                }
+              }}
+            >
+              {models.imageModels.map((model) => (
+                <SelectItem key={model} value={model}>
+                  {model}
+                </SelectItem>
+              ))}
+            </Select>
             <Checkbox
               color="default"
               isSelected={!!readChatResponses}
@@ -175,7 +205,6 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
             >
               Read chat responses
             </Checkbox>
-
             {/* TODO: language selection */}
           </Section>
 
@@ -184,7 +213,9 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
               label="Chat model"
               variant="underlined"
               selectedKeys={
-                chatModel && models.includes(chatModel) ? [chatModel] : []
+                chatModel && models.chatModels.includes(chatModel)
+                  ? [chatModel]
+                  : []
               }
               onSelectionChange={(keys) => {
                 if (keys instanceof Set) {
@@ -192,7 +223,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
                 }
               }}
             >
-              {models.map((model) => (
+              {models.chatModels.map((model) => (
                 <SelectItem key={model} value={model}>
                   {model}
                 </SelectItem>

@@ -22,12 +22,13 @@ export type AdvancedInputHandle = {
 export type AdvancedInputProps = {
   onSend: (contents: ChatMessage['contents']) => void
   disabled?: boolean
+  textOnly?: boolean
 }
 
 export const AdvancedInput = forwardRef<
   AdvancedInputHandle,
   AdvancedInputProps
->(({ onSend, disabled = false }, forwardRef) => {
+>(({ onSend, disabled = false, textOnly = false }, forwardRef) => {
   const inputRef = useRef<HTMLDivElement>(null)
 
   useImperativeHandle(
@@ -119,6 +120,9 @@ export const AdvancedInput = forwardRef<
       const text = clipboardData.getData('text/plain')
       const files = clipboardData.files
       if (files.length) {
+        if (textOnly) {
+          return
+        }
         for (const file of files) {
           addFile(file, event.currentTarget).catch(console.error)
         }
@@ -126,6 +130,9 @@ export const AdvancedInput = forwardRef<
         const selection = window.getSelection()
 
         if (text.startsWith('file://')) {
+          if (textOnly) {
+            return
+          }
           const filePath = text.replace('file://', '')
           imageUrlToFile(filePath)
             .then((file) => addFile(file, event.currentTarget))
@@ -136,18 +143,24 @@ export const AdvancedInput = forwardRef<
         }
       }
     },
-    [],
+    [textOnly],
   )
 
-  const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>((event) => {
-    event.preventDefault()
-    const files = event.dataTransfer?.files
-    if (files?.length) {
-      for (const file of files) {
-        addFile(file, event.currentTarget).catch(console.error)
+  const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>(
+    (event) => {
+      event.preventDefault()
+      if (textOnly) {
+        return
       }
-    }
-  }, [])
+      const files = event.dataTransfer?.files
+      if (files?.length) {
+        for (const file of files) {
+          addFile(file, event.currentTarget).catch(console.error)
+        }
+      }
+    },
+    [textOnly],
+  )
 
   return (
     <div

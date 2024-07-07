@@ -35,7 +35,7 @@ import {
   RESPONSE_WITH_CODE_WORDS,
   RESPONSE_WITH_LINKS_WORDS,
   RESPONSE_WITH_MARKDOWN_WORDS,
-} from './mock'
+} from './chatMock'
 
 import '../test-utils/extend'
 

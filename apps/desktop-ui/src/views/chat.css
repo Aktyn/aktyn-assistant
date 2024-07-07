@@ -89,6 +89,10 @@
   position: relative;
 }
 
+.chat-view.image-generation {
+  @apply border-secondary-200/50 bg-secondary-900/5;
+}
+
 .chat-view>.chat-output {
   overflow-y: auto;
   overflow-x: hidden;
@@ -117,6 +121,10 @@
   line-height: 2rem;
 }
 
+.chat-view.image-generation>.chat-output.empty::before {
+  content: 'Generated images will appear here';
+}
+
 .chat-view.quick-chat-view>.chat-output.empty::before {
   margin-top: 2rem;
 }
@@ -133,6 +141,26 @@
   display: inline;
   margin-inline: 0.25rem;
   vertical-align: middle;
+}
+
+.chat-message .image-generation-container {
+  @apply shadow-lg shadow-black/20 rounded-xl overflow-hidden inline-flex relative;
+}
+
+.chat-message .image-generation-container>.image-generation-download-button {
+  @apply transition-opacity opacity-0 absolute left-0 top-0 h-full w-full flex flex-col items-center justify-center bg-background/80;
+}
+
+.chat-message .image-generation-container>.image-generation-download-button svg {
+  @apply fill-current pointer-events-none scale-[8] text-sm;
+}
+
+.chat-message .image-generation-container:hover>.image-generation-download-button {
+  opacity: 1;
+}
+
+.chat-message .image-generation-container>img {
+  margin-inline: unset;
 }
 
 .chat-message a {
@@ -176,6 +204,10 @@
   resize: none;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.chat-view.image-generation .chat-view-input-container>.chat-input:focus {
+  @apply border-secondary-400 bg-secondary-400/15;
 }
 
 .chat-view-input-container>.chat-input[disabled=true] {
@@ -230,4 +262,21 @@
 
 .chat-view-input-container>.chat-speaking-indicator {
   right: 1rem;
+}
+
+.chat-view>.options-menu-button, .chat-view>.small-info {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  height: 2rem;
+  z-index: 10;
+}
+
+.chat-view>.options-menu-button {
+  align-self: flex-end;
+  backdrop-filter: blur(6px);
+}
+
+.chat-view>.small-info {
+  right: 4rem;
 }

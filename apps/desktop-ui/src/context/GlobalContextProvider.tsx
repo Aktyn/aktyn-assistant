@@ -10,7 +10,7 @@ import { closeSnackbar, enqueueSnackbar } from 'notistack'
 import { NotificationMessage } from '../components/common/NotificationMessage'
 import { AiProviderSelectDialog } from '../components/dialog/AiProviderSelectDialog'
 import { ApiKeyInputDialog } from '../components/dialog/ApiKeyInputDialog'
-import { ChatModelSelectDialog } from '../components/dialog/ChatModelSelectDialog'
+import { ModelsSelectDialog } from '../components/dialog/ModelsSelectDialog'
 import type { ViewType } from '../utils/navigation'
 
 type InitData = Awaited<ReturnType<typeof window.electronAPI.getInitData>>
@@ -40,8 +40,11 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const chatModel =
       await window.electronAPI.getUserConfigValue('selectedChatModel')
-    if (!chatModel) {
-      console.warn('No chat model selected, requesting user to select one')
+    const imageGenerationModel = await window.electronAPI.getUserConfigValue(
+      'selectedImageGenerationModel',
+    )
+    if (!chatModel || !imageGenerationModel) {
+      console.warn('Models not selected, requesting user for selection')
       setSelectModelDialogOpen(true)
     }
   }, [])
@@ -106,7 +109,7 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
         />
       )}
       {!aiProviderDialogOpen && !apiKeyDialogOpen && (
-        <ChatModelSelectDialog
+        <ModelsSelectDialog
           open={selectModelDialogOpen}
           onClose={() => setSelectModelDialogOpen(false)}
         />

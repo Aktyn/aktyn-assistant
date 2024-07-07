@@ -31,6 +31,11 @@ export function setupUserConfigHandlers() {
 
 export function setupAiHandlers(ai: AI) {
   ipcMain.handle('getAvailableModels', () => ai.getAvailableModels())
+
+  ipcMain.on('cancelSpeaking', () => {
+    ai.cancelSpeaking()
+  })
+
   ipcMain.on(
     'performChatQuery',
     async (event, message: ChatMessage, model: string, messageId: string) =>
@@ -42,9 +47,9 @@ export function setupAiHandlers(ai: AI) {
         },
       ),
   )
-  ipcMain.on('cancelSpeaking', () => {
-    ai.cancelSpeaking()
-  })
+  ipcMain.handle('generateImage', async (_, query: string, model: string) =>
+    ai.generateImage(query, { model }),
+  )
 }
 
 export function setupToolHandlers() {

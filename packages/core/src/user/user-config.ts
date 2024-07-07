@@ -14,6 +14,7 @@ import { getDataDirectory } from '../utils/external-data'
 const USER_CONFIG = {
   selectedAiProvider: null as AiProviderType | null,
   selectedChatModel: null as string | null,
+  selectedImageGenerationModel: null as string | null,
   mockPaidRequests: false,
   autoLaunch: false,
   launchHidden: false,
