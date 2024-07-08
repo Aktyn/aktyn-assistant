@@ -15,7 +15,9 @@
     "packages": [
       "packages/**",
       "apps/**",
-      "tools/web-search"
+      "tools/web-search",
+      "tools/assistant",
+      "tools/coding-assistant"
     ]
   },
   "scripts": {

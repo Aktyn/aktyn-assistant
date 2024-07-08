@@ -8,6 +8,7 @@ import {
   type Tool,
   type ToolSchema,
 } from '@aktyn-assistant/common'
+import AssistantTool from '@aktyn-assistant-tools/assistant'
 import WebSearchTool from '@aktyn-assistant-tools/web-search'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -30,7 +31,9 @@ type ImportedToolInfo = ToolInfoBase & {
 }
 export type ToolInfo = BuiltInToolInfo | ImportedToolInfo
 
-const builtInTools: Tool[] = [...WebSearchTool()]
+const builtInTools = [...AssistantTool(), ...WebSearchTool()] as Array<
+  Tool<object>
+>
 
 const getToolsDirectoryPath = once(() => path.join(getDataDirectory(), 'tools'))
 
@@ -58,7 +61,7 @@ function loadToolsFromExternalSource(indexPath: string) {
   return tools
 }
 
-export function getActiveTools(): Array<Tool> {
+export function getActiveTools() {
   const toolInfos = loadToolsInfo()
 
   const moduleToolsBuffer = new Map<string, Array<Tool>>()
@@ -111,19 +114,35 @@ export function loadToolsInfo() {
       saveToolsInfo(builtInToolInfos)
       return builtInToolInfos
     }
-    const toolInfos: ToolInfo[] = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
+    let toolInfos: ToolInfo[] = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
     for (const builtInTool of builtInTools) {
-      if (
-        !toolInfos.some(
-          (tool) =>
-            tool.schema.functionName === builtInTool.schema.functionName,
-        )
-      ) {
+      const foundBuiltInTool = toolInfos.find(
+        (tool) => tool.schema.functionName === builtInTool.schema.functionName,
+      )
+
+      if (!foundBuiltInTool) {
         toolInfos.push({
           schema: builtInTool.schema,
           enabled: true,
           builtIn: true,
         })
+      } else if (
+        foundBuiltInTool.schema.version !== builtInTool.schema.version
+      ) {
+        console.info(
+          `Updating tools info file due to version change (tool: ${foundBuiltInTool.schema.functionName})`,
+        )
+        toolInfos = toolInfos.map((tool) =>
+          tool.schema.functionName === foundBuiltInTool.schema.functionName
+            ? {
+                ...tool,
+                schema: {
+                  ...tool.schema,
+                  version: builtInTool.schema.version,
+                },
+              }
+            : tool,
+        )
       }
     }
     return toolInfos

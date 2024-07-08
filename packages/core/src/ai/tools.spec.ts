@@ -50,7 +50,7 @@ jest.mock(
 describe(getActiveTools.name, () => {
   it('should return list of available tools', () => {
     const tools = getActiveTools()
-    expect(tools.length).toBe(2) // + built-in tools
+    expect(tools.length).toBe(3) // + built-in tools
     expect(tools.at(-1)!.schema.version).toBe('1.0.0')
     expect(tools.at(-1)!.schema.functionName).toBe('mock_function')
     expect(tools.at(-1)!.schema.description).toBe('foo')

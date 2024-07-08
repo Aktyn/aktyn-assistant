@@ -175,6 +175,7 @@ export async function performChatQuery(
       content: null,
       tool_calls: toolCalls,
     })
+    //TODO: yield toolCalls so it can be used in the chat to display function names and arguments
 
     for (const toolCall of toolCalls) {
       //TODO: if function response contains image, add it to messages as new user message
@@ -187,6 +188,7 @@ export async function performChatQuery(
         role: 'tool',
         content: functionResponse,
       })
+      //TODO: yield this message and display in the chat
     }
 
     updateConversationHistory(message.conversationId, messages)

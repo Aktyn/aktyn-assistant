@@ -17,9 +17,9 @@ export type ToolSchema = {
   parameters?: Record<string, unknown>
 }
 
-export type Tool = {
+export type Tool<DataType extends object = object> = {
   schema: ToolSchema
-  function: (data: unknown) => string | Promise<string>
+  function: (data: DataType) => string | Promise<string>
 }
 
 export function validateTool(tool: unknown) {

@@ -3,7 +3,7 @@ import type { Tool, ToolSchema } from '@aktyn-assistant/common'
 import { scrapeSearchResults } from './scraper'
 
 const toolSchema: ToolSchema = {
-  version: '1.0.0',
+  version: '1.2.0',
   functionName: 'search_web',
   //TODO: make it user editable (with option to restore original description)
   description:
@@ -30,14 +30,24 @@ async function searchWeb(data: { query: string }) {
   const html = await res.text()
   const scrapedData = scrapeSearchResults(html)
 
-  return JSON.stringify(scrapedData)
+  return scrapedData
+    .map((entry) => {
+      return [
+        entry.title && `Title: ${entry.title}`,
+        entry.url && `Url: ${entry.url.href}`,
+        entry.content && `Content: ${entry.content}`,
+      ]
+        .filter(Boolean)
+        .join('\n')
+    })
+    .join('\n\n')
 }
 
-export default function index(): Tool[] {
+export default function index() {
   return [
     {
       schema: toolSchema,
-      function: searchWeb as Tool['function'],
-    },
+      function: searchWeb,
+    } satisfies Tool<{ query: string }>,
   ]
 }

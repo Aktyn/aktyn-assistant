@@ -1,14 +1,14 @@
 {
   "name": "@aktyn-assistant-tools/web-search",
-  "version": "0.3.0",
+  "version": "1.3.0",
   "main": "./dist/index.js",
   "private": true,
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
     "start": "node ./dist/index.js",
-    "dev:test": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start:test || exit 1\" -e ts,html",
-    "dev": "nodemon --watch ./src --exec \"yarn run build\" --ignore dist/ -e ts",
     "start:test": "node ./dist/test.js",
+    "dev:test": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn run start:test || exit 1\" --ignore dist/ -e ts",
+    "dev": "nodemon --watch ./src --exec \"yarn run build\" --ignore dist/ -e ts",
     "format": "prettier --write src/**/*{.ts,.tsx}",
     "lint": "eslint src/**/*.ts --fix",
     "typecheck": "tsc --noEmit --skipLibCheck"

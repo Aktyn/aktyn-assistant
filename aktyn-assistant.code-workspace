@@ -31,6 +31,14 @@
 			"name": "Web search tool",
 			"path": "./tools/web-search"
 		},
+		{
+			"name": "Assistant tool",
+			"path": "./tools/assistant"
+		},
+		{
+			"name": "Coding assistant tool",
+			"path": "./tools/coding-assistant"
+		}
 	],
 	"settings": {
 		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",
