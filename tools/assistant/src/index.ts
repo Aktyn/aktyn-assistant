@@ -1,8 +1,8 @@
-import { openSiteOrRunApplicationTool } from './tools/openSiteOrRunApplication'
+import { openSiteTool } from './tools/openSite'
 
 export default function index() {
   return [
-    openSiteOrRunApplicationTool,
+    openSiteTool,
     //TODO: more assistant related tools
   ]
 }
