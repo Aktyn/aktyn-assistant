@@ -1,22 +1,16 @@
 import fs from 'fs'
 import path from 'path'
 
-import { once, wait } from '@aktyn-assistant/common'
+import { wait } from '@aktyn-assistant/common'
 //@ts-expect-error no type definitions
 import gTTS from 'gtts'
 import { v4 as uuidv4 } from 'uuid'
 
-import { getDataDirectory } from '../utils'
-
+import {
+  getAudioOutputDirectory,
+  removeOutdatedAudioFiles,
+} from './audio-helpers'
 import { playAudioFile } from './play'
-
-const getAudioOutputDirectory = once(() => {
-  const audioDir = path.join(getDataDirectory(), 'audio')
-  if (!fs.existsSync(audioDir)) {
-    fs.mkdirSync(audioDir, { recursive: true })
-  }
-  return audioDir
-})
 
 export async function speak(content: string, abortSignal?: AbortSignal) {
   content = formatTextForSpeech(content)
@@ -26,6 +20,7 @@ export async function speak(content: string, abortSignal?: AbortSignal) {
   const audioDir = getAudioOutputDirectory()
 
   const filePath = path.join(audioDir, `output-${uuidv4()}.mp3`)
+  removeOutdatedAudioFiles()
 
   const res = new gTTS(content, 'en-us')
   await res.save(filePath)
@@ -37,24 +32,6 @@ export async function speak(content: string, abortSignal?: AbortSignal) {
       console.error(error)
     }
   })
-  setTimeout(removeOutdatedAudioFiles, 1000 * 60)
-}
-
-function removeOutdatedAudioFiles() {
-  try {
-    const audioDir = getAudioOutputDirectory()
-
-    const now = Date.now()
-    const hour = 1000 * 60 * 60
-    for (const file of fs.readdirSync(audioDir)) {
-      const filePath = path.join(audioDir, file)
-      if (fs.statSync(filePath).mtime.getTime() < now - hour) {
-        fs.unlinkSync(filePath)
-      }
-    }
-  } catch (error) {
-    console.error(error)
-  }
 }
 
 export function formatTextForSpeech(text: string, lineBreaksToSpaces = false) {

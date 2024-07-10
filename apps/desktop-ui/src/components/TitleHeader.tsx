@@ -8,7 +8,7 @@ const words = 'Aktyn Assistant'.split(/\s/)
 
 export const TitleHeader = () => {
   const ref = useRef<HTMLHeadingElement>(null)
-  const { view } = useContext(GlobalContext)
+  const { ready, view } = useContext(GlobalContext)
 
   const [isReady, setIsReady] = useState(false)
 
@@ -40,6 +40,10 @@ export const TitleHeader = () => {
   }, [isAnyViewEntered, isReady, visible])
 
   useEffect(() => {
+    if (!ready) {
+      return
+    }
+
     const timeout = setTimeout(() => {
       setIsReady(true)
     }, 200)
@@ -47,7 +51,7 @@ export const TitleHeader = () => {
     return () => {
       clearTimeout(timeout)
     }
-  }, [])
+  }, [ready])
 
   return (
     <div className="absolute top-0 left-0 w-full h-full pt-8">

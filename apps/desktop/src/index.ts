@@ -5,6 +5,7 @@ import { isDev } from '@aktyn-assistant/common'
 import {
   AI,
   AiProviderType,
+  AudioRecorder,
   getUserConfigValue,
   setUserConfigValue,
 } from '@aktyn-assistant/core'
@@ -18,7 +19,8 @@ import {
   setupUserConfigHandlers,
 } from './handlers'
 import { forceSingleInstance } from './lock'
-import { createChatWindow, createMainWindow, setupTray } from './window'
+import { initVoiceCommands } from './voiceCommands'
+import { createMainWindow, createQuickChatWindow, setupTray } from './window'
 
 if (!isDev()) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -63,6 +65,9 @@ async function init() {
   if (success && !isDev()) {
     console.info('Auto launch enabled')
   }
+
+  // const microphoneAccess = await askForMicrophoneAccess()
+  // console.info('Microphone access:', microphoneAccess)
 
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
@@ -141,12 +146,12 @@ async function init() {
   ready = true
   win.webContents.send('ready')
 
-  await postInit(win)
+  await postInit(win, ai)
 }
 
-async function postInit(mainWindow: BrowserWindow) {
+async function postInit(mainWindow: BrowserWindow, ai: AI) {
   let shown = false
-  const quickChatWindow = await createChatWindow()
+  const quickChatWindow = await createQuickChatWindow()
 
   quickChatWindow.on('close', (event) => {
     event.preventDefault()
@@ -166,6 +171,12 @@ async function postInit(mainWindow: BrowserWindow) {
   globalShortcut.register('Alt+Q', async () => {
     toggleQuickChat().catch(console.error)
   })
+  const tray = setupTray(mainWindow, toggleQuickChat)
 
-  setupTray(mainWindow, toggleQuickChat)
+  initVoiceCommands(
+    new AudioRecorder(),
+    ai,
+    tray,
+    quickChatWindow.webContents,
+  ).catch(console.error)
 }

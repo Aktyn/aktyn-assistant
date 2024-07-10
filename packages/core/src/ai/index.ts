@@ -6,6 +6,7 @@ import {
   isDev,
   once,
   Stream,
+  wait,
   type ChatMessage,
   type ChatResponse,
   type Tool,
@@ -283,6 +284,22 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           prompt: query,
           model: options.model,
         })
+      default:
+        throw throwUnsupportedProviderError(this.providerType)
+    }
+  }
+
+  async speechToText(filePath: string) {
+    const mockPaidRequests = getUserConfigValue('mockPaidRequests')
+
+    switch (this.providerType) {
+      case AiProviderType.openai:
+        if (mockPaidRequests) {
+          await wait(1000)
+          return 'Mocked speech to text result'
+        }
+
+        return await OpenAiAPI.transcribeSpeech(this.providerClient, filePath)
       default:
         throw throwUnsupportedProviderError(this.providerType)
     }

@@ -10,7 +10,7 @@ const getOpenMethods = once(() =>
 )
 
 const toolSchema: ToolSchema = {
-  version: '1.0.0',
+  version: '1.0.1',
   functionName: 'open_site',
   description: 'Open a website',
   parameters: {
@@ -30,7 +30,9 @@ async function openSite(data: { url: string }) {
 
   try {
     if (
-      !/^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/.test(url)
+      !/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/.test(
+        url,
+      )
     ) {
       return `Invalid URL: ${url}`
     }

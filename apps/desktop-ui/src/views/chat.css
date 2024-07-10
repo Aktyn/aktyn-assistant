@@ -3,9 +3,8 @@
 }
 
 .chat-view.quick-chat-view {
-  @apply bg-background/50;
+  @apply bg-background/50 border-2 border-primary-800;
   box-shadow: none;
-  border: none;
   width: 100%;
   max-width: unset;
   max-height: unset;
@@ -30,32 +29,33 @@
 }
 
 .chat-view.quick-chat-view>.chat-output {
-  padding-top: 2.5rem;
+  padding-top: 3rem;
 }
 
 .chat-view.quick-chat-view>.handle-container {
   position: absolute;
-  top: 0;
+  top: 1rem;
   left: 0;
   right: 0;
   width: 100%;
   pointer-events: none;
+  z-index: 20;
 }
 
 .chat-view.quick-chat-view .handle {
   display: flex;
   align-items: center;
   justify-content: center;
-  @apply text-foreground-100/25;
+  @apply text-foreground-100/25 border-1 border-divider rounded-full pl-4 pr-5;
   font-size: 1.5rem;
   height: 2rem;
   width: 61.8%;
+  max-width: calc(100% - 20rem);
   background-color: #37474F;
-  box-shadow: 0 0 0.5rem #fff2 inset;
-  border: 1px solid #fff4;
-  border-radius: 1rem;
   margin-inline: auto;
   cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
 
   -webkit-app-region: drag;
   user-select: none;
@@ -65,16 +65,26 @@
   display: none;
 }
 
-.chat-view.quick-chat-view .handle>*:not(.mdi) {
+.chat-view.quick-chat-view .handle>*:not(svg) {
   font-size: 0.85rem;
   font-weight: 600;
   margin-left: 0.5rem;
 }
 
-.chat-view {
+@media screen and (max-width: 640px) {
+  .chat-view.quick-chat-view .handle>*:not(svg) {
+    display: none;
+  }
+}
+
+.chat-view:not(.quick-chat-view) {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-bottom: none;
+}
+
+.chat-view {
+  border-radius: 1rem;
   max-height: 100%;
   margin-top: auto;
   box-sizing: border-box;

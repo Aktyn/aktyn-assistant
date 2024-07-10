@@ -32,22 +32,31 @@ const viewsProperties: {
 
 export const Menu = () => {
   const ref = useRef<HTMLDivElement>(null)
-  const { initData, view, setView } = useContext(GlobalContext)
+  const { ready, initData, view, setView } = useContext(GlobalContext)
 
   useEffect(() => {
-    anime({
+    if (!ready) {
+      return
+    }
+
+    const animation = anime({
       targets: ref.current,
       easing: 'easeOutSine',
       duration: 400,
       delay: 200,
-      translateX: ['-100%', '0%'],
+      translateX: '0%',
     })
-  }, [])
+
+    return () => {
+      anime.remove(animation)
+    }
+  }, [ready])
 
   return (
     <aside
       ref={ref}
       className="h-full bg-background bg-opacity-10 border-r border-divider backdrop-blur-[6px] flex flex-col items-stretch justify-start pt-4"
+      style={{ transform: 'translateX(-100%)' }}
     >
       <div className="flex flex-col items-center justify-center relative max-h-24 mb-6">
         <img

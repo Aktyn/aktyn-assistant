@@ -21,6 +21,7 @@
 		"appdata-path": "^1.0.0",
 		"audic": "^3.0.2",
 		"gtts": "^0.2.1",
+		"node-mic": "^1.0.1",
 		"node-notifier": "^10.0.1",
 		"openai": "^4.52.3",
 		"sentence-tokenizer": "^1.0.1",

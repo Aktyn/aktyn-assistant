@@ -81,4 +81,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
       (_, conversationId: string, messageId: string, finished: boolean) =>
         callback(conversationId, messageId, finished),
     ),
+  onVoiceCommand: (callback: (voiceCommand: string) => void) =>
+    ipcRenderer.on('voiceCommand', (_, voiceCommand: string) =>
+      callback(voiceCommand),
+    ),
 })

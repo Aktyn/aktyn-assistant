@@ -136,12 +136,6 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     [],
   )
 
-  const stickToBottomRef = useStateToRef(stickToBottom)
-  const activeMessageIdRef = useStateToRef(activeMessageId)
-  const conversationIdRef = useStateToRef(conversationId)
-  const scrollToBottomRef = useStateToRef(scrollToBottom)
-  const showRawResponseRef = useStateToRef(showRawResponse)
-
   const sendMessageBase = useCallback(
     (message: ChatMessage, id: string) => {
       if ((messagesContainerRef.current?.childNodes.length ?? 0) > 1) {
@@ -213,6 +207,10 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     },
     [sendMessageBase],
   )
+
+  const stickToBottomRef = useStateToRef(stickToBottom)
+  const activeMessageIdRef = useStateToRef(activeMessageId)
+  const scrollToBottomRef = useStateToRef(scrollToBottom)
 
   const sendImageGenerationMessage = useCallback(
     async (message: ChatMessage) => {
@@ -334,6 +332,9 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     [mode, sendChatMessage, conversationId, sendImageGenerationMessage],
   )
 
+  const conversationIdRef = useStateToRef(conversationId)
+  const showRawResponseRef = useStateToRef(showRawResponse)
+  const sendChatMessageRef = useStateToRef(sendChatMessage)
   useEffect(() => {
     let formatCodeBlocksTimeout: number | null = null
     if (listenersReadyRef.current) {
@@ -418,17 +419,31 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         setLoading(false)
       }
     })
+
     window.electronAPI.onSpeakingState(
       (conversationId, messageId, finished) => {
         setSpeakingConversationId(finished ? null : conversationId)
       },
     )
+
+    window.electronAPI.onVoiceCommand((voiceCommand) => {
+      setMode(ChatMode.Assistant)
+      window.electronAPI.cancelSpeaking()
+
+      sendChatMessageRef
+        .current({
+          conversationId: conversationIdRef.current,
+          contents: [{ type: 'text', content: voiceCommand }],
+        })
+        .catch(console.error)
+    })
   }, [
     activeMessageIdRef,
     conversationIdRef,
     scrollToBottomRef,
     stickToBottomRef,
     showRawResponseRef,
+    sendChatMessageRef,
   ])
 
   const handleClearChat = useCallback((focusInput = true) => {
@@ -494,7 +509,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   return (
     <GlassCard
       className={cn(
-        'chat-view border-b-0 rounded-b-none',
+        'chat-view border-b-0',
         quickChatMode && 'quick-chat-view',
         mode,
       )}
@@ -506,7 +521,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         className="chat-output empty"
         onWheel={handleWheel}
         onClick={(event) => {
-          if ((event.target as HTMLElement).children.length === 0) {
+          if (event.currentTarget.children.length === 0) {
             inputRef.current?.focus()
           }
         }}

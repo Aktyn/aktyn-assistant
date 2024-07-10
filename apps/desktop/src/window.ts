@@ -18,6 +18,18 @@ const uiPath = path.join(__dirname, '..', 'ui')
 const iconPath = path.join(rootPath, 'img', 'icon.png')
 const quickChatIconPath = path.join(rootPath, 'img', 'icon-quick-chat.png')
 const trayIconPath = path.join(rootPath, 'img', 'icon-tray.png')
+const recordingTrayIconPath = path.join(
+  rootPath,
+  'img',
+  'icon-tray-recording.png',
+)
+
+export const getDefaultTrayIcon = once(() =>
+  nativeImage.createFromPath(trayIconPath),
+)
+export const getRecordingTrayIcon = once(() =>
+  nativeImage.createFromPath(recordingTrayIconPath),
+)
 
 const getStore = once(() =>
   import('electron-store').then(
@@ -53,7 +65,7 @@ export async function createMainWindow() {
   return win
 }
 
-export async function createChatWindow() {
+export async function createQuickChatWindow() {
   const store = await getStore()
   const bounds = store.get('quickChatWindowBounds')
 
@@ -74,6 +86,7 @@ export async function createChatWindow() {
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      // contextIsolation: false, //?
     },
     ...bounds,
   })
@@ -118,7 +131,7 @@ export function setupTray(
     toggleMainWindow()
   })
 
-  const icon = nativeImage.createFromPath(trayIconPath)
+  const icon = getDefaultTrayIcon()
 
   const tray = new Tray(icon.resize({ width: 16, height: 16 }))
   tray.setIgnoreDoubleClickEvents(true)
@@ -140,4 +153,6 @@ export function setupTray(
   tray.setContextMenu(trayMenu)
 
   tray.on('click', toggleMainWindow)
+
+  return tray
 }

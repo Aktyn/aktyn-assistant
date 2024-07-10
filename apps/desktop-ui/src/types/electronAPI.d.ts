@@ -67,6 +67,7 @@ declare global {
           finished: boolean,
         ) => void,
       ) => void
+      onVoiceCommand: (callback: (voiceCommand: string) => void) => void
     }
   }
 }
