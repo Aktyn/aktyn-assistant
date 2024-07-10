@@ -10,7 +10,7 @@ const getOpenMethods = once(() =>
 )
 
 const toolSchema: ToolSchema = {
-  version: '1.0.1',
+  version: '1.0.2',
   functionName: 'open_site',
   description: 'Open a website',
   parameters: {
@@ -60,7 +60,7 @@ function resolveChildProcess(child: ChildProcess, url: string) {
     child.on('spawn', () => {
       if (!resolved) {
         clearTimeout(timeout)
-        resolve(`"${url}" is now running`)
+        resolve(`"${url}" has been opened`)
       }
     })
     child.on('error', (error) => {

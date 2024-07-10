@@ -189,6 +189,7 @@ async function postInit(mainWindow: BrowserWindow, ai: AI) {
   })
   setupQuickCommandHandlers((quickCommand) => {
     quickCommandWindow.hide()
+    //TODO: disable every chat only tool (only those performing system actions should be fed to ai)
     quickChatWindow.webContents.send('externalCommand', quickCommand, true)
   })
 
