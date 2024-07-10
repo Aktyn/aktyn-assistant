@@ -194,7 +194,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   )
 
   const sendChatMessage = useCallback(
-    async (message: ChatMessage) => {
+    async (message: ChatMessage, ignoreHistory = false) => {
       const model =
         await window.electronAPI.getUserConfigValue('selectedChatModel')
       if (!model) {
@@ -203,7 +203,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
 
       const id = uuidv4()
       sendMessageBase(message, id)
-      window.electronAPI.performChatQuery(message, model, id)
+      window.electronAPI.performChatQuery(message, model, id, ignoreHistory)
     },
     [sendMessageBase],
   )
@@ -426,17 +426,22 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
       },
     )
 
-    window.electronAPI.onVoiceCommand((voiceCommand) => {
-      setMode(ChatMode.Assistant)
-      window.electronAPI.cancelSpeaking()
+    window.electronAPI.onExternalCommand(
+      (commandContent, ignoreHistory = false) => {
+        setMode(ChatMode.Assistant)
+        window.electronAPI.cancelSpeaking()
 
-      sendChatMessageRef
-        .current({
-          conversationId: conversationIdRef.current,
-          contents: [{ type: 'text', content: voiceCommand }],
-        })
-        .catch(console.error)
-    })
+        sendChatMessageRef
+          .current(
+            {
+              conversationId: conversationIdRef.current,
+              contents: [{ type: 'text', content: commandContent }],
+            },
+            ignoreHistory,
+          )
+          .catch(console.error)
+      },
+    )
   }, [
     activeMessageIdRef,
     conversationIdRef,

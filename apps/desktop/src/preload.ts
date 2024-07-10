@@ -28,8 +28,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.send('promptAiProviderCallback', provider),
   promptApiKeyCallback: (key: string) =>
     ipcRenderer.send('promptApiKeyCallback', key),
-  performChatQuery: (message: ChatMessage, model: string, messageId: string) =>
-    ipcRenderer.send('performChatQuery', message, model, messageId),
+  performChatQuery: (
+    message: ChatMessage,
+    model: string,
+    messageId: string,
+    ignoreHistory?: boolean,
+  ) =>
+    ipcRenderer.send(
+      'performChatQuery',
+      message,
+      model,
+      messageId,
+      ignoreHistory,
+    ),
   generateImage: (query: string, model: string) =>
     ipcRenderer.invoke('generateImage', query, model),
   addToolsSource: (data: ToolsSourceData) =>
@@ -39,6 +50,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('setEnabledTools', toolNames),
   removeTool: (toolName: string) => ipcRenderer.invoke('removeTool', toolName),
   cancelSpeaking: () => ipcRenderer.send('cancelSpeaking'),
+  sendQuickCommand: (quickCommand: string) =>
+    ipcRenderer.send('sendQuickCommand', quickCommand),
 
   // Main to renderer
   onReady: (callback: () => void) =>
@@ -81,8 +94,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
       (_, conversationId: string, messageId: string, finished: boolean) =>
         callback(conversationId, messageId, finished),
     ),
-  onVoiceCommand: (callback: (voiceCommand: string) => void) =>
-    ipcRenderer.on('voiceCommand', (_, voiceCommand: string) =>
-      callback(voiceCommand),
+  onExternalCommand: (
+    callback: (externalCommand: string, ignoreHistory?: boolean) => void,
+  ) =>
+    ipcRenderer.on(
+      'externalCommand',
+      (_, externalCommand: string, ignoreHistory?: boolean) =>
+        callback(externalCommand, ignoreHistory),
     ),
 })

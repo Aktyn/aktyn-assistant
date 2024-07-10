@@ -8,6 +8,7 @@ export async function performChatQuery(
   message: ChatMessage,
   model: string,
   messageId: string,
+  ignoreHistory = false,
 ) {
   const stream = await ai.performChatQuery(message, {
     model,
@@ -19,6 +20,7 @@ export async function performChatQuery(
         finished,
       )
     },
+    ignoreHistory,
   })
 
   let finished = false

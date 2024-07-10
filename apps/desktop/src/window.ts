@@ -36,6 +36,7 @@ const getStore = once(() =>
     ({ default: Store }) =>
       new Store<{
         quickChatWindowBounds: Partial<Rectangle>
+        quickCommandWindowBounds: Partial<Rectangle>
       }>(),
   ),
 )
@@ -72,7 +73,7 @@ export async function createQuickChatWindow() {
   const win = new BrowserWindow({
     useContentSize: true,
     minWidth: 128,
-    height: 128,
+    minHeight: 128,
     fullscreen: false,
     fullscreenable: false,
     maximizable: true,
@@ -86,7 +87,6 @@ export async function createQuickChatWindow() {
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      // contextIsolation: false, //?
     },
     ...bounds,
   })
@@ -103,6 +103,51 @@ export async function createQuickChatWindow() {
   win.on('close', () => {
     store.set('quickChatWindowBounds', win.getBounds())
   })
+  win.on('hide', () => {
+    store.set('quickChatWindowBounds', win.getBounds())
+  })
+
+  return win
+}
+
+export async function createQuickCommandWindow() {
+  const store = await getStore()
+  const bounds = store.get('quickCommandWindowBounds')
+
+  const win = new BrowserWindow({
+    useContentSize: true,
+    minWidth: 256,
+    minHeight: 44,
+    width: 256,
+    height: 52,
+    maxHeight: 52,
+    fullscreen: false,
+    fullscreenable: false,
+    maximizable: true,
+    minimizable: false,
+    hasShadow: false,
+    skipTaskbar: true,
+    autoHideMenuBar: true,
+    transparent: true,
+    frame: false,
+    icon: quickChatIconPath,
+    show: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+    },
+    ...bounds,
+  })
+  setupWindowToOpenLinksExternally(win)
+
+  await win.loadFile(path.join(rootPath, 'assets', 'quick-command.html'))
+
+  win.on('close', () => {
+    store.set('quickCommandWindowBounds', win.getBounds())
+  })
+  win.on('hide', () => {
+    store.set('quickCommandWindowBounds', win.getBounds())
+  })
 
   return win
 }
@@ -117,6 +162,7 @@ function setupWindowToOpenLinksExternally(win: BrowserWindow) {
 export function setupTray(
   mainWindow: BrowserWindow,
   toggleQuickChat: () => Promise<void>,
+  toggleQuickCommand: () => Promise<void>,
 ) {
   const toggleMainWindow = () => {
     if (mainWindow.isVisible()) {
@@ -144,6 +190,10 @@ export function setupTray(
     {
       label: 'Toggle quick chat (Alt+Q)',
       click: (_) => toggleQuickChat().catch(console.error),
+    },
+    {
+      label: 'Toggle quick command (Alt+X)',
+      click: (_) => toggleQuickCommand().catch(console.error),
     },
     {
       label: 'Quit',

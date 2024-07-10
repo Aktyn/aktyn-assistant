@@ -15,12 +15,18 @@ import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
 import { setupAutoLaunch } from './autoLaunch'
 import {
   setupAiHandlers,
+  setupQuickCommandHandlers,
   setupToolHandlers,
   setupUserConfigHandlers,
 } from './handlers'
 import { forceSingleInstance } from './lock'
 import { initVoiceCommands } from './voiceCommands'
-import { createMainWindow, createQuickChatWindow, setupTray } from './window'
+import {
+  createMainWindow,
+  createQuickChatWindow,
+  createQuickCommandWindow,
+  setupTray,
+} from './window'
 
 if (!isDev()) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -150,28 +156,43 @@ async function init() {
 }
 
 async function postInit(mainWindow: BrowserWindow, ai: AI) {
-  let shown = false
   const quickChatWindow = await createQuickChatWindow()
-
   quickChatWindow.on('close', (event) => {
     event.preventDefault()
     quickChatWindow?.hide()
   })
-
   const toggleQuickChat = async () => {
-    if (shown) {
+    if (quickChatWindow.isVisible()) {
       quickChatWindow.hide()
-      shown = false
     } else {
       quickChatWindow.show()
-      shown = true
     }
   }
-
   globalShortcut.register('Alt+Q', async () => {
     toggleQuickChat().catch(console.error)
   })
-  const tray = setupTray(mainWindow, toggleQuickChat)
+
+  const quickCommandWindow = await createQuickCommandWindow()
+  quickCommandWindow.on('close', (event) => {
+    event.preventDefault()
+    quickCommandWindow?.hide()
+  })
+  const toggleQuickCommand = async () => {
+    if (quickCommandWindow.isVisible()) {
+      quickCommandWindow.hide()
+    } else {
+      quickCommandWindow.show()
+    }
+  }
+  globalShortcut.register('Alt+X', async () => {
+    toggleQuickCommand().catch(console.error)
+  })
+  setupQuickCommandHandlers((quickCommand) => {
+    quickCommandWindow.hide()
+    quickChatWindow.webContents.send('externalCommand', quickCommand, true)
+  })
+
+  const tray = setupTray(mainWindow, toggleQuickChat, toggleQuickCommand)
 
   initVoiceCommands(
     new AudioRecorder(),

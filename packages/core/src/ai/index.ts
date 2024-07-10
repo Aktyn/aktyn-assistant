@@ -197,7 +197,11 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   async performChatQuery(
     message: ChatMessage,
-    options: { model: string; onSpeaking?: (finished: boolean) => void },
+    options: {
+      model: string
+      onSpeaking?: (finished: boolean) => void
+      ignoreHistory?: boolean
+    },
   ) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
 
@@ -223,9 +227,8 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
               message,
               model: options.model,
               tools: this.tools,
-              numberOfPreviousMessagesToInclude: useHistory
-                ? maxChatHistoryLength
-                : 0,
+              numberOfPreviousMessagesToInclude:
+                useHistory && !options.ignoreHistory ? maxChatHistoryLength : 0,
               initialSystemMessage,
             })
 

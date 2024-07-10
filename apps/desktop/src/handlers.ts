@@ -38,14 +38,25 @@ export function setupAiHandlers(ai: AI) {
 
   ipcMain.on(
     'performChatQuery',
-    async (event, message: ChatMessage, model: string, messageId: string) =>
-      performChatQuery(ai, event.sender, message, model, messageId).catch(
-        (error) => {
-          console.error(error)
-          ai.notifyError(error, 'Performing chat query error')
-          event.sender.send('chatResponse', messageId, { finished: true })
-        },
-      ),
+    async (
+      event,
+      message: ChatMessage,
+      model: string,
+      messageId: string,
+      ignoreHistory?: boolean,
+    ) =>
+      performChatQuery(
+        ai,
+        event.sender,
+        message,
+        model,
+        messageId,
+        ignoreHistory,
+      ).catch((error) => {
+        console.error(error)
+        ai.notifyError(error, 'Performing chat query error')
+        event.sender.send('chatResponse', messageId, { finished: true })
+      }),
   )
   ipcMain.handle('generateImage', async (_, query: string, model: string) =>
     ai.generateImage(query, { model }),
@@ -66,4 +77,12 @@ export function setupToolHandlers() {
     setEnabledTools(toolNames),
   )
   ipcMain.handle('removeTool', (_, toolName: string) => removeTool(toolName))
+}
+
+export function setupQuickCommandHandlers(
+  onQuickCommand: (quickCommand: string) => void,
+) {
+  ipcMain.on('sendQuickCommand', (_, quickCommand: string) => {
+    onQuickCommand(quickCommand)
+  })
 }

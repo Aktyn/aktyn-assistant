@@ -28,7 +28,7 @@ export async function initVoiceCommands(
       const transcribedVoiceCommand = await ai.speechToText(recordingFile)
       console.info(`Transcribed voice command: "${transcribedVoiceCommand}"`)
 
-      quickChatContents.send('voiceCommand', transcribedVoiceCommand)
+      quickChatContents.send('externalCommand', transcribedVoiceCommand)
     }
   })
 }

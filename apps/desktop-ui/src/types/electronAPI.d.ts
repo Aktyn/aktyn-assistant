@@ -38,6 +38,7 @@ declare global {
         message: ChatMessage,
         model: string,
         messageId: string,
+        ignoreHistory?: boolean,
       ) => void
       generateImage: (query: string, model: string) => Promise<string>
       addToolsSource: (data: ToolsSourceData) => Promise<string | null>
@@ -45,6 +46,7 @@ declare global {
       setEnabledTools: (toolNames: string[]) => Promise<void>
       removeTool: (toolName: string) => Promise<void>
       cancelSpeaking: () => void
+      sendQuickCommand: (quickCommand: string) => void
 
       // Main to renderer
       onReady: (callback: () => void) => void
@@ -67,7 +69,9 @@ declare global {
           finished: boolean,
         ) => void,
       ) => void
-      onVoiceCommand: (callback: (voiceCommand: string) => void) => void
+      onExternalCommand: (
+        callback: (externalCommand: string, ignoreHistory?: boolean) => void,
+      ) => void
     }
   }
 }
