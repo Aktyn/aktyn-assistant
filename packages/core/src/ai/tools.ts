@@ -114,6 +114,8 @@ export function loadToolsInfo() {
       saveToolsInfo(builtInToolInfos)
       return builtInToolInfos
     }
+
+    let updated = false
     let toolInfos: ToolInfo[] = JSON.parse(fs.readFileSync(indexPath, 'utf8'))
     for (const builtInTool of builtInTools) {
       const foundBuiltInTool = toolInfos.find(
@@ -132,18 +134,19 @@ export function loadToolsInfo() {
         console.info(
           `Updating tools info file due to version change (tool: ${foundBuiltInTool.schema.functionName})`,
         )
+        updated = true
         toolInfos = toolInfos.map((tool) =>
           tool.schema.functionName === foundBuiltInTool.schema.functionName
             ? {
                 ...tool,
-                schema: {
-                  ...tool.schema,
-                  version: builtInTool.schema.version,
-                },
+                schema: builtInTool.schema,
               }
             : tool,
         )
       }
+    }
+    if (updated) {
+      saveToolsInfo(toolInfos)
     }
     return toolInfos
   } catch {

@@ -2,6 +2,10 @@ import fs from 'fs'
 import path from 'path'
 
 import { assert, once } from '@aktyn-assistant/common'
+//@ts-expect-error missing typings
+// eslint-disable-next-line import/order
+import * as ffmetadata from 'ffmetadata'
+
 //@ts-expect-error ignore error since only type is imported here
 import type Mic from 'node-mic'
 import { v4 as uuidv4 } from 'uuid'
@@ -28,7 +32,8 @@ export class AudioRecorder {
     return new NodeMic({
       rate: sampleRate,
       channels: 1,
-      threshold: 6,
+      // threshold: 6,
+      fileType: 'wav',
     })
   }
 
@@ -58,7 +63,14 @@ export class AudioRecorder {
       return new Promise<string>((resolve, reject) => {
         outputFileStream.on('finish', () => {
           this.recordingPromise = null
-          resolve(outputFile)
+
+          ffmetadata.write(outputFile, {}, (err: unknown) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(outputFile)
+            }
+          })
         })
         outputFileStream.on('error', (error) => {
           this.recordingPromise = null

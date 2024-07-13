@@ -12,7 +12,7 @@ const getOpenMethods = once(() =>
 )
 
 const toolSchema: ToolSchema = {
-  version: '1.0.3',
+  version: '1.0.4',
   functionName: 'open_site',
   description:
     "Open a website. If you don't know the exact URL, create a web engine search query that will be used to find and open the site.",

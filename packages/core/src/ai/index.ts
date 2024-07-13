@@ -14,7 +14,7 @@ import {
 import { notify } from 'node-notifier'
 import { AuthenticationError, OpenAI } from 'openai'
 
-import { BufferedSpeech } from '../audio/buffered'
+import { BufferedSpeech, speechToText } from '../audio'
 import { getUserConfigValue } from '../user/user-config'
 
 import {
@@ -302,7 +302,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           return 'Mocked speech to text result'
         }
 
-        return await OpenAiAPI.transcribeSpeech(this.providerClient, filePath)
+        return await speechToText(filePath)
       default:
         throw throwUnsupportedProviderError(this.providerType)
     }

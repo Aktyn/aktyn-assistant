@@ -2,7 +2,6 @@ import { OpenAI } from 'openai'
 
 export * from './chat'
 export * from './image'
-export * from './speech'
 export * from './models'
 
 async function validateClient(client: OpenAI) {

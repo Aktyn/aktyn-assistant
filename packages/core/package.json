@@ -7,6 +7,7 @@
 	"scripts": {
 		"build": "tsc -p ./tsconfig.json",
 		"dev": "nodemon --watch ./src --exec \"yarn run build\" --ignore lib/ -e ts",
+		"setup:whisper": "node ./scripts/setupWhisper.js",
 		"test": "jest",
 		"test:ci": "jest --collectCoverage",
 		"test:watch": "jest --watch",
@@ -20,9 +21,11 @@
 		"@aktyn-assistant/common": "*",
 		"appdata-path": "^1.0.0",
 		"audic": "^3.0.2",
+		"ffmetadata": "^1.7.0",
 		"gtts": "^0.2.1",
 		"node-mic": "^1.0.1",
 		"node-notifier": "^10.0.1",
+		"nodejs-whisper": "^0.1.18",
 		"openai": "^4.52.3",
 		"sentence-tokenizer": "^1.0.1",
 		"uuid": "^10.0.0"

@@ -2,6 +2,7 @@ import Tokenizer from 'sentence-tokenizer'
 
 import { speak } from './textToSpeech'
 
+//TODO: test for proper buffer splitting
 export class BufferedSpeech {
   private buffer = ''
   private finished = false
