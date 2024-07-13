@@ -14,13 +14,13 @@ export function scrapeSearchResults(html: string, limit = 5) {
     xmlMode: false,
   })
 
-  const resultElement = $('#links > .result')
+  const resultElements = $('#links > .result')
   const scrapedData: Array<ScraperSearchResult> = []
 
-  for (let i = 0; i < limit && i < resultElement.length; i++) {
-    const title = $(resultElement[i]).find('.result__title').text()
-    const content = $(resultElement[i]).find('.result__snippet').text()
-    const url = $(resultElement[i]).find('.result__url')
+  for (let i = 0; i < limit && i < resultElements.length; i++) {
+    const title = $(resultElements[i]).find('.result__title').text()
+    const content = $(resultElements[i]).find('.result__snippet').text()
+    const url = $(resultElements[i]).find('.result__url')
     const href = url.attr('href') ?? ''
     const name = url.text()
 

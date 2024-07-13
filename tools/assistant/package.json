@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@aktyn-assistant/common": "*",
+    "cheerio": "^1.0.0-rc.12",
     "open": "^10.1.0"
   },
   "devDependencies": {

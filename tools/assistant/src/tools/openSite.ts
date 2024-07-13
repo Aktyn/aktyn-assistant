@@ -2,6 +2,8 @@ import type { ChildProcess } from 'child_process'
 
 import { once, type Tool, type ToolSchema } from '@aktyn-assistant/common'
 
+import { getUrl } from '../common/web-helpers'
+
 const getOpenMethods = once(() =>
   import('open').then(({ default: open, openApp }) => ({
     open,
@@ -10,41 +12,35 @@ const getOpenMethods = once(() =>
 )
 
 const toolSchema: ToolSchema = {
-  version: '1.0.2',
+  version: '1.0.3',
   functionName: 'open_site',
-  description: 'Open a website',
+  description:
+    "Open a website. If you don't know the exact URL, create a web engine search query that will be used to find and open the site.",
   parameters: {
     type: 'object',
     properties: {
-      url: {
+      url_or_query: {
         type: 'string',
-        description: 'URL to open',
+        description: 'URL to open or web engine search query',
       },
     },
-    required: ['url'],
+    required: ['url_or_query'],
   },
 }
 
-async function openSite(data: { url: string }) {
-  const { url } = data
+async function openSite(data: { url_or_query: string }) {
+  const { url_or_query } = data
 
   try {
-    if (
-      !/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/.test(
-        url,
-      )
-    ) {
-      return `Invalid URL: ${url}`
-    }
+    const url = await getUrl(url_or_query)
+
     const { open } = await getOpenMethods()
     const child = await open(url)
     return resolveChildProcess(child, url)
-
-    // const { openApp } = await getOpenMethods()
-    // const child = await openApp(nameOrUrl)
-    // return resolveChildProcess(child, nameOrUrl)
   } catch (error) {
-    return error instanceof Error ? error.message : `Failed to open "${url}"`
+    return error instanceof Error
+      ? error.message
+      : `Failed to open "${url_or_query}"`
   }
 }
 
@@ -75,4 +71,4 @@ function resolveChildProcess(child: ChildProcess, url: string) {
 export const openSiteTool = {
   schema: toolSchema,
   function: openSite,
-} satisfies Tool<{ url: string }>
+} satisfies Tool<{ url_or_query: string }>
