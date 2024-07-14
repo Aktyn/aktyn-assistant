@@ -2,7 +2,6 @@ import Tokenizer from 'sentence-tokenizer'
 
 import { speak } from './textToSpeech'
 
-//TODO: test for proper buffer splitting
 export class BufferedSpeech {
   private buffer = ''
   private finished = false
@@ -30,7 +29,7 @@ export class BufferedSpeech {
     )
   }
 
-  private preventToLargeContent(content: string) {
+  private preventTooLargeContent(content: string) {
     const limit = 384
 
     if (
@@ -57,7 +56,7 @@ export class BufferedSpeech {
       return
     }
 
-    content = this.preventToLargeContent(content)
+    content = this.preventTooLargeContent(content)
     this.buffer = this.buffer.slice(content.length)
 
     this.onSpeaking?.(false)
@@ -83,6 +82,7 @@ export class BufferedSpeech {
 
     if (force) {
       this.speak(this.buffer)
+      this.synthesize(true)
       return
     }
 
