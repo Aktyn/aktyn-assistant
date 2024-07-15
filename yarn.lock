@@ -118,7 +118,6 @@ __metadata:
     jest: "npm:^29.7.0"
     node-mic: "npm:^1.0.1"
     node-notifier: "npm:^10.0.1"
-    nodejs-whisper: "npm:^0.1.18"
     nodemon: "npm:^3.1.4"
     openai: "npm:^4.52.3"
     prettier: "npm:^3.3.2"
@@ -16928,18 +16927,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodejs-whisper@npm:^0.1.18":
-  version: 0.1.18
-  resolution: "nodejs-whisper@npm:0.1.18"
-  dependencies:
-    readline-sync: "npm:^1.4.10"
-    shelljs: "npm:^0.8.5"
-  bin:
-    download: dist/downloadModel.js
-  checksum: 10c0/85127516eff1226ff701e8e99f29af45396fb9010d98bb350d2eadf845701be1d6b7de654135f2a44795ecd7670a6a7937180698f43c4920106a362e6ac51719
-  languageName: node
-  linkType: hard
-
 "nodemon@npm:^3.1.4":
   version: 3.1.4
   resolution: "nodemon@npm:3.1.4"
@@ -19412,13 +19399,6 @@ __metadata:
   dependencies:
     picomatch: "npm:^2.2.1"
   checksum: 10c0/6fa848cf63d1b82ab4e985f4cf72bd55b7dcfd8e0a376905804e48c3634b7e749170940ba77b32804d5fe93b3cc521aa95a8d7e7d725f830da6d93f3669ce66b
-  languageName: node
-  linkType: hard
-
-"readline-sync@npm:^1.4.10":
-  version: 1.4.10
-  resolution: "readline-sync@npm:1.4.10"
-  checksum: 10c0/0a4d0fe4ad501f8f005a3c9cbf3cc0ae6ca2ced93e9a1c7c46f226bdfcb6ef5d3f437ae7e9d2e1098ee13524a3739c830e4c8dbc7f543a693eecd293e41093a3
   languageName: node
   linkType: hard
 
