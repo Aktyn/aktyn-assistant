@@ -1,3 +1,4 @@
+import { isDev } from '@aktyn-assistant/common'
 import type { AI, AudioRecorder } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { globalShortcut, type Tray, type WebContents } from 'electron'
@@ -25,7 +26,10 @@ export async function initVoiceCommands(
       console.info('Recording voice command stopped. Processing...')
 
       const recordingFile = await recorder.end()
-      const transcribedVoiceCommand = await ai.speechToText(recordingFile)
+      const transcribedVoiceCommand = await ai.speechToText(
+        recordingFile,
+        !isDev(),
+      )
       console.info(`Transcribed voice command: "${transcribedVoiceCommand}"`)
 
       if (transcribedVoiceCommand.trim().length > 1) {

@@ -1,15 +1,18 @@
 import { exec } from 'child_process'
 import { platform } from 'os'
-import path from 'path'
+import path from 'path' // Ensure the path module is imported
 
-const whisperAssetsPath = path.join(__dirname, '..', '..', 'assets', 'whisper')
-//TODO: support for other platforms
+//@ts-expect-error resourcesPath comes from packaged electron
+const basePath = process.resourcesPath ?? path.join(__dirname, '..', '..')
+
+const whisperAssetsPath = path.join(basePath, 'assets', 'whisper')
 const modelPath = path.join(whisperAssetsPath, 'models', 'ggml-base.en.bin')
+//TODO: support for other platforms
 const executablePath =
   platform() !== 'win32' ? path.join(whisperAssetsPath, 'linux', 'main') : null
 
 /** filePath must point to a 16kHz mono channel .wav file */
-export function speechToText(filePath: string) {
+export function speechToText(filePath: string, _isPackaged = false) {
   console.info('Transcribing audio:', filePath)
 
   if (!executablePath) {

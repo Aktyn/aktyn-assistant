@@ -10,6 +10,8 @@ module.exports = {
   restoreMocks: true,
   clearMocks: true,
   modulePaths: [compilerOptions.baseUrl],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: 'src/' }),
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: 'src/',
+  }),
   transform: {},
 }
