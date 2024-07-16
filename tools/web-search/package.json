@@ -1,6 +1,6 @@
 {
   "name": "@aktyn-assistant-tools/web-search",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "main": "./dist/index.js",
   "private": true,
   "scripts": {
