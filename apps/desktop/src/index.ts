@@ -8,6 +8,7 @@ import {
   AudioRecorder,
   getUserConfigValue,
   setUserConfigValue,
+  type ChatSource,
 } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
@@ -71,9 +72,6 @@ async function init() {
   if (success && !isDev()) {
     console.info('Auto launch enabled')
   }
-
-  // const microphoneAccess = await askForMicrophoneAccess()
-  // console.info('Microphone access:', microphoneAccess)
 
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
@@ -189,8 +187,12 @@ async function postInit(mainWindow: BrowserWindow, ai: AI) {
   })
   setupQuickCommandHandlers((quickCommand) => {
     quickCommandWindow.hide()
-    //TODO: disable every chat only tool (only those performing system actions should be fed to ai)
-    quickChatWindow.webContents.send('externalCommand', quickCommand, true)
+    quickChatWindow.webContents.send(
+      'externalCommand',
+      quickCommand,
+      'quick-command' satisfies ChatSource,
+      true,
+    )
   })
 
   const tray = setupTray(mainWindow, toggleQuickChat, toggleQuickCommand)

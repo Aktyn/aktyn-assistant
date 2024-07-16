@@ -1,5 +1,5 @@
 import type { ChatMessage } from '@aktyn-assistant/common'
-import type { AI } from '@aktyn-assistant/core'
+import type { AI, ChatSource } from '@aktyn-assistant/core'
 import type { WebContents } from 'electron'
 
 export async function performChatQuery(
@@ -8,20 +8,25 @@ export async function performChatQuery(
   message: ChatMessage,
   model: string,
   messageId: string,
+  source: ChatSource,
   ignoreHistory = false,
 ) {
-  const stream = await ai.performChatQuery(message, {
-    model,
-    onSpeaking: (finished) => {
-      webContents.send(
-        'speakingState',
-        message.conversationId,
-        messageId,
-        finished,
-      )
+  const stream = await ai.performChatQuery(
+    message,
+    {
+      model,
+      onSpeaking: (finished) => {
+        webContents.send(
+          'speakingState',
+          message.conversationId,
+          messageId,
+          finished,
+        )
+      },
+      ignoreHistory,
     },
-    ignoreHistory,
-  })
+    source,
+  )
 
   let finished = false
   for await (const chunk of stream) {

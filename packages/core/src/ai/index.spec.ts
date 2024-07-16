@@ -55,6 +55,7 @@ describe('AI class', () => {
           contents: [{ type: 'text', content: 'Example query' }],
         },
         { model: 'gpt-3.5-turbo' },
+        'regular',
       )
       let i = 30
       for await (const response of chatStream) {

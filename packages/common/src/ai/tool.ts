@@ -11,7 +11,7 @@ export type ToolSchema = {
   /**
    * Function description, used to determine when and how to call the function by the AI.
    */
-  description?: string
+  description: string
 
   /** @see https://json-schema.org/understanding-json-schema/ */
   parameters?: Record<string, unknown>

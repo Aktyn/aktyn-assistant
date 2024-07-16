@@ -1,6 +1,7 @@
 import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
 import type {
   AiProviderType,
+  ChatSource,
   ToolInfo,
   ToolsSourceData,
   UserConfigType,
@@ -38,12 +39,14 @@ declare global {
         message: ChatMessage,
         model: string,
         messageId: string,
+        source: ChatSource,
         ignoreHistory?: boolean,
       ) => void
       generateImage: (query: string, model: string) => Promise<string>
       addToolsSource: (data: ToolsSourceData) => Promise<string | null>
       loadToolsInfo: () => Promise<Array<ToolInfo>>
       setEnabledTools: (toolNames: string[]) => Promise<void>
+      editTool: (updatedTool: ToolInfo) => Promise<void>
       removeTool: (toolName: string) => Promise<void>
       cancelSpeaking: () => void
       sendQuickCommand: (quickCommand: string) => void
@@ -70,7 +73,11 @@ declare global {
         ) => void,
       ) => void
       onExternalCommand: (
-        callback: (externalCommand: string, ignoreHistory?: boolean) => void,
+        callback: (
+          externalCommand: string,
+          source: ChatSource,
+          ignoreHistory?: boolean,
+        ) => void,
       ) => void
     }
   }

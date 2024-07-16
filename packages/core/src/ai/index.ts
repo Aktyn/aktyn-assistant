@@ -26,16 +26,25 @@ import {
 import * as OpenAiAPI from './api/openai'
 import { mockChatStream } from './chatMock'
 import { MOCKED_BASE64_IMAGE } from './imageMock'
-import { getActiveTools } from './tools'
+import {
+  getActiveTools,
+  omitTools,
+  type ChatSource,
+  type ToolInfo,
+} from './tools'
 
 export { AiProviderType } from './api/common'
 export {
   addToolsSource,
+  editTool,
   loadToolsInfo,
   removeTool,
   setEnabledTools,
+  type BuiltInToolInfo,
+  type ImportedToolInfo,
   type ToolInfo,
   type ToolsSourceData,
+  type ChatSource,
 } from './tools'
 
 class UnsupportedProviderError extends Error {
@@ -150,7 +159,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   // --------------------------------------------------------------------------------
 
-  private tools: Array<Tool> = []
+  private tools: Array<Tool & ToolInfo> = []
   private recentSpeech: BufferedSpeech | null = null
 
   public cancelSpeaking() {
@@ -202,6 +211,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
       onSpeaking?: (finished: boolean) => void
       ignoreHistory?: boolean
     },
+    source: ChatSource,
   ) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
 
@@ -226,7 +236,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           : await OpenAiAPI.performChatQuery(this.providerClient, {
               message,
               model: options.model,
-              tools: this.tools,
+              tools: omitTools(this.tools, source),
               numberOfPreviousMessagesToInclude:
                 useHistory && !options.ignoreHistory ? maxChatHistoryLength : 0,
               initialSystemMessage,

@@ -6,6 +6,7 @@ import {
   type WheelEventHandler,
 } from 'react'
 import type { ChatMessage } from '@aktyn-assistant/common'
+import type { ChatSource } from '@aktyn-assistant/core'
 import { mdiCursorMove, mdiDownload, mdiLoading } from '@mdi/js'
 import Icon from '@mdi/react'
 import { cn } from '@nextui-org/react'
@@ -194,7 +195,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   )
 
   const sendChatMessage = useCallback(
-    async (message: ChatMessage, ignoreHistory = false) => {
+    async (message: ChatMessage, source: ChatSource, ignoreHistory = false) => {
       const model =
         await window.electronAPI.getUserConfigValue('selectedChatModel')
       if (!model) {
@@ -203,7 +204,13 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
 
       const id = uuidv4()
       sendMessageBase(message, id)
-      window.electronAPI.performChatQuery(message, model, id, ignoreHistory)
+      window.electronAPI.performChatQuery(
+        message,
+        model,
+        id,
+        source,
+        ignoreHistory,
+      )
     },
     [sendMessageBase],
   )
@@ -318,10 +325,13 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     (contents) => {
       inputRef.current?.clear()
       if (mode === ChatMode.Assistant) {
-        sendChatMessage({
-          conversationId,
-          contents,
-        }).catch(console.error)
+        sendChatMessage(
+          {
+            conversationId,
+            contents,
+          },
+          quickChatMode ? 'quick-chat' : 'regular',
+        ).catch(console.error)
       } else {
         sendImageGenerationMessage({
           conversationId,
@@ -329,7 +339,13 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         }).catch(console.error)
       }
     },
-    [mode, sendChatMessage, conversationId, sendImageGenerationMessage],
+    [
+      mode,
+      sendChatMessage,
+      conversationId,
+      quickChatMode,
+      sendImageGenerationMessage,
+    ],
   )
 
   const conversationIdRef = useStateToRef(conversationId)
@@ -427,7 +443,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     )
 
     window.electronAPI.onExternalCommand(
-      (commandContent, ignoreHistory = false) => {
+      (commandContent, source, ignoreHistory = false) => {
         setMode(ChatMode.Assistant)
         window.electronAPI.cancelSpeaking()
 
@@ -437,6 +453,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
               conversationId: conversationIdRef.current,
               contents: [{ type: 'text', content: commandContent }],
             },
+            source,
             ignoreHistory,
           )
           .catch(console.error)

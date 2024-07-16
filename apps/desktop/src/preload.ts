@@ -1,5 +1,10 @@
 import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
-import type { AiProviderType, ToolsSourceData } from '@aktyn-assistant/core'
+import type {
+  AiProviderType,
+  ChatSource,
+  ToolInfo,
+  ToolsSourceData,
+} from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { contextBridge, ipcRenderer } from 'electron'
 
@@ -32,6 +37,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     message: ChatMessage,
     model: string,
     messageId: string,
+    source: ChatSource,
     ignoreHistory?: boolean,
   ) =>
     ipcRenderer.send(
@@ -39,6 +45,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
       message,
       model,
       messageId,
+      source,
       ignoreHistory,
     ),
   generateImage: (query: string, model: string) =>
@@ -48,6 +55,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   loadToolsInfo: () => ipcRenderer.invoke('loadToolsInfo'),
   setEnabledTools: (toolNames: string[]) =>
     ipcRenderer.invoke('setEnabledTools', toolNames),
+  editTool: (updatedTool: ToolInfo) =>
+    ipcRenderer.invoke('editTool', updatedTool),
   removeTool: (toolName: string) => ipcRenderer.invoke('removeTool', toolName),
   cancelSpeaking: () => ipcRenderer.send('cancelSpeaking'),
   sendQuickCommand: (quickCommand: string) =>
@@ -95,11 +104,19 @@ contextBridge.exposeInMainWorld('electronAPI', {
         callback(conversationId, messageId, finished),
     ),
   onExternalCommand: (
-    callback: (externalCommand: string, ignoreHistory?: boolean) => void,
+    callback: (
+      externalCommand: string,
+      source: ChatSource,
+      ignoreHistory?: boolean,
+    ) => void,
   ) =>
     ipcRenderer.on(
       'externalCommand',
-      (_, externalCommand: string, ignoreHistory?: boolean) =>
-        callback(externalCommand, ignoreHistory),
+      (
+        _,
+        externalCommand: string,
+        source: ChatSource,
+        ignoreHistory?: boolean,
+      ) => callback(externalCommand, source, ignoreHistory),
     ),
 })

@@ -21,7 +21,11 @@ export abstract class View {
     try {
       const chatModel = getUserConfigValue('selectedChatModel')
       assert(typeof chatModel === 'string', 'Chat model is not set')
-      return await this.ai.performChatQuery(message, { model: chatModel })
+      return await this.ai.performChatQuery(
+        message,
+        { model: chatModel },
+        'regular',
+      )
     } catch (error) {
       this.ai.notifyError(error, 'Performing chat query error')
       throw error

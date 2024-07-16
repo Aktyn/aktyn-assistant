@@ -1,12 +1,15 @@
-import { type ChatMessage } from '@aktyn-assistant/common'
+import type { ChatMessage } from '@aktyn-assistant/common'
 import {
   addToolsSource,
   type AI,
+  type ChatSource,
+  editTool,
   getUserConfigValue,
   loadToolsInfo,
   removeTool,
   setEnabledTools,
   setUserConfigValue,
+  type ToolInfo,
   type ToolsSourceData,
   type UserConfigType,
 } from '@aktyn-assistant/core'
@@ -43,6 +46,7 @@ export function setupAiHandlers(ai: AI) {
       message: ChatMessage,
       model: string,
       messageId: string,
+      source: ChatSource,
       ignoreHistory?: boolean,
     ) =>
       performChatQuery(
@@ -51,6 +55,7 @@ export function setupAiHandlers(ai: AI) {
         message,
         model,
         messageId,
+        source,
         ignoreHistory,
       ).catch((error) => {
         console.error(error)
@@ -75,6 +80,9 @@ export function setupToolHandlers() {
   ipcMain.handle('loadToolsInfo', () => loadToolsInfo())
   ipcMain.handle('setEnabledTools', (_, toolNames: string[]) =>
     setEnabledTools(toolNames),
+  )
+  ipcMain.handle('editTool', (_, updatedTool: ToolInfo) =>
+    editTool(updatedTool),
   )
   ipcMain.handle('removeTool', (_, toolName: string) => removeTool(toolName))
 }

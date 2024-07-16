@@ -1,5 +1,5 @@
 import { isDev } from '@aktyn-assistant/common'
-import type { AI, AudioRecorder } from '@aktyn-assistant/core'
+import type { AI, AudioRecorder, ChatSource } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { globalShortcut, type Tray, type WebContents } from 'electron'
 
@@ -33,7 +33,11 @@ export async function initVoiceCommands(
       console.info(`Transcribed voice command: "${transcribedVoiceCommand}"`)
 
       if (transcribedVoiceCommand.trim().length > 1) {
-        quickChatContents.send('externalCommand', transcribedVoiceCommand)
+        quickChatContents.send(
+          'externalCommand',
+          transcribedVoiceCommand,
+          'voice-command' satisfies ChatSource,
+        )
       }
     }
   })

@@ -17,14 +17,26 @@ import { calculateDirectorySize } from '../utils/file-helpers'
 
 import { AI } from '.'
 
+const defaultToolBase: Omit<ToolInfoBase, 'schema'> = {
+  enabled: true,
+  omitInRegularChat: false,
+  omitInQuickChat: false,
+  omitInQuickCommand: false,
+  omitInVoiceCommand: false,
+} as const
+
 type ToolInfoBase = {
   schema: ToolSchema
   enabled: boolean
+  omitInRegularChat: boolean
+  omitInQuickChat: boolean
+  omitInQuickCommand: boolean
+  omitInVoiceCommand: boolean
 }
-type BuiltInToolInfo = ToolInfoBase & {
+export type BuiltInToolInfo = ToolInfoBase & {
   builtIn: true
 }
-type ImportedToolInfo = ToolInfoBase & {
+export type ImportedToolInfo = ToolInfoBase & {
   directoryName: string
   mainFileRelativePath: string
   builtIn: false
@@ -66,7 +78,23 @@ export function getActiveTools() {
 
   const moduleToolsBuffer = new Map<string, Array<Tool>>()
 
-  const tools: Array<Tool> = [...builtInTools]
+  const tools: Array<Tool & ToolInfo> = builtInTools.map((tool) => {
+    const toolInfo = toolInfos.find(
+      (toolInfo) => toolInfo.schema.functionName === tool.schema.functionName,
+    )
+    if (!toolInfo) {
+      const builtInInfo = {
+        schema: tool.schema,
+        builtIn: true,
+        ...defaultToolBase,
+      } satisfies BuiltInToolInfo
+      return { ...builtInInfo, ...tool }
+    }
+    return {
+      ...toolInfo,
+      ...tool,
+    }
+  })
   for (const toolInfo of toolInfos) {
     if (!toolInfo.enabled || toolInfo.builtIn) {
       continue
@@ -87,7 +115,7 @@ export function getActiveTools() {
         (tool) => tool.schema.functionName === toolInfo.schema.functionName,
       )
       if (extractedTool) {
-        tools.push(extractedTool)
+        tools.push({ ...toolInfo, ...extractedTool })
       }
     } catch (error) {
       console.error(
@@ -107,8 +135,8 @@ export function loadToolsInfo() {
         (tool) =>
           ({
             schema: tool.schema,
-            enabled: true,
             builtIn: true,
+            ...defaultToolBase,
           }) satisfies BuiltInToolInfo,
       )
       saveToolsInfo(builtInToolInfos)
@@ -125,8 +153,8 @@ export function loadToolsInfo() {
       if (!foundBuiltInTool) {
         toolInfos.push({
           schema: builtInTool.schema,
-          enabled: true,
           builtIn: true,
+          ...defaultToolBase,
         })
       } else if (
         foundBuiltInTool.schema.version !== builtInTool.schema.version
@@ -220,13 +248,13 @@ export function addToolsSource(toolData: ToolsSourceData) {
 
     const importedTool: ImportedToolInfo = {
       schema: tool.schema,
-      enabled: true,
       directoryName: toolsSourceId,
       mainFileRelativePath: path.relative(
         toolData.sourceDirectory,
         toolData.mainFile,
       ),
       builtIn: false,
+      ...defaultToolBase,
     }
     toolInfos.push(importedTool)
   }
@@ -254,6 +282,19 @@ export function setEnabledTools(toolNames: string[]) {
   for (const tool of toolInfos) {
     tool.enabled = toolNames.includes(tool.schema.functionName)
   }
+  saveToolsInfo(toolInfos)
+
+  AI.client()
+    .then((client) => client.loadTools())
+    .catch(console.error)
+}
+
+export function editTool(updatedTool: ToolInfo) {
+  const toolInfos = loadToolsInfo().map((toolInfo) =>
+    toolInfo.schema.functionName === updatedTool.schema.functionName
+      ? updatedTool
+      : toolInfo,
+  )
   saveToolsInfo(toolInfos)
 
   AI.client()
@@ -294,4 +335,24 @@ export function removeTool(toolName: string) {
   AI.client()
     .then((client) => client.loadTools())
     .catch(console.error)
+}
+
+export type ChatSource =
+  | 'regular'
+  | 'quick-chat'
+  | 'quick-command'
+  | 'voice-command'
+
+const chatSourceMapping: {
+  [key in ChatSource]: keyof Omit<ToolInfoBase, 'schema' | 'enabled'>
+} = {
+  regular: 'omitInRegularChat',
+  'quick-chat': 'omitInQuickChat',
+  'quick-command': 'omitInQuickCommand',
+  'voice-command': 'omitInVoiceCommand',
+}
+
+export function omitTools(tools: (Tool & ToolInfo)[], source: ChatSource) {
+  const omitPropertyName = chatSourceMapping[source]
+  return tools.filter((tool) => !tool[omitPropertyName])
 }
