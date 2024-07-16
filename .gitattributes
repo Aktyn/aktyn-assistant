@@ -1,0 +1,1 @@
+packages/core/assets/whisper/models/ggml-base.en.bin filter=lfs diff=lfs merge=lfs -text
