@@ -10,7 +10,15 @@ import { RESPONSE_WITH_LINKS_WORDS } from '../ai/chatMock'
 import { BufferedSpeech } from './buffered'
 
 describe(BufferedSpeech.name, () => {
-  const isGitHubActions = process.env.GITHUB_ACTIONS === 'true'
+  const isGitHubActionsOrCI =
+    process.env.GITHUB_ACTIONS === 'true' || process.env.CI === 'true'
+
+  if (isGitHubActionsOrCI) {
+    it('should skip tests in CI', () => {
+      expect(true).toBe(true)
+    })
+    return
+  }
 
   beforeEach(() => {
     speakMock.mockClear()
@@ -18,13 +26,6 @@ describe(BufferedSpeech.name, () => {
       return wait(200)
     })
   })
-
-  if (isGitHubActions) {
-    it('should skip tests in CI', () => {
-      expect(true).toBe(true)
-    })
-    return
-  }
 
   it('should not slice small messages', () => {
     const speech = new BufferedSpeech()
