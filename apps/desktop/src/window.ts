@@ -48,7 +48,7 @@ export async function createMainWindow() {
     autoHideMenuBar: true,
     title: 'Aktyn Assistant',
     icon: iconPath,
-    backgroundColor: '#263238',
+    backgroundColor: '#000712',
     show: !getUserConfigValue('launchHidden'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
