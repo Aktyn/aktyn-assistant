@@ -38,6 +38,7 @@ export function formatTextForSpeech(text: string, lineBreaksToSpaces = false) {
   return text
     .replace(/```([^\n]+)?\n.*\n```/g, 'given code block')
     .replace(/```[\s\S]*?```/g, 'given code block')
+    .replace(/\\\[\n.+\n\\\]\n/g, 'given math block\n')
     .split('\n')
     .map((line) => {
       return line
@@ -56,6 +57,7 @@ export function formatTextForSpeech(text: string, lineBreaksToSpaces = false) {
         .replace(/\*\*(.+)\*\*/g, '$1')
         .replace(/^#+\s(.*)$/g, '$1')
         .replace('---', '')
+        .replace(/(\d+)\.(\d+)/gi, '$1 coma $2')
     })
     .filter(Boolean)
     .join(lineBreaksToSpaces ? ' ' : '\n')

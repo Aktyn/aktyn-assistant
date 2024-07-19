@@ -51,8 +51,6 @@ export class AudioRecorder {
       const micInputStream = mic.getAudioStream()
       micInputStream.pipe(outputFileStream)
 
-      //TODO: try process it with https://github.com/voixen/voixen-vad for auto voice commands recognition
-      // micInputStream.on('data', (data: Buffer) => { ... })
       micInputStream.on('error', (err) => {
         console.error(`Microphone input stream error: ${err.message}`)
       })

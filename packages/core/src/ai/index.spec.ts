@@ -35,6 +35,7 @@ import {
   RESPONSE_WITH_CODE_WORDS,
   RESPONSE_WITH_LINKS_WORDS,
   RESPONSE_WITH_MARKDOWN_WORDS,
+  RESPONSE_WITH_NUMBERS_WORDS,
 } from './chatMock'
 
 import '../test-utils/extend'
@@ -65,6 +66,7 @@ describe('AI class', () => {
           ...RESPONSE_WITH_CODE_WORDS,
           ...RESPONSE_WITH_MARKDOWN_WORDS,
           ...RESPONSE_WITH_LINKS_WORDS,
+          ...RESPONSE_WITH_NUMBERS_WORDS,
         ])
         expect(response.timestamp).toBeGreaterThanOrEqual(now)
 

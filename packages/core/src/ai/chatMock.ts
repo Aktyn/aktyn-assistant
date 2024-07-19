@@ -1,4 +1,4 @@
-import { wait, randomInt } from '@aktyn-assistant/common'
+import { wait, randomInt, getRandomElement } from '@aktyn-assistant/common'
 
 const LOREM_IPSUM = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus mauris ultrices eros in cursus. Ornare lectus sit amet est placerat in. Dis parturient montes nascetur ridiculus mus mauris vitae. Ultrices mi tempus imperdiet nulla. Erat imperdiet sed euismod nisi. Aliquet lectus proin nibh nisl condimentum id venenatis a condimentum. Ut sem nulla pharetra diam sit amet nisl suscipit adipiscing. At augue eget arcu dictum varius. Netus et malesuada fames ac turpis egestas integer eget aliquet. Semper viverra nam libero justo. Lobortis feugiat vivamus at augue eget. Netus et malesuada fames ac turpis. Et magnis dis parturient montes. Diam phasellus vestibulum lorem sed risus ultricies tristique nulla aliquet. Rutrum tellus pellentesque eu tincidunt. Aliquet eget sit amet tellus cras. Aenean pharetra magna ac placerat vestibulum lectus mauris ultrices eros. Ullamcorper malesuada proin libero nunc consequat.
 
@@ -83,6 +83,24 @@ const RESPONSE_WITH_LINKS = `There are a few possible references to "Aktyn" base
 
 If you were referring to a specific context or individual, could you please provide more details for a precise explanation?`
 
+const RESPONSE_WITH_NUMBERS = `The Fibonacci sequence is closely related to the golden ratio (approximately 1.6180339887). As the Fibonacci sequence progresses, the ratio of consecutive Fibonacci numbers approaches the golden ratio.
+
+Specifically, if you take two consecutive Fibonacci numbers \\( F(n) \\) and \\( F(n-1) \\), the ratio:
+
+\\[
+\\frac{F(n)}{F(n-1)}
+\\]
+
+converges to the golden ratio as \\( n \\) increases. This means that the larger the Fibonacci numbers, the closer their ratio is to the golden ratio.
+
+Mathematically, this relationship can be expressed as:
+
+\\[
+\\lim_{n \\to \\infty} \frac{F(n+1)}{F(n)} = \\phi
+\\]
+
+where \\( \\phi \\) is the golden ratio. The connection between the Fibonacci sequence and the golden ratio appears in various areas of art, architecture, and nature.`
+
 export const LOREM_IPSUM_WORDS = LOREM_IPSUM.trim()
   .replace(/\.\s/g, '.\n')
   .split(' ')
@@ -100,6 +118,10 @@ export const RESPONSE_WITH_LINKS_WORDS = RESPONSE_WITH_LINKS.trim()
   .split(' ')
   .map((word) => word + ' ')
 
+export const RESPONSE_WITH_NUMBERS_WORDS = RESPONSE_WITH_NUMBERS.trim()
+  .split(' ')
+  .map((word) => word + ' ')
+
 export function mockChatStream<ResponseType extends object | string>(
   parser: (content: string, isLast: boolean) => ResponseType,
   length?: number,
@@ -108,11 +130,12 @@ export function mockChatStream<ResponseType extends object | string>(
   const source =
     randomInt(0, 10) > 9
       ? LOREM_IPSUM_WORDS
-      : [
+      : getRandomElement([
           RESPONSE_WITH_CODE_WORDS,
           RESPONSE_WITH_MARKDOWN_WORDS,
           RESPONSE_WITH_LINKS_WORDS,
-        ][randomInt(0, 2)]
+          RESPONSE_WITH_NUMBERS_WORDS,
+        ])
 
   length = Math.min(length ?? source.length, source.length)
 
