@@ -1,7 +1,7 @@
 import path from 'path'
 
 import { isDev, once } from '@aktyn-assistant/common'
-import { getUserConfigValue } from '@aktyn-assistant/core'
+import { getUserConfigValue, logger } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {
   BrowserWindow,
@@ -154,7 +154,7 @@ export async function createQuickCommandWindow() {
 
 function setupWindowToOpenLinksExternally(win: BrowserWindow) {
   win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url).catch(console.error)
+    shell.openExternal(url).catch(logger.error)
     return { action: 'deny' }
   })
 }
@@ -189,11 +189,11 @@ export function setupTray(
     },
     {
       label: 'Toggle quick chat (Alt+Q)',
-      click: (_) => toggleQuickChat().catch(console.error),
+      click: (_) => toggleQuickChat().catch(logger.error),
     },
     {
       label: 'Toggle quick command (Alt+X)',
-      click: (_) => toggleQuickCommand().catch(console.error),
+      click: (_) => toggleQuickCommand().catch(logger.error),
     },
     {
       label: 'Quit',

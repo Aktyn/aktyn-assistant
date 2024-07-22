@@ -139,14 +139,7 @@
       }
     ],
     "no-console": [
-      "warn",
-      {
-        "allow": [
-          "info",
-          "warn",
-          "error"
-        ]
-      }
+      "error"
     ],
     "@typescript-eslint/no-explicit-any": "error",
     "import/no-extraneous-dependencies": [
@@ -188,15 +181,9 @@
         "**/test-utils/**"
       ],
       "rules": {
-        "@typescript-eslint/no-explicit-any": [
-          0
-        ],
-        "@typescript-eslint/no-non-null-assertion": [
-          0
-        ],
-        "import/no-extraneous-dependencies": [
-          0
-        ]
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "import/no-extraneous-dependencies": "off"
       }
     }
   ]

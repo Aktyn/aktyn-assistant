@@ -2,6 +2,7 @@ import {
   AI,
   AiProviderType,
   getUserConfigValue,
+  logger,
   setUserConfigValue,
 } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
@@ -29,7 +30,7 @@ async function run() {
       'Select AI provider you want to use:',
     )) as AiProviderType
     setUserConfigValue('selectedAiProvider', aiProvider)
-    console.info(`Selected ${aiProvider} as your AI provider`)
+    logger.info(`Selected ${aiProvider} as your AI provider`)
   }
 
   try {
@@ -56,7 +57,7 @@ async function run() {
         'Select model you want to use for chat:',
       )
       setUserConfigValue('selectedChatModel', chatModel)
-      console.info(`Selected ${chatModel} as your AI chat model`)
+      logger.info(`Selected ${chatModel} as your AI chat model`)
     }
 
     let mockPaidRequests = getUserConfigValue('mockPaidRequests')
@@ -67,10 +68,10 @@ async function run() {
       setUserConfigValue('mockPaidRequests', mockPaidRequests)
     }
     if (mockPaidRequests) {
-      console.info(`Paid requests to AI provider are mocked`)
+      logger.info(`Paid requests to AI provider are mocked`)
     }
 
-    console.info(
+    logger.info(
       "Initial setup doesn't require any further work. Initializing menu interface...",
     )
 
@@ -79,9 +80,9 @@ async function run() {
     terminalInterface.showInterface()
   } catch (error) {
     AI.notifyError(error, 'Setup error')
-    console.error(error)
+    logger.error(error)
     process.exit(1)
   }
 }
 
-run().catch(console.error)
+run().catch(logger.error)

@@ -6,6 +6,7 @@ import {
   editTool,
   getUserConfigValue,
   loadToolsInfo,
+  logger,
   removeTool,
   setEnabledTools,
   setUserConfigValue,
@@ -58,7 +59,7 @@ export function setupAiHandlers(ai: AI) {
         source,
         ignoreHistory,
       ).catch((error) => {
-        console.error(error)
+        logger.error(error)
         ai.notifyError(error, 'Performing chat query error')
         event.sender.send('chatResponse', messageId, { finished: true })
       }),

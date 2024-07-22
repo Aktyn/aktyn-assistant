@@ -3,7 +3,7 @@ import path from 'path'
 
 import { once } from '@aktyn-assistant/common'
 
-import { getDataDirectory } from '../utils'
+import { getDataDirectory, logger } from '../utils'
 
 export const getAudioOutputDirectory = once(() => {
   const audioDir = path.join(getDataDirectory(), 'audio')
@@ -25,6 +25,6 @@ export function removeOutdatedAudioFiles(lifetime = 1000 * 60 * 60) {
       }
     }
   } catch (error) {
-    console.error(error)
+    logger.error(error)
   }
 }

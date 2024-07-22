@@ -1,6 +1,8 @@
-import { exec } from 'child_process'
+import { exec, type ExecException } from 'child_process'
 import { platform } from 'os'
 import path from 'path' // Ensure the path module is imported
+
+import { logger } from '../utils'
 
 //@ts-expect-error resourcesPath comes from packaged electron
 const basePath = process.resourcesPath ?? path.join(__dirname, '..', '..')
@@ -13,7 +15,7 @@ const executablePath =
 
 /** filePath must point to a 16kHz mono channel .wav file */
 export function speechToText(filePath: string, _isPackaged = false) {
-  console.info('Transcribing audio:', filePath)
+  logger.info('Transcribing audio:', filePath)
 
   if (!executablePath) {
     throw new Error(
@@ -24,7 +26,7 @@ export function speechToText(filePath: string, _isPackaged = false) {
   return new Promise<string>((resolve, reject) => {
     exec(
       `${executablePath} -ml 20 -sow true -l en -m ${modelPath} -f ${filePath}`,
-      (error, stdout) => {
+      (error: ExecException | null, stdout: string) => {
         if (error) {
           reject(error)
         } else {

@@ -1,3 +1,4 @@
+import { logger } from '@aktyn-assistant/core'
 import AutoLaunch from 'auto-launch'
 
 export async function setupAutoLaunch(enable: boolean) {
@@ -10,16 +11,16 @@ export async function setupAutoLaunch(enable: boolean) {
       return true
     }
     if (enable) {
-      console.info('Enabling auto launch')
+      logger.info('Enabling auto launch')
       await autoLauncher.enable()
     } else {
-      console.info('Disabling auto launch')
+      logger.info('Disabling auto launch')
       await autoLauncher.disable()
     }
 
     return true
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     return false
   }
 }

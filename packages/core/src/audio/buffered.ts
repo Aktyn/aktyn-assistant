@@ -1,5 +1,8 @@
 import Tokenizer from 'sentence-tokenizer'
 
+import { getUserConfigValue } from '../user'
+import { logger } from '../utils'
+
 import { speak } from './textToSpeech'
 
 export class BufferedSpeech {
@@ -8,6 +11,7 @@ export class BufferedSpeech {
   private readonly tokenizer = new Tokenizer('AI')
   private speakPromise: Promise<void> | null = null
   private readonly abortController = new AbortController()
+  private readonly language = getUserConfigValue('textToSpeechLanguage')
 
   constructor(private readonly onSpeaking?: (finished: boolean) => void) {}
 
@@ -60,14 +64,18 @@ export class BufferedSpeech {
     this.buffer = this.buffer.slice(content.length)
 
     this.onSpeaking?.(false)
-    this.speakPromise = speak(content, this.abortController.signal)
+    this.speakPromise = speak(
+      content,
+      this.language,
+      this.abortController.signal,
+    )
       .then(() => {
         this.speakPromise = null
         if (this.finished) {
           this.onSpeaking?.(true)
         }
       })
-      .catch(console.error)
+      .catch(logger.error)
   }
 
   private synthesize(force = false) {
@@ -76,7 +84,7 @@ export class BufferedSpeech {
     }
 
     if (this.speakPromise) {
-      this.speakPromise.then(() => this.synthesize(true)).catch(console.error)
+      this.speakPromise.then(() => this.synthesize(true)).catch(logger.error)
       return
     }
 
@@ -87,20 +95,31 @@ export class BufferedSpeech {
     }
 
     let lineBreakIndex = this.buffer.indexOf('\n')
-    while (lineBreakIndex !== -1 && lineBreakIndex < 32) {
+    while (lineBreakIndex !== -1 && lineBreakIndex < 64) {
       lineBreakIndex = this.buffer.indexOf('\n', lineBreakIndex + 1)
     }
-    if (lineBreakIndex >= 32) {
+    if (lineBreakIndex >= 64) {
       const content = this.buffer.slice(0, lineBreakIndex + 1)
       this.speak(content)
       return
     }
 
-    const sentences = this.tokenizer.getSentences().slice(0, -1)
-    const sentencesContent = sentences.join('')
-    if (sentences.length > 1 && sentencesContent.length >= 32) {
-      const sentencesContent = sentences.join('')
-      this.speak(sentencesContent)
+    const sentences = this.tokenizer.getSentences()
+    let includeSentences = 0,
+      includedSentencesLength = 0
+    if (sentences.length > 0) {
+      do {
+        includedSentencesLength += sentences[includeSentences].length
+        includeSentences++
+      } while (
+        includedSentencesLength < 64 &&
+        includeSentences < sentences.length
+      )
+
+      const sentencesContent = sentences.slice(0, includeSentences).join('')
+      if (sentencesContent.length >= 64) {
+        this.speak(sentencesContent)
+      }
       return
     }
   }
@@ -120,7 +139,7 @@ export class BufferedSpeech {
     this.buffer = ''
     this.finished = true
     if (this.speakPromise && !this.abortController.signal.aborted) {
-      console.info('Aborting buffered speech')
+      logger.info('Aborting buffered speech')
       this.abortController.abort()
     }
   }

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { getDataDirectory } from '../../utils'
+import { getDataDirectory, logger } from '../../utils'
 
 export enum AiProviderType {
   openai = 'OpenAI',
@@ -43,6 +43,6 @@ export function deleteApiKey(providerType: AiProviderType) {
   try {
     fs.unlinkSync(keyFilePath)
   } catch (error) {
-    console.error(error)
+    logger.error(error)
   }
 }

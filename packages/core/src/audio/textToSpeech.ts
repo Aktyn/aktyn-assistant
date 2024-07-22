@@ -6,30 +6,37 @@ import { wait } from '@aktyn-assistant/common'
 import gTTS from 'gtts'
 import { v4 as uuidv4 } from 'uuid'
 
+import { logger } from '../utils'
+
 import {
   getAudioOutputDirectory,
   removeOutdatedAudioFiles,
 } from './audio-helpers'
 import { playAudioFile } from './play'
 
-export async function speak(content: string, abortSignal?: AbortSignal) {
+export async function speak(
+  content: string,
+  language?: string,
+  abortSignal?: AbortSignal,
+) {
   content = formatTextForSpeech(content)
 
-  console.info('Speaking:', content)
+  logger.info(`Speaking: ${content}`)
 
   const audioDir = getAudioOutputDirectory()
 
   const filePath = path.join(audioDir, `output-${uuidv4()}.mp3`)
   removeOutdatedAudioFiles()
 
-  const res = new gTTS(content, 'en-us')
+  const res = new gTTS(content, language ?? 'en-us')
   await res.save(filePath)
   await wait(100)
 
-  await playAudioFile(filePath, abortSignal).catch(console.error)
+  //TODO: play in queue (add audio file to queue to be played after previous one finishes); abort entire queue
+  await playAudioFile(filePath, abortSignal).catch(logger.error)
   fs.unlink(filePath, (error) => {
     if (error) {
-      console.error(error)
+      logger.error(error)
     }
   })
 }

@@ -1,5 +1,10 @@
 import { isDev } from '@aktyn-assistant/common'
-import type { AI, AudioRecorder, ChatSource } from '@aktyn-assistant/core'
+import {
+  logger,
+  type AI,
+  type AudioRecorder,
+  type ChatSource,
+} from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { globalShortcut, type Tray, type WebContents } from 'electron'
 
@@ -17,20 +22,20 @@ export async function initVoiceCommands(
     if (!recording) {
       recorder.start()
       recording = true
-      console.info('Recording voice command started')
+      logger.info('Recording voice command started')
 
       tray.setImage(getRecordingTrayIcon())
     } else {
       recording = false
       tray.setImage(getDefaultTrayIcon())
-      console.info('Recording voice command stopped. Processing...')
+      logger.info('Recording voice command stopped. Processing...')
 
       const recordingFile = await recorder.end()
       const transcribedVoiceCommand = await ai.speechToText(
         recordingFile,
         !isDev(),
       )
-      console.info(`Transcribed voice command: "${transcribedVoiceCommand}"`)
+      logger.info(`Transcribed voice command: "${transcribedVoiceCommand}"`)
 
       if (transcribedVoiceCommand.trim().length > 1) {
         quickChatContents.send(

@@ -2,6 +2,8 @@ import { isDev, type ChatMessage, type Tool } from '@aktyn-assistant/common'
 import type { OpenAI } from 'openai'
 import { Stream } from 'openai/streaming'
 
+import { logger } from '../../../utils'
+
 type Choice = OpenAI.Chat.Completions.ChatCompletionChunk.Choice
 type OpenAiMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam
 
@@ -105,7 +107,7 @@ export async function performChatQuery(
   updateConversationHistory(message.conversationId, messages)
 
   if (isDev()) {
-    console.info(
+    logger.info(
       `Sending chat messages to OpenAI API: ${JSON.stringify(messages)}; conversationId: ${message.conversationId}`,
     )
   }
@@ -143,7 +145,7 @@ export async function performChatQuery(
           toolCalls = appendToToolCalls(toolCalls, choice.delta.tool_calls)
         }
       } catch (error) {
-        console.error('Error while processing tool calls', error)
+        logger.error('Error while processing tool calls', error)
       }
 
       if (!choice?.delta.content) {
@@ -162,12 +164,12 @@ export async function performChatQuery(
 
       return
     } else if (!areToolCallsCompleted(toolCalls)) {
-      console.warn('Tool calls were invoked but not completed')
+      logger.warn('Tool calls were invoked but not completed')
       return
     }
 
     if (isDev()) {
-      console.info('Tool calls:', JSON.stringify(toolCalls, null, 2))
+      logger.info('Tool calls:', JSON.stringify(toolCalls, null, 2))
     }
 
     messages.push({
@@ -194,7 +196,7 @@ export async function performChatQuery(
     updateConversationHistory(message.conversationId, messages)
 
     if (isDev()) {
-      console.info(
+      logger.info(
         `Sending chat messages to OpenAI API after tool calls: ${JSON.stringify(
           messages,
         )}; conversationId: ${message.conversationId}`,
@@ -247,7 +249,7 @@ function tryCallToolFunction(
     return tool.function(JSON.parse(functionData.arguments))
   } catch (error) {
     if (isDev()) {
-      console.error(
+      logger.error(
         `Error while calling tool function "${functionData.name}"`,
         error,
       )

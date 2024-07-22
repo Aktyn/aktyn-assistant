@@ -26,6 +26,8 @@
 		"node-mic": "^1.0.1",
 		"node-notifier": "^10.0.1",
 		"openai": "^4.52.3",
+		"pino": "^9.3.1",
+		"pino-multi-stream": "^6.0.0",
 		"sentence-tokenizer": "^1.0.1",
 		"uuid": "^10.0.0"
 	},
@@ -33,6 +35,7 @@
 		"@types/jest": "^29.5.12",
 		"@types/node": "^20.14.9",
 		"@types/node-notifier": "^8.0.5",
+		"@types/pino-multi-stream": "^5.1.6",
 		"@types/uuid": "^10.0.0",
 		"@typescript-eslint/eslint-plugin": "^7.15.0",
 		"@typescript-eslint/parser": "^7.15.0",

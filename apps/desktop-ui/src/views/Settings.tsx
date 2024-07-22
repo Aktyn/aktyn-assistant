@@ -15,6 +15,7 @@ import { enqueueSnackbar } from 'notistack'
 import { GlassCard } from '../components/common/GlassCard'
 import { GlobalContext } from '../context/GlobalContextProvider'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
+import { gttsLanguages } from '../utils/consts'
 
 export const Settings = ({ in: active }: { in?: boolean }) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -44,6 +45,11 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
   const [readChatResponses, setReadChatResponses, syncReadChatResponses] =
     useUserConfigValue('readChatResponses')
   const [
+    textToSpeechLanguage,
+    setTextToSpeechLanguage,
+    syncTextToSpeechLanguage,
+  ] = useUserConfigValue('textToSpeechLanguage')
+  const [
     initialSystemMessage,
     setInitialSystemMessage,
     syncInitialSystemMessage,
@@ -58,6 +64,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
     void syncUseHistory()
     void syncMaxHistoryLength()
     void syncReadChatResponses()
+    void syncTextToSpeechLanguage()
     void syncInitialSystemMessage()
   }, [
     syncChatModel,
@@ -68,6 +75,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
     syncMockPaidRequests,
     syncUseHistory,
     syncReadChatResponses,
+    syncTextToSpeechLanguage,
     syncInitialSystemMessage,
   ])
 
@@ -205,7 +213,26 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
             >
               Read chat responses
             </Checkbox>
-            {/* TODO: language selection */}
+            <Select
+              label="Text to speech language"
+              variant="underlined"
+              selectedKeys={
+                textToSpeechLanguage && textToSpeechLanguage in gttsLanguages
+                  ? [textToSpeechLanguage]
+                  : []
+              }
+              onSelectionChange={(keys) => {
+                if (keys instanceof Set) {
+                  setTextToSpeechLanguage(keys.values().next().value)
+                }
+              }}
+            >
+              {Object.entries(gttsLanguages).map(([key, language]) => (
+                <SelectItem key={key} value={key}>
+                  {language}
+                </SelectItem>
+              ))}
+            </Select>
           </Section>
 
           <Section title="Chat">

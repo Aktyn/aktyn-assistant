@@ -10,6 +10,8 @@ import * as ffmetadata from 'ffmetadata'
 import type Mic from 'node-mic'
 import { v4 as uuidv4 } from 'uuid'
 
+import { logger } from '../utils'
+
 import {
   getAudioOutputDirectory,
   removeOutdatedAudioFiles,
@@ -52,7 +54,7 @@ export class AudioRecorder {
       micInputStream.pipe(outputFileStream)
 
       micInputStream.on('error', (err) => {
-        console.error(`Microphone input stream error: ${err.message}`)
+        logger.error(`Microphone input stream error: ${err.message}`)
       })
 
       this.mic = mic

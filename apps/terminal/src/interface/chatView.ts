@@ -1,4 +1,5 @@
 import type { ChatMessage, ChatResponse, Stream } from '@aktyn-assistant/common'
+import { logger } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 import type { AnimatedText } from 'terminal-kit/Terminal'
 import { v4 as uuidv4 } from 'uuid'
@@ -66,7 +67,7 @@ export class ChatView extends View {
             conversationId: this.conversationId,
             contents: [{ type: 'text', content: value }],
           }).catch((error) => {
-            console.error(error)
+            logger.error(error)
             process.exit(1)
           })
         } else {

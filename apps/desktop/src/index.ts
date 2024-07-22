@@ -7,6 +7,8 @@ import {
   AiProviderType,
   AudioRecorder,
   getUserConfigValue,
+  initLogger,
+  logger,
   setUserConfigValue,
   type ChatSource,
 } from '@aktyn-assistant/core'
@@ -29,6 +31,8 @@ import {
   setupTray,
 } from './window'
 
+initLogger('desktop')
+
 if (!isDev()) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { updateElectronApp } = require('update-electron-app')
@@ -36,7 +40,7 @@ if (!isDev()) {
 }
 
 function handleFatalError(error: unknown) {
-  console.error(error)
+  logger.error(error)
   process.exit(1)
 }
 
@@ -52,7 +56,7 @@ if (forceSingleInstance()) {
         }
       })
     })
-    .catch(console.error)
+    .catch(logger.error)
 } else {
   app.exit(0)
 }
@@ -70,7 +74,7 @@ async function init() {
     !isDev() && (autoLaunchUserConfig ?? true),
   )
   if (success && !isDev()) {
-    console.info('Auto launch enabled')
+    logger.info('Auto launch enabled')
   }
 
   let ready = false
@@ -87,7 +91,7 @@ async function init() {
         version = packageJson.version
       }
     } catch (error) {
-      console.error(error)
+      logger.error(error)
     }
 
     return Promise.resolve({
@@ -122,7 +126,7 @@ async function init() {
       )
     })
     setUserConfigValue('selectedAiProvider', aiProvider)
-    console.info(`Selected ${aiProvider} as your AI provider`)
+    logger.info(`Selected ${aiProvider} as your AI provider`)
   }
 
   const ai = await AI.client({
@@ -167,7 +171,7 @@ async function postInit(mainWindow: BrowserWindow, ai: AI) {
     }
   }
   globalShortcut.register('Alt+Q', async () => {
-    toggleQuickChat().catch(console.error)
+    toggleQuickChat().catch(logger.error)
   })
 
   const quickCommandWindow = await createQuickCommandWindow()
@@ -183,7 +187,7 @@ async function postInit(mainWindow: BrowserWindow, ai: AI) {
     }
   }
   globalShortcut.register('Alt+X', async () => {
-    toggleQuickCommand().catch(console.error)
+    toggleQuickCommand().catch(logger.error)
   })
   setupQuickCommandHandlers((quickCommand) => {
     quickCommandWindow.hide()
@@ -202,5 +206,5 @@ async function postInit(mainWindow: BrowserWindow, ai: AI) {
     ai,
     tray,
     quickChatWindow.webContents,
-  ).catch(console.error)
+  ).catch(logger.error)
 }

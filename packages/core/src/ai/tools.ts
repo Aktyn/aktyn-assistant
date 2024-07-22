@@ -12,7 +12,7 @@ import AssistantTool from '@aktyn-assistant-tools/assistant'
 import WebSearchTool from '@aktyn-assistant-tools/web-search'
 import { v4 as uuidv4 } from 'uuid'
 
-import { getDataDirectory } from '../utils'
+import { getDataDirectory, logger } from '../utils'
 import { calculateDirectorySize } from '../utils/file-helpers'
 
 import { AI } from '.'
@@ -118,7 +118,7 @@ export function getActiveTools() {
         tools.push({ ...toolInfo, ...extractedTool })
       }
     } catch (error) {
-      console.error(
+      logger.error(
         `Error while loading tool "${mainFilePath}"\n${error instanceof Error ? error.message : String(error)}`,
       )
     }
@@ -159,7 +159,7 @@ export function loadToolsInfo() {
       } else if (
         foundBuiltInTool.schema.version !== builtInTool.schema.version
       ) {
-        console.info(
+        logger.info(
           `Updating tools info file due to version change (tool: ${foundBuiltInTool.schema.functionName})`,
         )
         updated = true
@@ -274,7 +274,7 @@ export function addToolsSource(toolData: ToolsSourceData) {
 
   AI.client()
     .then((client) => client.loadTools())
-    .catch(console.error)
+    .catch(logger.error)
 }
 
 export function setEnabledTools(toolNames: string[]) {
@@ -286,7 +286,7 @@ export function setEnabledTools(toolNames: string[]) {
 
   AI.client()
     .then((client) => client.loadTools())
-    .catch(console.error)
+    .catch(logger.error)
 }
 
 export function editTool(updatedTool: ToolInfo) {
@@ -299,7 +299,7 @@ export function editTool(updatedTool: ToolInfo) {
 
   AI.client()
     .then((client) => client.loadTools())
-    .catch(console.error)
+    .catch(logger.error)
 }
 
 export function removeTool(toolName: string) {
@@ -326,7 +326,7 @@ export function removeTool(toolName: string) {
       },
       (error) => {
         if (error) {
-          console.error(error)
+          logger.error(error)
         }
       },
     )
@@ -334,7 +334,7 @@ export function removeTool(toolName: string) {
 
   AI.client()
     .then((client) => client.loadTools())
-    .catch(console.error)
+    .catch(logger.error)
 }
 
 export type ChatSource =

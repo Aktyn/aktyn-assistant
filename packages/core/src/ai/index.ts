@@ -16,6 +16,7 @@ import { AuthenticationError, OpenAI } from 'openai'
 
 import { BufferedSpeech, speechToText } from '../audio'
 import { getUserConfigValue } from '../user/user-config'
+import { logger } from '../utils'
 
 import {
   AiProviderType,
@@ -41,10 +42,10 @@ export {
   removeTool,
   setEnabledTools,
   type BuiltInToolInfo,
+  type ChatSource,
   type ImportedToolInfo,
   type ToolInfo,
   type ToolsSourceData,
-  type ChatSource,
 } from './tools'
 
 class UnsupportedProviderError extends Error {
@@ -119,7 +120,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
         }
 
         if (isDev()) {
-          console.error(error)
+          logger.error(error)
         }
         //TODO: await few seconds and send false as second argument when this exception was caused by network error
         return await AI.getProviderClient(init, true)
@@ -129,7 +130,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
         title: 'OpenAI setup fatal error',
         message: error instanceof Error ? error.message : undefined,
       })
-      console.error(error)
+      logger.error(error)
       process.exit(1)
     }
   }
@@ -173,11 +174,11 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     this.tools = getActiveTools()
     if (this.tools.length) {
       const plural = this.tools.length === 1 ? '' : 's'
-      console.info(
+      logger.info(
         `Loaded ${this.tools.length} tool${plural ? 's' : ''}: ${this.tools.map((tool) => tool.schema.functionName).join(', ')}`,
       )
     } else {
-      console.info('No tools loaded')
+      logger.info('No tools loaded')
     }
   }
 
@@ -324,7 +325,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   static notifyError(error: unknown, title?: string) {
     if (isDev()) {
-      console.error(error)
+      logger.error(error)
     }
 
     const errorObject = {

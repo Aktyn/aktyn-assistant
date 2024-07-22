@@ -6,6 +6,7 @@ jest.mock('node-notifier', () => ({
 jest.mock('fs', () => ({
   writeFileSync: jest.fn(),
   mkdirSync: jest.fn(),
+  mkdir: jest.fn(),
   existsSync: jest.fn(),
   unlinkSync: jest.fn(),
   readFileSync: (filePath: string) => {

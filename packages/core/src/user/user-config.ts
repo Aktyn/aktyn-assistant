@@ -22,6 +22,7 @@ const USER_CONFIG = {
   includeHistory: false,
   maxChatHistoryLength: 8,
   readChatResponses: false,
+  textToSpeechLanguage: 'en-us',
   initialSystemMessage: '',
 }
 
