@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { speechToText } from './speechToText'
+import { initWhisper, speechToText } from './speechToText'
 
 describe(speechToText.name, () => {
   const isGitHubActionsOrCI =
@@ -16,13 +16,24 @@ describe(speechToText.name, () => {
     'golden-ratio.wav',
   )
 
+  it('should throw error if model is not ready', async () => {
+    if (isGitHubActionsOrCI) {
+      expect(true).toBe(true)
+    } else {
+      await expect(speechToText(exampleWavPath)).rejects.toStrictEqual(
+        new Error('Whisper model is not yet ready'),
+      )
+    }
+  })
+
   it('should transcribe audio', async () => {
     if (isGitHubActionsOrCI) {
       expect(true).toBe(true)
     } else {
+      expect(await initWhisper()).toBe(true)
       await expect(speechToText(exampleWavPath)).resolves.toBe(
         'explain golden ratio.',
       )
     }
-  })
+  }, 300_000)
 })

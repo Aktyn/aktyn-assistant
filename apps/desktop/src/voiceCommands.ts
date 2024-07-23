@@ -1,4 +1,3 @@
-import { isDev } from '@aktyn-assistant/common'
 import {
   logger,
   type AI,
@@ -31,10 +30,7 @@ export async function initVoiceCommands(
       logger.info('Recording voice command stopped. Processing...')
 
       const recordingFile = await recorder.end()
-      const transcribedVoiceCommand = await ai.speechToText(
-        recordingFile,
-        !isDev(),
-      )
+      const transcribedVoiceCommand = await ai.speechToText(recordingFile)
       logger.info(`Transcribed voice command: "${transcribedVoiceCommand}"`)
 
       if (transcribedVoiceCommand.trim().length > 1) {
@@ -46,4 +42,6 @@ export async function initVoiceCommands(
       }
     }
   })
+
+  logger.info('Voice commands initialized')
 }

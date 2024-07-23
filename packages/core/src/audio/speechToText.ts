@@ -1,40 +1,22 @@
-import { exec, type ExecException } from 'child_process'
-import { platform } from 'os'
-import path from 'path' // Ensure the path module is imported
-
 import { logger } from '../utils'
 
-//@ts-expect-error resourcesPath comes from packaged electron
-const basePath = process.resourcesPath ?? path.join(__dirname, '..', '..')
+import { Whisper } from './whisper'
 
-const whisperAssetsPath = path.join(basePath, 'assets', 'whisper')
-const modelPath = path.join(whisperAssetsPath, 'models', 'ggml-base.en.bin')
-//TODO: support for other platforms
-const executablePath =
-  platform() !== 'win32' ? path.join(whisperAssetsPath, 'linux', 'main') : null
+/** Returns null if whisper is not supported on the current platform */
+export function initWhisper() {
+  return Whisper.instance().downloadModel()
+}
 
 /** filePath must point to a 16kHz mono channel .wav file */
-export function speechToText(filePath: string, _isPackaged = false) {
-  logger.info('Transcribing audio:', filePath)
-
-  if (!executablePath) {
-    throw new Error(
-      'Whisper executable not found. It is probably not supported on your platform',
-    )
+export async function speechToText(filePath: string) {
+  const whisper = Whisper.instance()
+  if (!whisper.isReady()) {
+    throw new Error('Whisper model is not yet ready')
   }
 
-  return new Promise<string>((resolve, reject) => {
-    exec(
-      `${executablePath} -ml 20 -sow true -l en -m ${modelPath} -f ${filePath}`,
-      (error: ExecException | null, stdout: string) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(stdout)
-        }
-      },
-    )
-  }).then(parseWhisperOutput)
+  logger.info(`Transcribing audio: ${filePath}`)
+
+  return await whisper.transcribe(filePath).then(parseWhisperOutput)
 }
 
 function parseWhisperOutput(output: string) {

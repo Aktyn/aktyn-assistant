@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import Icon from '@mdi/react'
 import { Spinner } from '@nextui-org/spinner'
+import { Tooltip } from '@nextui-org/tooltip'
 import { Background } from './components/Background'
 import { Content } from './components/Content'
 import { Menu } from './components/Menu'
@@ -46,7 +47,7 @@ const Main = () => {
 }
 
 const ContentBackground = () => {
-  const { ready } = useContext(GlobalContext)
+  const { ready, waitingForWhisper } = useContext(GlobalContext)
 
   if (!ready) {
     return (
@@ -78,6 +79,13 @@ const ContentBackground = () => {
           color="inherit"
         />
       </div>
+      {waitingForWhisper && (
+        <div className="absolute right-0 bottom-0 p-4 z-10">
+          <Tooltip content="Downloading Whisper model">
+            <Spinner size="md" color="secondary" />
+          </Tooltip>
+        </div>
+      )}
     </>
   )
 }

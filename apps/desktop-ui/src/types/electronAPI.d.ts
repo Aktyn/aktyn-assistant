@@ -53,6 +53,7 @@ declare global {
 
       // Main to renderer
       onReady: (callback: () => void) => void
+      onWhisperInitialized: (callback: (initialized: boolean) => void) => void
       onPromptForAiProvider: (callback: (options: string[]) => void) => void
       onPromptForApiKey: (
         callback: (providerType: AiProviderType) => void,

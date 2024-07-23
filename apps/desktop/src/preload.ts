@@ -65,6 +65,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Main to renderer
   onReady: (callback: () => void) =>
     ipcRenderer.on('ready', (_event) => callback()),
+  onWhisperInitialized: (callback: (initialized: boolean) => void) =>
+    ipcRenderer.on('whisper-initialized', (_event, initialized) =>
+      callback(initialized),
+    ),
   onPromptForAiProvider: (callback: (options: string[]) => void) =>
     ipcRenderer.on('promptForAiProvider', (_, options: string[]) =>
       callback(options),

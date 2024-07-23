@@ -21,6 +21,8 @@ export const GlobalContext = createContext({
   initData: null as InitData | null,
   view: null as ViewType | null,
   setView: noop as (view: ViewType) => void,
+  waitingForWhisper: false,
+  whisperInitialized: false,
 })
 
 export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -30,6 +32,8 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [aiProviderDialogOpen, setAiProviderDialogOpen] = useState(false)
   const [aiProviders, setAiProviders] = useState<string[]>([])
   const [selectModelDialogOpen, setSelectModelDialogOpen] = useState(false)
+  const [waitingForWhisper, setWaitingForWhisper] = useState(true)
+  const [whisperInitialized, setWhisperInitialized] = useState(false)
 
   const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false)
   const [apiKeyProviderType, setApiKeyProviderType] = useState<string | null>(
@@ -83,6 +87,11 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setApiKeyProviderType(providerType)
     })
 
+    window.electronAPI.onWhisperInitialized((initialized) => {
+      setWaitingForWhisper(false)
+      setWhisperInitialized(initialized)
+    })
+
     window.electronAPI
       .isReady()
       .then((ready) => {
@@ -98,7 +107,16 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [init])
 
   return (
-    <GlobalContext.Provider value={{ ready, initData, view, setView }}>
+    <GlobalContext.Provider
+      value={{
+        ready,
+        initData,
+        view,
+        setView,
+        waitingForWhisper,
+        whisperInitialized,
+      }}
+    >
       {children}
       <AiProviderSelectDialog
         open={aiProviderDialogOpen}

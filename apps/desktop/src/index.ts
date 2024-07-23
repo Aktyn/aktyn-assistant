@@ -11,6 +11,7 @@ import {
   logger,
   setUserConfigValue,
   type ChatSource,
+  initWhisper,
 } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
@@ -201,10 +202,30 @@ async function postInit(mainWindow: BrowserWindow, ai: AI) {
 
   const tray = setupTray(mainWindow, toggleQuickChat, toggleQuickCommand)
 
-  initVoiceCommands(
-    new AudioRecorder(),
-    ai,
-    tray,
-    quickChatWindow.webContents,
-  ).catch(logger.error)
+  initWhisper()
+    .then((supported) => {
+      if (!supported) {
+        logger.warn('Whisper is not supported on this platform')
+        mainWindow.webContents.send('whisper-initialized', false)
+        AI.notifyError(
+          new Error('Whisper is not supported on this platform'),
+          'Whisper initialization error',
+        )
+        return
+      }
+      logger.info('Whisper initialized')
+      mainWindow.webContents.send('whisper-initialized', true)
+
+      initVoiceCommands(
+        new AudioRecorder(),
+        ai,
+        tray,
+        quickChatWindow.webContents,
+      ).catch(logger.error)
+    })
+    .catch((error) => {
+      mainWindow.webContents.send('whisper-initialized', false)
+      AI.notifyError(error, 'Whisper initialization error')
+      logger.error(error, 'Whisper initialization error')
+    })
 }

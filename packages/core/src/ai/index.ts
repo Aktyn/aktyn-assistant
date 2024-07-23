@@ -303,7 +303,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     }
   }
 
-  async speechToText(filePath: string, isPackaged = false) {
+  async speechToText(filePath: string) {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
 
     switch (this.providerType) {
@@ -313,7 +313,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           return 'Mocked speech to text result'
         }
 
-        return await speechToText(filePath, isPackaged)
+        return await speechToText(filePath)
       default:
         throw throwUnsupportedProviderError(this.providerType)
     }
