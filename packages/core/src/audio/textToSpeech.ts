@@ -1,4 +1,3 @@
-import fs from 'fs'
 import path from 'path'
 
 import { wait } from '@aktyn-assistant/common'
@@ -12,7 +11,7 @@ import {
   getAudioOutputDirectory,
   removeOutdatedAudioFiles,
 } from './audio-helpers'
-import { playAudioFile } from './play'
+import { queueAudioFile } from './play'
 
 export async function speak(
   content: string,
@@ -20,8 +19,6 @@ export async function speak(
   abortSignal?: AbortSignal,
 ) {
   content = formatTextForSpeech(content)
-
-  logger.info(`Speaking: ${content}`)
 
   const audioDir = getAudioOutputDirectory()
 
@@ -32,12 +29,10 @@ export async function speak(
   await res.save(filePath)
   await wait(100)
 
-  //TODO: play in queue (add audio file to queue to be played after previous one finishes); abort entire queue
-  await playAudioFile(filePath, abortSignal).catch(logger.error)
-  fs.unlink(filePath, (error) => {
-    if (error) {
-      logger.error(error)
-    }
+  logger.info(`Speaking: ${content}`)
+  return await queueAudioFile(filePath, {
+    abortSignal,
+    removeAfterPlaying: true,
   })
 }
 

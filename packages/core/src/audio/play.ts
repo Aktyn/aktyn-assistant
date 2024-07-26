@@ -1,6 +1,7 @@
 import { execSync, spawn } from 'child_process'
+import fs from 'fs'
 
-import { once } from '@aktyn-assistant/common'
+import { once, wait } from '@aktyn-assistant/common'
 
 import { logger } from '../utils'
 
@@ -29,7 +30,12 @@ const findMediaPlayer = once(() => {
   return null
 })
 
-export async function playAudioFile(
+type PlayOptions = {
+  abortSignal?: AbortSignal
+  removeAfterPlaying?: boolean
+}
+
+async function playAudioFile(
   filePath: string,
   abortSignal?: AbortSignal,
   attempt = 0,
@@ -70,12 +76,69 @@ export async function playAudioFile(
       if (abortSignal) {
         abortSignal.addEventListener('abort', () => {
           childProcess.kill()
+          resolve()
         })
       }
     })
   } else {
     //TODO: allow aborting fallback method
     return playFallback(filePath)
+  }
+}
+
+const playingQueue: Array<string> = []
+let queuePromise: Promise<void> | null = null
+
+function playNextInQueue(options: PlayOptions = {}) {
+  const filePath = playingQueue.shift()
+  if (!filePath) {
+    return null
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    logger.info(`Playing audio file: ${filePath}`)
+    playAudioFile(filePath, options.abortSignal)
+      .catch(reject)
+      .finally(() => {
+        resolve()
+
+        if (options.removeAfterPlaying) {
+          try {
+            fs.unlink(filePath, (error) => {
+              if (error) {
+                logger.error(error)
+              }
+            })
+          } catch (error) {
+            logger.error(error)
+          }
+        }
+      })
+  })
+}
+
+export async function queueAudioFile(
+  filePath: string,
+  options: PlayOptions = {},
+) {
+  logger.info(`Queuing audio file: ${filePath}`)
+  playingQueue.push(filePath)
+
+  if (queuePromise) {
+    while (queuePromise) {
+      await wait(100)
+    }
+    return
+  }
+
+  queuePromise = playNextInQueue(options)
+  while (queuePromise) {
+    try {
+      await queuePromise
+    } catch (error) {
+      logger.error(error)
+    }
+    queuePromise = playNextInQueue(options)
   }
 }
 

@@ -12,6 +12,9 @@
     "lint": "eslint src/**/*.ts --fix",
     "typecheck": "tsc --noEmit --skipLibCheck"
   },
+  "dependencies": {
+    "@aktyn-assistant/common": "*"
+  },
   "devDependencies": {
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^7.15.0",

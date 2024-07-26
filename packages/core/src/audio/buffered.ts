@@ -5,11 +5,12 @@ import { logger } from '../utils'
 
 import { speak } from './textToSpeech'
 
+const minimumTextLengthEligibleForSpeechSynthesis = 128
+
 export class BufferedSpeech {
   private buffer = ''
   private finished = false
   private readonly tokenizer = new Tokenizer('AI')
-  private speakPromise: Promise<void> | null = null
   private readonly abortController = new AbortController()
   private readonly language = getUserConfigValue('textToSpeechLanguage')
 
@@ -27,13 +28,38 @@ export class BufferedSpeech {
     if (this.finished) {
       return false
     }
+
+    const combinedSentencesLength =
+      this.tokenizer.sentences?.reduce(
+        (acc, sentence) => acc + sentence.length,
+        0,
+      ) ?? 0
+
+    const blockBoundaries = [
+      { start: '```', end: '\n```' },
+      { start: '\\[', end: '\\]' },
+    ]
+    for (const blockBoundary of blockBoundaries) {
+      const startIndex = this.buffer.lastIndexOf(blockBoundary.start)
+      if (startIndex !== -1) {
+        const endIndex = this.buffer.indexOf(
+          blockBoundary.end,
+          startIndex + blockBoundary.start.length,
+        )
+        if (endIndex === -1) {
+          return false
+        }
+      }
+    }
+
     return (
-      this.tokenizer.getSentences().length > 0 ||
-      this.buffer.lastIndexOf('\n') >= 32
+      combinedSentencesLength >= minimumTextLengthEligibleForSpeechSynthesis ||
+      this.buffer.lastIndexOf('\n') >=
+        minimumTextLengthEligibleForSpeechSynthesis
     )
   }
 
-  private preventTooLargeContent(content: string) {
+  private trimLargeContent(content: string) {
     const limit = 384
 
     if (
@@ -60,31 +86,21 @@ export class BufferedSpeech {
       return
     }
 
-    content = this.preventTooLargeContent(content)
+    content = this.trimLargeContent(content)
     this.buffer = this.buffer.slice(content.length)
 
     this.onSpeaking?.(false)
-    this.speakPromise = speak(
-      content,
-      this.language,
-      this.abortController.signal,
-    )
-      .then(() => {
-        this.speakPromise = null
+    speak(content, this.language, this.abortController.signal)
+      .catch(logger.error)
+      .finally(() => {
         if (this.finished) {
           this.onSpeaking?.(true)
         }
       })
-      .catch(logger.error)
   }
 
   private synthesize(force = false) {
     if (!this.buffer.length) {
-      return
-    }
-
-    if (this.speakPromise) {
-      this.speakPromise.then(() => this.synthesize(true)).catch(logger.error)
       return
     }
 
@@ -95,10 +111,13 @@ export class BufferedSpeech {
     }
 
     let lineBreakIndex = this.buffer.indexOf('\n')
-    while (lineBreakIndex !== -1 && lineBreakIndex < 64) {
+    while (
+      lineBreakIndex !== -1 &&
+      lineBreakIndex < minimumTextLengthEligibleForSpeechSynthesis
+    ) {
       lineBreakIndex = this.buffer.indexOf('\n', lineBreakIndex + 1)
     }
-    if (lineBreakIndex >= 64) {
+    if (lineBreakIndex >= minimumTextLengthEligibleForSpeechSynthesis) {
       const content = this.buffer.slice(0, lineBreakIndex + 1)
       this.speak(content)
       return
@@ -112,12 +131,14 @@ export class BufferedSpeech {
         includedSentencesLength += sentences[includeSentences].length
         includeSentences++
       } while (
-        includedSentencesLength < 64 &&
+        includedSentencesLength < minimumTextLengthEligibleForSpeechSynthesis &&
         includeSentences < sentences.length
       )
 
       const sentencesContent = sentences.slice(0, includeSentences).join('')
-      if (sentencesContent.length >= 64) {
+      if (
+        sentencesContent.length >= minimumTextLengthEligibleForSpeechSynthesis
+      ) {
         this.speak(sentencesContent)
       }
       return
@@ -138,7 +159,7 @@ export class BufferedSpeech {
   abort() {
     this.buffer = ''
     this.finished = true
-    if (this.speakPromise && !this.abortController.signal.aborted) {
+    if (!this.abortController.signal.aborted) {
       logger.info('Aborting buffered speech')
       this.abortController.abort()
     }

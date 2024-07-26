@@ -56,9 +56,9 @@ describe(BufferedSpeech.name, () => {
 
     await wait(1000)
 
-    expect(speakMock).toHaveBeenCalledTimes(6)
+    expect(speakMock).toHaveBeenCalledTimes(4)
     expect(speakMock).toHaveBeenCalledWith(
-      'There are a few possible references to "Aktyn" based on the context,',
+      'There are a few possible references to "Aktyn" based on the context, but here are the most relevant ones:\n',
       'en-us',
       speech.controller.signal,
     )
@@ -77,12 +77,12 @@ describe(BufferedSpeech.name, () => {
 
     expect(speakMock).toHaveBeenCalledTimes(4)
     expect(speakMock).toHaveBeenCalledWith(
-      'There are a few possible references to "Aktyn" based on the context,',
+      'There are a few possible references to "Aktyn" based on the context, but here are the most relevant ones:\n',
       'en-us',
       speech.controller.signal,
     )
     expect(speakMock).toHaveBeenCalledWith(
-      ' but here are the most relevant ones:\n\n1. **Aktyn as a GitHub User**: Radosław Krajewski, who uses the handle "Aktyn" on GitHub, has developed various projects, including a multi-player browser game, a website project for a GTA V Role Play server, and a neural network evolving with a genetic algorithm. [GitHub - Aktyn](https://github.com/Aktyn)\n',
+      '\n1. **Aktyn as a GitHub User**: Radosław Krajewski, who uses the handle "Aktyn" on GitHub, has developed various projects, including a multi-player browser game, a website project for a GTA V Role Play server, and a neural network evolving with a genetic algorithm. [GitHub - Aktyn](https://github.com/Aktyn)\n',
       'en-us',
       speech.controller.signal,
     )
