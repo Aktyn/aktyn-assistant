@@ -39,16 +39,6 @@ module.exports = {
         },
       },
     },
-    // {
-    //   name: '@electron-forge/maker-flatpak',
-    //   config: {
-    //     options: {},
-    //   },
-    // },
-    // {
-    //   name: '@electron-forge/maker-rpm',
-    //   config: {},
-    // },
   ],
   publishers: [
     {
