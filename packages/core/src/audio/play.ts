@@ -21,7 +21,7 @@ const findMediaPlayer = once(() => {
   for (const player of potentialPlayers) {
     try {
       execSync(player)
-      logger.info('Found media player:', player)
+      logger.info(`Found media player: ${player}`)
       return player
     } catch {
       continue
@@ -81,8 +81,10 @@ async function playAudioFile(
       }
     })
   } else {
-    //TODO: allow aborting fallback method
-    return playFallback(filePath)
+    if (abortSignal?.aborted) {
+      return
+    }
+    return await playFallback(filePath)
   }
 }
 
@@ -150,7 +152,11 @@ const getAudic = once(() =>
 )
 
 async function playFallback(filePath: string) {
-  logger.info('Playing audio with fallback method')
-  const { playAudioFile: playAudic } = await getAudic()
-  await playAudic(filePath)
+  try {
+    logger.info('Playing audio with fallback method')
+    const { playAudioFile: playAudic } = await getAudic()
+    await playAudic(filePath)
+  } catch (error) {
+    logger.error(error, 'Error while playing audio with fallback method')
+  }
 }

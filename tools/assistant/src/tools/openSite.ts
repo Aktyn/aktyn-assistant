@@ -12,7 +12,7 @@ const getOpenMethods = once(() =>
 )
 
 const toolSchema: ToolSchema = {
-  version: '1.0.4',
+  version: '1.0.5',
   functionName: 'open_site',
   description:
     "Open a website. If you don't know the exact URL, create a web engine search query that will be used to find and open the site.",
@@ -36,7 +36,7 @@ async function openSite(data: { url_or_query: string }) {
 
     const { open } = await getOpenMethods()
     const child = await open(url)
-    return resolveChildProcess(child, url)
+    return await resolveChildProcess(child, url)
   } catch (error) {
     return error instanceof Error
       ? error.message
@@ -46,10 +46,10 @@ async function openSite(data: { url_or_query: string }) {
 
 function resolveChildProcess(child: ChildProcess, url: string) {
   child.unref()
-  return new Promise<string>((resolve) => {
+  return new Promise<string>((resolve, reject) => {
     let resolved = false
     const timeout = setTimeout(() => {
-      resolve(`Opening "${url}" timed out`)
+      reject(`Opening "${url}" timed out`)
       resolved = true
     }, 10_000)
 
@@ -62,7 +62,7 @@ function resolveChildProcess(child: ChildProcess, url: string) {
     child.on('error', (error) => {
       if (!resolved) {
         clearTimeout(timeout)
-        resolve(error.message)
+        reject(error.message)
       }
     })
   })

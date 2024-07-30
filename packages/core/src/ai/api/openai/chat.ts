@@ -1,4 +1,4 @@
-import { isDev, type ChatMessage, type Tool } from '@aktyn-assistant/common'
+import type { ChatMessage, Tool } from '@aktyn-assistant/common'
 import type { OpenAI } from 'openai'
 import { Stream } from 'openai/streaming'
 
@@ -106,11 +106,9 @@ export async function performChatQuery(
 
   updateConversationHistory(message.conversationId, messages)
 
-  if (isDev()) {
-    logger.info(
-      `Sending chat messages to OpenAI API: ${JSON.stringify(messages)}; conversationId: ${message.conversationId}`,
-    )
-  }
+  logger.info(
+    `Sending chat messages to OpenAI API: ${JSON.stringify(messages)}; conversationId: ${message.conversationId}`,
+  )
   const stream = await client.chat.completions.create({
     model,
     messages,
@@ -168,9 +166,7 @@ export async function performChatQuery(
       return
     }
 
-    if (isDev()) {
-      logger.info('Tool calls:', JSON.stringify(toolCalls, null, 2))
-    }
+    logger.info(`Tool calls: ${JSON.stringify(toolCalls)}`)
 
     messages.push({
       role: 'assistant',
@@ -195,13 +191,11 @@ export async function performChatQuery(
 
     updateConversationHistory(message.conversationId, messages)
 
-    if (isDev()) {
-      logger.info(
-        `Sending chat messages to OpenAI API after tool calls: ${JSON.stringify(
-          messages,
-        )}; conversationId: ${message.conversationId}`,
-      )
-    }
+    logger.info(
+      `Sending chat messages to OpenAI API after tool calls: ${JSON.stringify(
+        messages,
+      )}; conversationId: ${message.conversationId}`,
+    )
     const finalStream = await client.chat.completions.create({
       model,
       messages,
@@ -248,12 +242,10 @@ function tryCallToolFunction(
     }
     return tool.function(JSON.parse(functionData.arguments))
   } catch (error) {
-    if (isDev()) {
-      logger.error(
-        `Error while calling tool function "${functionData.name}"`,
-        error,
-      )
-    }
+    logger.error(
+      `Error while calling tool function "${functionData.name}"`,
+      error,
+    )
     return ''
   }
 }

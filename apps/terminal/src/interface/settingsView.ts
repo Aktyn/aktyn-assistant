@@ -8,7 +8,6 @@ import { View } from './view'
 enum SETTINGS_ITEM {
   MockPaidRequests = 'Mock paid requests',
   SelectChatModel = 'Select chat model',
-  // ClearApiKeys = 'Clear API keys', //TODO: implement
 }
 
 function getConfigValueBySettingItem(item: SETTINGS_ITEM) {

@@ -3,7 +3,6 @@
  * Logic and types specific to any AI API (eg. OpenAI) should not be used outside its corresponding file.
  */
 import {
-  isDev,
   once,
   Stream,
   wait,
@@ -119,9 +118,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
           deleteApiKey(init.providerType)
         }
 
-        if (isDev()) {
-          logger.error(error)
-        }
+        logger.error(error)
         //TODO: await few seconds and send false as second argument when this exception was caused by network error
         return await AI.getProviderClient(init, true)
       }
@@ -324,9 +321,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
   }
 
   static notifyError(error: unknown, title?: string) {
-    if (isDev()) {
-      logger.error(error)
-    }
+    logger.error(error)
 
     const errorObject = {
       title:
