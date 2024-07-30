@@ -11,7 +11,13 @@ const logsDirectory = path.join(getDataDirectory(), 'logs')
 const MONTH = 1000 * 60 * 60 * 24 * 30
 
 export const initLogger = once(
-  (fileSuffix?: string, options?: Partial<LoggerOptions>) => {
+  (
+    fileSuffix?: string,
+    {
+      disableStdout,
+      ...options
+    }: Partial<LoggerOptions & { disableStdout?: boolean }> = {},
+  ) => {
     if (!fs.existsSync(logsDirectory)) {
       fs.mkdirSync(logsDirectory, { recursive: true })
     }
@@ -34,8 +40,8 @@ export const initLogger = once(
       mkdir: true,
     })
 
-    const streams: Streams = [
-      { stream: process.stdout, level: 'info' },
+    const streams: Array<Streams[number] | null> = [
+      !disableStdout ? { stream: process.stdout, level: 'info' } : null,
       { stream: fileDestination, level: 'debug' },
     ]
 
@@ -49,7 +55,7 @@ export const initLogger = once(
         base: null,
         ...options,
       },
-      multistream(streams),
+      multistream(streams.filter((stream) => stream !== null)),
     )
 
     try {

@@ -1,7 +1,9 @@
-import { type AI } from '@aktyn-assistant/core'
+import { isDev } from '@aktyn-assistant/common'
+import { logger, type AI } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 import { ChatView } from './chatView'
+import { clear } from './common'
 import { SettingsView } from './settingsView'
 import { INTERFACE_VIEW, type View } from './view'
 
@@ -28,10 +30,19 @@ export class TerminalInterface {
     terminal.on('resize', (width: number, height: number) => {
       this.width = width
       this.height = height
+
+      logger.info(`Terminal resized to ${width}x${height}`)
+
       if (this.shown) {
         this.showInterface()
       }
     })
+
+    if (isDev()) {
+      logger.info(
+        `Environment: ${process.env.NODE_ENV} | Terminal width: ${this.width} | Terminal height: ${this.height}`,
+      )
+    }
   }
 
   private closeView() {
@@ -63,15 +74,6 @@ export class TerminalInterface {
     }
     this.shown = true
 
-    try {
-      terminal.reset()
-      terminal.clear().eraseDisplay().moveTo(1, 1)
-      terminal.resetScrollingRegion()
-      terminal.scrollingRegion(0, this.height - 1)
-    } catch {
-      //ignore
-    }
-
     if (this.view) {
       this.view.open()
     } else {
@@ -93,17 +95,11 @@ export class TerminalInterface {
   }
 
   private renderMenu() {
-    terminal.clear()
-    terminal.moveTo(1, this.height - 1)
+    clear()
+    terminal.moveTo(1, this.height - 2)
 
     const items = Object.values(menu)
     terminal.bold('Select option:')
-    if (process.env.NODE_ENV?.toLowerCase() === 'dev') {
-      terminal(
-        ` Environment: ${process.env.NODE_ENV} | Terminal width: ${this.width} | Terminal height: ${this.height}`,
-      )
-    }
-    terminal('\n')
     terminal.gridMenu(
       items.map((entry) => entry.label),
       {

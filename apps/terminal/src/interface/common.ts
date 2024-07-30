@@ -24,3 +24,14 @@ export function getRoleColor(role: ChatResponse['role']) {
       return 'default'
   }
 }
+
+export function clear() {
+  try {
+    terminal.reset()
+    terminal.clear().eraseDisplay().moveTo(1, 1)
+    terminal.resetScrollingRegion()
+    terminal.scrollingRegion(0, terminal.height - 1)
+  } catch {
+    //ignore
+  }
+}

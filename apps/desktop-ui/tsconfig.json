@@ -37,7 +37,8 @@
   },
   "include": [
     "src",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "../../packages/common/src/utils/consts.ts"
   ],
   "exclude": [
     "./node_modules",

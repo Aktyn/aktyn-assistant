@@ -1,7 +1,9 @@
+import { isDev, wait } from '@aktyn-assistant/common'
 import {
   AI,
   AiProviderType,
   getUserConfigValue,
+  initLogger,
   logger,
   setUserConfigValue,
 } from '@aktyn-assistant/core'
@@ -15,11 +17,15 @@ import { showSpinner } from './loading'
 import { selectOption, selectYesOrNo } from './select'
 import { showWelcomeMessage } from './welcome'
 
+initLogger('terminal', { disableStdout: true })
+
 async function run() {
   terminal.reset()
   terminal.clear()
   toggleTerminateOnCtrlC(true)
   showWelcomeMessage()
+
+  const now = Date.now()
 
   let aiProvider = getUserConfigValue('selectedAiProvider')
   if (!aiProvider || !Object.values(AiProviderType).includes(aiProvider)) {
@@ -73,8 +79,14 @@ async function run() {
       "Initial setup doesn't require any further work. Initializing menu interface...",
     )
 
-    const terminalInterface = new TerminalInterface(ai)
+    if (!isDev()) {
+      const time = Date.now() - now
+      if (time < 3_000) {
+        await wait(3_000 - time)
+      }
+    }
 
+    const terminalInterface = new TerminalInterface(ai)
     terminalInterface.showInterface()
   } catch (error) {
     AI.notifyError(error, 'Setup error')

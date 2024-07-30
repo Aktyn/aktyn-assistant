@@ -62,3 +62,11 @@ export function formatBytes(bytes: number, decimals = 2) {
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
+
+export function trimString(str: string, maxLength: number, suffix = '...') {
+  if (str.length <= maxLength) {
+    return str
+  }
+
+  return str.slice(0, maxLength - suffix.length) + suffix
+}

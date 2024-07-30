@@ -31,4 +31,7 @@ export abstract class View {
       throw error
     }
   }
+  protected cancelSpeaking() {
+    this.ai.cancelSpeaking()
+  }
 }

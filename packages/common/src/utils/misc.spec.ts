@@ -1,4 +1,4 @@
-import { cmp, formatBytes, once, wait, zip } from './misc'
+import { cmp, formatBytes, once, trimString, wait, zip } from './misc'
 
 describe(once.name, () => {
   it('should return value', () => {
@@ -92,5 +92,16 @@ describe(formatBytes.name, () => {
     expect(formatBytes(0, 1)).toBe('0 Bytes')
     expect(formatBytes(1536, 1)).toBe('1.5 KB')
     expect(formatBytes(1337, 2)).toBe('1.31 KB')
+  })
+})
+
+describe(trimString.name, () => {
+  it('should trim string with suffix', () => {
+    expect(trimString('foo bar', 3, '...')).toBe('...')
+    expect(trimString('foo bar', 4, '...')).toBe('f...')
+    expect(trimString('foo bar', 5, '...')).toBe('fo...')
+    expect(trimString('foo bar', 6, '...')).toBe('foo...')
+    expect(trimString('foo bar', 7, '...')).toBe('foo bar')
+    expect(trimString('foo bar', 8, '...')).toBe('foo bar')
   })
 })

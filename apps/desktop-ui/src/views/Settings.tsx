@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { gttsLanguages } from '@aktyn-assistant/common'
 import { CardBody } from '@nextui-org/card'
 import { Checkbox } from '@nextui-org/checkbox'
 import { Input, Textarea } from '@nextui-org/input'
@@ -15,7 +16,6 @@ import { enqueueSnackbar } from 'notistack'
 import { GlassCard } from '../components/common/GlassCard'
 import { GlobalContext } from '../context/GlobalContextProvider'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
-import { gttsLanguages } from '../utils/consts'
 
 export const Settings = ({ in: active }: { in?: boolean }) => {
   const ref = useRef<HTMLDivElement>(null)

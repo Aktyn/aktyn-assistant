@@ -8,6 +8,7 @@ import { printError } from '../error'
 
 import {
   addNewLine,
+  clear,
   getRoleColor,
   showEscapeToReturnToMenuInfo,
 } from './common'
@@ -32,11 +33,13 @@ export class ChatView extends View {
       this.abortChatMessageInput()
       this.abortChatMessageInput = null
     }
+
+    super.cancelSpeaking()
   }
 
   open() {
     this.conversationId = uuidv4()
-    terminal.eraseDisplay()
+    clear()
     this.requestChatMessage()
   }
 
