@@ -71,7 +71,7 @@
 			"omxplayer",
 			"uddg"
 		],
-		"editor.foldingImportsByDefault": true,
+		"editor.foldingImportsByDefault": false,
 		"autoimport.showNotifications": false,
 		"autoimport.useSemiColon": false,
 		"typescript.preferences.preferTypeOnlyAutoImports": true

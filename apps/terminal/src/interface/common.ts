@@ -25,7 +25,7 @@ export function getRoleColor(role: ChatResponse['role']) {
   }
 }
 
-export function clear() {
+export function clearTerminal() {
   try {
     terminal.reset()
     terminal.clear().eraseDisplay().moveTo(1, 1)

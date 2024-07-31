@@ -3,8 +3,10 @@ import { logger, type AI } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 import { ChatView } from './chatView'
-import { clear } from './common'
+import { clearTerminal } from './common'
+import { InfoView } from './infoView'
 import { SettingsView } from './settingsView'
+import { ToolsView } from './toolsView'
 import { INTERFACE_VIEW, type View } from './view'
 
 const menu: { [key in INTERFACE_VIEW]: { type: key; label: string } } = {
@@ -12,9 +14,17 @@ const menu: { [key in INTERFACE_VIEW]: { type: key; label: string } } = {
     type: INTERFACE_VIEW.Chat,
     label: 'Chat',
   },
+  [INTERFACE_VIEW.Tools]: {
+    type: INTERFACE_VIEW.Tools,
+    label: 'Tools',
+  },
   [INTERFACE_VIEW.Settings]: {
     type: INTERFACE_VIEW.Settings,
     label: 'Settings',
+  },
+  [INTERFACE_VIEW.Info]: {
+    type: INTERFACE_VIEW.Info,
+    label: 'Info',
   },
 }
 
@@ -95,7 +105,7 @@ export class TerminalInterface {
   }
 
   private renderMenu() {
-    clear()
+    clearTerminal()
     terminal.moveTo(1, this.height - 2)
 
     const items = Object.values(menu)
@@ -126,8 +136,24 @@ export class TerminalInterface {
                 this.ai,
               )
               break
+            case INTERFACE_VIEW.Tools:
+              this.view = new ToolsView(
+                viewType,
+                this.handleError.bind(this),
+                this.closeView.bind(this),
+                this.ai,
+              )
+              break
             case INTERFACE_VIEW.Settings:
               this.view = new SettingsView(
+                viewType,
+                this.handleError.bind(this),
+                this.closeView.bind(this),
+                this.ai,
+              )
+              break
+            case INTERFACE_VIEW.Info:
+              this.view = new InfoView(
                 viewType,
                 this.handleError.bind(this),
                 this.closeView.bind(this),

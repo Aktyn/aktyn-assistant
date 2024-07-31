@@ -6,7 +6,7 @@ import { printError } from '../error'
 import { inputNumber, inputText } from '../input'
 import { selectOption, selectYesOrNo } from '../select'
 
-import { clear } from './common'
+import { clearTerminal } from './common'
 import { View } from './view'
 
 enum SETTINGS_ITEM {
@@ -44,7 +44,7 @@ export class SettingsView extends View {
   private aborted = false
 
   abortAsynchronousActions() {
-    this.aborted
+    this.aborted = true
   }
 
   open() {
@@ -52,7 +52,7 @@ export class SettingsView extends View {
   }
 
   private showSettings() {
-    clear()
+    clearTerminal()
 
     terminal.moveTo(1, terminal.height - 1)
     terminal.bold('Which settings do you want to change?')
@@ -160,7 +160,7 @@ export class SettingsView extends View {
   }
 
   private async selectIncludeHistory() {
-    clear()
+    clearTerminal()
     terminal.moveTo(1, terminal.height - 1)
 
     const includeHistory = await selectYesOrNo(
@@ -174,7 +174,7 @@ export class SettingsView extends View {
   }
 
   private async selectPreviousMessagesSentToAI() {
-    clear()
+    clearTerminal()
     terminal.moveTo(1, terminal.height - 1)
 
     // eslint-disable-next-line no-constant-condition
@@ -205,7 +205,7 @@ export class SettingsView extends View {
   }
 
   private async selectInitialSystemMessage() {
-    clear()
+    clearTerminal()
     terminal.moveTo(1, terminal.height - 1)
 
     const initialSystemMessage = await inputText(
@@ -222,7 +222,7 @@ export class SettingsView extends View {
   }
 
   private async selectReadChatResponses() {
-    clear()
+    clearTerminal()
     terminal.moveTo(1, terminal.height - 1)
 
     const readChatResponses = await selectYesOrNo(
@@ -236,7 +236,7 @@ export class SettingsView extends View {
   }
 
   private async selectTextToSpeechLanguage() {
-    clear()
+    clearTerminal()
     terminal.moveTo(1, terminal.height - 1)
 
     const entries = Object.entries(gttsLanguages)
