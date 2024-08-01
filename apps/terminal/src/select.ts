@@ -19,7 +19,7 @@ export function selectOption(
   }
 
   if (title) {
-    terminal.bold(`${title}\n`)
+    terminal.bold(title)
   }
 
   const commonOptions = {

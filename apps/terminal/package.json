@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@aktyn-assistant/common": "*",
 		"@aktyn-assistant/core": "*",
+		"open": "^10.1.0",
 		"terminal-kit": "^3.1.1",
 		"uuid": "^10.0.0"
 	},

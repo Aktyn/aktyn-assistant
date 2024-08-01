@@ -4,11 +4,21 @@ import path from 'path'
 import { logger } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
-import { clearTerminal, showEscapeToReturnToMenuInfo } from './common'
+import { selectOption } from '../select'
+
+import { clearTerminal } from './common'
 import { View } from './view'
 
+const authorSite = 'https://aktyn.github.io/'
+const projectRepo = 'https://github.com/Aktyn/aktyn-assistant'
+
 export class InfoView extends View {
-  abortAsynchronousActions() {}
+  private aborted = false
+
+  abortAsynchronousActions() {
+    this.aborted = true
+  }
+
   open() {
     clearTerminal()
 
@@ -16,10 +26,10 @@ export class InfoView extends View {
 
     const info = [
       { label: 'Author', value: 'Radosław Krajewski (Aktyn)' },
-      { label: 'Author website', value: 'https://aktyn.github.io/' },
+      { label: 'Author website', value: authorSite },
       {
         label: 'Project repo',
-        value: 'https://github.com/Aktyn/aktyn-assistant',
+        value: projectRepo,
       },
       { label: 'Version', value: getVersion() ?? '-' },
     ]
@@ -29,7 +39,37 @@ export class InfoView extends View {
       terminal.eraseLineAfter('\n')
     }
 
-    showEscapeToReturnToMenuInfo()
+    const options = [
+      'Open author website',
+      'Open project repo',
+      'Return to menu',
+    ]
+    terminal.eraseLineAfter('\n')
+    selectOption(options, 'Select action:', 'vertical', 2)
+      .then((choice) => {
+        if (this.aborted) {
+          return
+        }
+        const choiceIndex = options.indexOf(choice)
+        switch (choiceIndex) {
+          case 0:
+            import('open')
+              .then(({ default: open }) => open(authorSite))
+              .catch(logger.error)
+            this.open()
+            break
+          case 1:
+            import('open')
+              .then(({ default: open }) => open(projectRepo))
+              .catch(logger.error)
+            this.open()
+            break
+          case 2:
+            this.onReturnToMenu()
+            break
+        }
+      })
+      .catch(this.handleError)
   }
 }
 
