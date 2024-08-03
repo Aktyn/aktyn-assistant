@@ -196,7 +196,9 @@ export class VoiceChatView extends View {
 
   private async checkRhasspySilence() {
     if (!process.env.RHASSPY_SILENCE) {
-      printError({ title: 'Rhasspy silence is not available' })
+      printError({
+        title: 'RHASSPY_SILENCE is not set as environment variable',
+      })
       return false
     }
 
@@ -253,7 +255,9 @@ export class VoiceChatView extends View {
     showEscapeToReturnToMenuInfo(true)
 
     try {
-      const text = trimArbitrarySounds(await speechToText(filePath))
+      const transcribedText = await speechToText(filePath)
+      logger.info(`Transcribed audio file: "${transcribedText}"`)
+      const text = trimArbitrarySounds(transcribedText)
       transcribingSpinner.animate(false)
 
       if (this.aborted) {

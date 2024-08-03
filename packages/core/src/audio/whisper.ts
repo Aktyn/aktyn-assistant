@@ -14,7 +14,9 @@ const basePath = process.resourcesPath ?? path.join(__dirname, '..', '..')
 const whisperAssetsPath = path.join(basePath, 'assets', 'whisper')
 //TODO: support for other platforms
 const executablePath =
-  platform() !== 'win32' ? path.join(whisperAssetsPath, 'linux', 'main') : null
+  platform() !== 'win32'
+    ? path.join(whisperAssetsPath, 'linux', `main-${process.arch}`)
+    : null
 
 export class Whisper {
   private static _instance: Whisper | null = null
