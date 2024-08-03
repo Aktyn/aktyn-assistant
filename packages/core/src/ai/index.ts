@@ -5,7 +5,6 @@
 import {
   once,
   Stream,
-  wait,
   type ChatMessage,
   type ChatResponse,
   type Tool,
@@ -13,7 +12,7 @@ import {
 import { notify } from 'node-notifier'
 import { AuthenticationError, OpenAI } from 'openai'
 
-import { BufferedSpeech, speechToText } from '../audio'
+import { BufferedSpeech } from '../audio'
 import { getUserConfigValue } from '../user/user-config'
 import { logger } from '../utils'
 
@@ -300,22 +299,6 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     }
   }
 
-  async speechToText(filePath: string) {
-    const mockPaidRequests = getUserConfigValue('mockPaidRequests')
-
-    switch (this.providerType) {
-      case AiProviderType.openai:
-        if (mockPaidRequests) {
-          await wait(1000)
-          return 'Mocked speech to text result'
-        }
-
-        return await speechToText(filePath)
-      default:
-        throw throwUnsupportedProviderError(this.providerType)
-    }
-  }
-
   notifyError(error: unknown, title = `AI error (${this.providerType}`) {
     AI.notifyError(error, title)
   }
@@ -323,12 +306,15 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
   static notifyError(error: unknown, title?: string) {
     logger.error(error)
 
-    const errorObject = {
-      title:
-        title ??
-        (AI.instance ? `AI error (${AI.instance.providerType})` : 'AI error'),
-      message: error instanceof Error ? error.message : undefined,
+    try {
+      notify({
+        title:
+          title ??
+          (AI.instance ? `AI error (${AI.instance.providerType})` : 'AI error'),
+        message: error instanceof Error ? error.message : undefined,
+      })
+    } catch (error) {
+      logger.error(error)
     }
-    notify(errorObject)
   }
 }

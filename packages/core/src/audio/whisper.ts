@@ -71,6 +71,7 @@ export class Whisper {
     this.downloading = true
 
     logger.info(`Downloading Whisper model from ${Whisper.sourceURL}`)
+    //TODO: return downloading progress with callback and allow aborting
     const response = await fetch(Whisper.sourceURL)
     const buffer = await response.arrayBuffer()
 
@@ -100,7 +101,7 @@ export class Whisper {
           if (error) {
             reject(error)
           } else {
-            resolve(stdout)
+            resolve(stdout.trim())
           }
         },
       )

@@ -1,6 +1,6 @@
 import {
   logger,
-  type AI,
+  speechToText,
   type AudioRecorder,
   type ChatSource,
 } from '@aktyn-assistant/core'
@@ -11,7 +11,6 @@ import { getDefaultTrayIcon, getRecordingTrayIcon } from './window'
 
 export async function initVoiceCommands(
   recorder: AudioRecorder,
-  ai: AI,
   tray: Tray,
   quickChatContents: WebContents,
 ) {
@@ -30,7 +29,7 @@ export async function initVoiceCommands(
       logger.info('Recording voice command stopped. Processing...')
 
       const recordingFile = await recorder.end()
-      const transcribedVoiceCommand = await ai.speechToText(recordingFile)
+      const transcribedVoiceCommand = await speechToText(recordingFile)
       logger.info(`Transcribed voice command: "${transcribedVoiceCommand}"`)
 
       if (transcribedVoiceCommand.trim().length > 1) {

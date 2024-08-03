@@ -155,10 +155,10 @@ async function init() {
   ready = true
   win.webContents.send('ready')
 
-  await postInit(win, ai)
+  await postInit(win)
 }
 
-async function postInit(mainWindow: BrowserWindow, ai: AI) {
+async function postInit(mainWindow: BrowserWindow) {
   const quickChatWindow = await createQuickChatWindow()
   quickChatWindow.on('close', (event) => {
     event.preventDefault()
@@ -218,7 +218,6 @@ async function postInit(mainWindow: BrowserWindow, ai: AI) {
 
       initVoiceCommands(
         new AudioRecorder(),
-        ai,
         tray,
         quickChatWindow.webContents,
       ).catch(logger.error)

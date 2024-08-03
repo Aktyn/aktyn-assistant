@@ -15,7 +15,6 @@ export async function speechToText(filePath: string) {
   }
 
   logger.info(`Transcribing audio: ${filePath}`)
-
   return await whisper.transcribe(filePath).then(parseWhisperOutput)
 }
 

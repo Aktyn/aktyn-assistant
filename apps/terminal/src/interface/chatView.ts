@@ -4,19 +4,20 @@ import { terminal } from 'terminal-kit'
 import type { AnimatedText } from 'terminal-kit/Terminal'
 import { v4 as uuidv4 } from 'uuid'
 
-import { printError } from '../error'
-
+import {
+  handleChatResponseTimeout,
+  handleStreamedChatResponse,
+} from './chat-helpers'
 import {
   addNewLine,
   clearTerminal,
-  getRoleColor,
   showEscapeToReturnToMenuInfo,
 } from './common'
 import { View } from './view'
 
 export class ChatView extends View {
   private spinner: AnimatedText | null = null
-  private chatStream: InstanceType<typeof Stream<ChatResponse>> | null = null
+  private chatStream: Stream<ChatResponse> | null = null
   private abortChatMessageInput: (() => void) | null = null
   private conversationId = uuidv4()
 
@@ -98,50 +99,18 @@ export class ChatView extends View {
         this.chatStream = null
       }
       const stream = (this.chatStream = await this.sendChatMessage(message))
-      let first = true
-      for await (const chunk of stream) {
-        if (stream.controller.signal.aborted || !this.chatStream) {
-          break
-        }
-
-        if (first) {
-          this.spinner?.animate(false)
-          terminal.moveTo(1, terminal.height - 1).eraseLine()
-          terminal.moveTo(1, terminal.height - 2).eraseLine()
-          terminal.grey
-            .bold('Chat response:')
-            .grey(`\t(${new Date().toLocaleTimeString()})\t`)
-            .yellow.bold('Press ESC to return to menu\n')
-          first = false
-        }
-
-        terminal.color(getRoleColor(chunk.role), chunk.content)
-
-        if (chunk.finished) {
-          terminal.brightGreen.bold('\nResponse completed ✓')
-        }
-      }
+      await handleStreamedChatResponse(stream, {
+        onStart: () => this.spinner?.animate(false),
+      })
 
       if (stream.controller.signal.aborted || !this.chatStream) {
-        if (
-          this.chatStream &&
-          this.chatStream.controller.signal.reason === 'Timeout'
-        ) {
+        if (handleChatResponseTimeout(this.chatStream)) {
           this.spinner?.animate(false)
           this.spinner = null
 
-          terminal.moveTo(1, terminal.height - 1).eraseLine()
-          printError({
-            title: 'Chat response timeout',
-            message:
-              'Chat response took too long to complete. Please try again.',
-          })
-
-          for (let i = 0; i < 2; i++) {
-            addNewLine()
-          }
           this.requestChatMessage()
         }
+
         return
       }
 

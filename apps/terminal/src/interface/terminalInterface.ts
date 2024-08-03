@@ -1,4 +1,3 @@
-import { isDev } from '@aktyn-assistant/common'
 import { logger, type AI } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
@@ -8,24 +7,36 @@ import { InfoView } from './infoView'
 import { SettingsView } from './settingsView'
 import { ToolsView } from './toolsView'
 import { INTERFACE_VIEW, type View } from './view'
+import { VoiceChatView } from './voiceChatView'
 
-const menu: { [key in INTERFACE_VIEW]: { type: key; label: string } } = {
+const menu = {
   [INTERFACE_VIEW.Chat]: {
     type: INTERFACE_VIEW.Chat,
     label: 'Chat',
+    Class: ChatView,
+  },
+  [INTERFACE_VIEW.VoiceChat]: {
+    type: INTERFACE_VIEW.VoiceChat,
+    label: 'Voice chat',
+    Class: VoiceChatView,
   },
   [INTERFACE_VIEW.Tools]: {
     type: INTERFACE_VIEW.Tools,
     label: 'Tools',
+    Class: ToolsView,
   },
   [INTERFACE_VIEW.Settings]: {
     type: INTERFACE_VIEW.Settings,
     label: 'Settings',
+    Class: SettingsView,
   },
   [INTERFACE_VIEW.Info]: {
     type: INTERFACE_VIEW.Info,
     label: 'Info',
+    Class: InfoView,
   },
+} as const satisfies {
+  [key in INTERFACE_VIEW]: { type: key; label: string; Class: typeof View }
 }
 
 export class TerminalInterface {
@@ -48,11 +59,9 @@ export class TerminalInterface {
       }
     })
 
-    if (isDev()) {
-      logger.info(
-        `Environment: ${process.env.NODE_ENV} | Terminal width: ${this.width} | Terminal height: ${this.height}`,
-      )
-    }
+    logger.info(
+      `Environment: ${process.env.NODE_ENV} | Terminal width: ${this.width} | Terminal height: ${this.height}`,
+    )
   }
 
   private closeView() {
@@ -127,45 +136,15 @@ export class TerminalInterface {
 
         if (typeof response.selectedIndex === 'number') {
           const viewType = items[response.selectedIndex].type
-          switch (viewType) {
-            case INTERFACE_VIEW.Chat:
-              this.view = new ChatView(
-                viewType,
-                this.handleError.bind(this),
-                noop,
-                this.ai,
-              )
-              break
-            case INTERFACE_VIEW.Tools:
-              this.view = new ToolsView(
-                viewType,
-                this.handleError.bind(this),
-                this.closeView.bind(this),
-                this.ai,
-              )
-              break
-            case INTERFACE_VIEW.Settings:
-              this.view = new SettingsView(
-                viewType,
-                this.handleError.bind(this),
-                this.closeView.bind(this),
-                this.ai,
-              )
-              break
-            case INTERFACE_VIEW.Info:
-              this.view = new InfoView(
-                viewType,
-                this.handleError.bind(this),
-                this.closeView.bind(this),
-                this.ai,
-              )
-              break
-          }
+          this.view = new menu[viewType].Class(
+            viewType,
+            this.handleError.bind(this),
+            this.closeView.bind(this),
+            this.ai,
+          )
         }
         this.showInterface()
       },
     )
   }
 }
-
-const noop = () => void 0

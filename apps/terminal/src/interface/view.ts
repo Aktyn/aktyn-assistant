@@ -3,7 +3,7 @@ import { getUserConfigValue, type AI } from '@aktyn-assistant/core'
 
 export enum INTERFACE_VIEW {
   Chat = 'chat',
-  // VoiceChat = 'voice-chat', //TODO: implement (remember to download whisper model)
+  VoiceChat = 'voice-chat',
   Tools = 'tools',
   Settings = 'settings',
   Info = 'info',
