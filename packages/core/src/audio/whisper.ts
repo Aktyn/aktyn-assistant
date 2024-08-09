@@ -34,6 +34,7 @@ export class Whisper {
 
   private static readonly destinationPath = path.join(
     getDataDirectory(),
+    'models',
     modelFileName,
   )
   private static readonly sourceURL = `${huggingFaceUrl}/resolve/main/${modelFileName}`
@@ -60,6 +61,8 @@ export class Whisper {
       )
       return false
     }
+
+    fs.mkdirSync(path.dirname(Whisper.destinationPath), { recursive: true })
 
     try {
       if (fs.existsSync(Whisper.destinationPath)) {

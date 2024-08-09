@@ -72,7 +72,7 @@
 			"omxplayer",
 			"pkill",
 			"Rhasspy",
-			"rhasspysilence",
+			"rhasspywhisper",
 			"uddg"
 		],
 		"editor.foldingImportsByDefault": false,

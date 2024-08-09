@@ -12,10 +12,9 @@ import {
 } from '@aktyn-assistant/common'
 import {
   getAudioOutputDirectory,
-  initWhisper,
+  getDataDirectory,
   logger,
   removeOutdatedAudioFiles,
-  speechToText,
 } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 import type { AnimatedText } from 'terminal-kit/Terminal'
@@ -23,7 +22,6 @@ import kill from 'tree-kill'
 import { v4 as uuidv4 } from 'uuid'
 
 import { printError } from '../error'
-import { showSpinner } from '../loading'
 
 import {
   handleChatResponseTimeout,
@@ -36,10 +34,10 @@ export class VoiceChatView extends View {
   private aborted = false
   private secondarySpinner: { stop: () => void } | null = null
   private spinner: AnimatedText | null = null
-  private rhasspySilencePath: string | null = null
+  private rhasspyWhisperPath: string | null = null
   private rhasspyProcess: ChildProcess | null = null
   private killRhasspyProcessListener = this.killRhasspyProcess.bind(this)
-  private voiceCommandsQueue: Array<string> = []
+  private transcribedVoiceCommandsQueue: Array<string> = []
   private chatStream: Stream<ChatResponse> | null = null
   private conversationId = uuidv4()
 
@@ -101,26 +99,16 @@ export class VoiceChatView extends View {
     terminal.eraseLineAfter('\n')
     terminal.eraseLineAfter('\n')
 
-    const success = await this.checkRhasspySilence()
+    const success = await this.checkRhasspyWhisper()
     if (!success) {
       return
-    }
-
-    try {
-      await this.initWhisper()
-    } catch (error) {
-      this.secondarySpinner?.stop()
-      this.secondarySpinner = null
-
-      logger.error(error, 'Whisper initialization error')
-      printError({ title: 'Whisper initialization error' })
     }
 
     await this.startVoiceChat().catch(this.handleError)
   }
 
   private async startVoiceChat() {
-    assert(!!this.rhasspySilencePath, 'Rhasspy silence path is not set')
+    assert(!!this.rhasspyWhisperPath, 'Rhasspy whisper path is not set')
 
     clearTerminal()
     terminal.moveTo(1, terminal.height - 1)
@@ -129,12 +117,13 @@ export class VoiceChatView extends View {
     showEscapeToReturnToMenuInfo(true)
 
     removeOutdatedAudioFiles()
-    const outputDir = getAudioOutputDirectory()
-    const command = `arecord -r 16000 -f S16_LE -c 1 -t raw | ${this.rhasspySilencePath} --sensitivity 1 --split-dir ${outputDir} --trim-silence --speech-seconds 1 --min-seconds 2 --before-seconds 1 --silence-seconds 3 --chunk-size 30 --output-type none`
+    const audioOutputDir = getAudioOutputDirectory()
+    const modelsDir = path.join(getDataDirectory(), 'models')
+    const command = `arecord -r 16000 -f S16_LE -c 1 -t raw | ${this.rhasspyWhisperPath} --sensitivity 1 --trim-silence --speech-seconds 1 --min-seconds 2 --max-seconds 30 --before-seconds 2 --silence-seconds 3 --chunk-size 30 --output-type transcription --audio-output-dir "${audioOutputDir}" --models-dir "${modelsDir}"`
 
     if (os.platform() !== 'win32') {
       try {
-        execSync('pkill -f "python3 -m rhasspysilence"', {
+        execSync('pkill -f "python3 -m rhasspywhisper"', {
           stdio: 'ignore',
           encoding: 'utf8',
         })
@@ -146,6 +135,9 @@ export class VoiceChatView extends View {
         // noop
       }
     }
+
+    fs.mkdirSync(getAudioOutputDirectory(), { recursive: true })
+    fs.mkdirSync(modelsDir, { recursive: true })
 
     logger.info(`Starting rhasspy process: ${command}`)
     //TODO: consider muting audio or pausing rhasspy process while assistant is speaking
@@ -168,22 +160,18 @@ export class VoiceChatView extends View {
       if (!stream || !(stream instanceof Readable)) {
         continue
       }
-      stream.on('data', (data) => {
-        data = data.toString()
+      stream.on('data', (rhasspyWhisperData) => {
+        const data = rhasspyWhisperData.toString()
+        logger.info({ rhasspyWhisperOutput: data })
 
-        if (!data) {
+        const prefix = 'INFO:rhasspy-whisper:'
+        const prefixIndex = data.indexOf(prefix)
+        if (!data || prefixIndex === -1) {
           return
         }
-        const generatedFilePathIndex = data.indexOf(outputDir)
-        if (generatedFilePathIndex === -1) {
-          return
-        }
-        const generatedFilePath = data.substring(generatedFilePathIndex).trim()
-        if (
-          generatedFilePath.endsWith('.wav') &&
-          fs.existsSync(generatedFilePath)
-        ) {
-          this.queueVoiceCommand(generatedFilePath)
+        const transcription = data.substring(prefixIndex + prefix.length).trim()
+        if (transcription.length > 0) {
+          this.queueTranscribedVoiceCommand(transcription)
         }
       })
     }
@@ -194,25 +182,32 @@ export class VoiceChatView extends View {
     process.addListener('exit', this.killRhasspyProcessListener)
   }
 
-  private async checkRhasspySilence() {
-    if (!process.env.RHASSPY_SILENCE) {
+  private async checkRhasspyWhisper() {
+    if (!process.env.RHASSPY_WHISPER) {
       printError({
-        title: 'RHASSPY_SILENCE is not set as environment variable',
+        title: 'RHASSPY_WHISPER is not set as environment variable',
       })
       return false
     }
 
-    this.rhasspySilencePath = resolveHome(process.env.RHASSPY_SILENCE)
+    this.rhasspyWhisperPath = resolveHome(process.env.RHASSPY_WHISPER)
+
+    if (this.rhasspyWhisperPath.includes(' ')) {
+      printError({
+        title: `RHASSPY_WHISPER contains spaces (${this.rhasspyWhisperPath})`,
+      })
+      return false
+    }
 
     try {
-      execSync(`${this.rhasspySilencePath} --help`, {
+      execSync(`${this.rhasspyWhisperPath} --help`, {
         stdio: 'ignore',
         encoding: 'utf8',
       })
     } catch (error) {
       printError({
-        title: 'Rhasspy silence error',
-        message: 'Provided path is not valid rhasspy silence executable/script',
+        title: 'Rhasspy whisper error',
+        message: 'Provided path is not valid rhasspy whisper executable/script',
       })
       return false
     }
@@ -220,51 +215,21 @@ export class VoiceChatView extends View {
     return true
   }
 
-  private async initWhisper() {
-    this.secondarySpinner = await showSpinner(
-      'Initializing Whisper (this may take a while) ...',
-    )
-    const supported = await initWhisper()
-    if (this.aborted) {
+  private async processNextTranscribedVoiceCommand(): Promise<void> {
+    const transcribedText = this.transcribedVoiceCommandsQueue.at(0)
+    if (!transcribedText || this.aborted) {
       return
     }
-
-    this.secondarySpinner?.stop()
-    this.secondarySpinner = null
-
-    if (!supported) {
-      logger.warn('Whisper is not supported on this platform')
-      printError({ title: 'Whisper is not supported on this platform' })
-      return
-    }
-    logger.info('Whisper initialized')
-    terminal.bold.green('Whisper initialized')
-  }
-
-  private async processNextCommand(): Promise<void> {
-    const filePath = this.voiceCommandsQueue.at(0)
-    if (!filePath || this.aborted) {
-      return
-    }
-    logger.info(`Processing voice command audio file: ${filePath}`)
-
-    terminal.eraseLine('\n').cyan(`Transcribing ${path.basename(filePath)} `)
-    const transcribingSpinner = await terminal.spinner('dotSpinner')
-
-    terminal.eraseLineAfter('\n')
-    showEscapeToReturnToMenuInfo(true)
 
     try {
-      const transcribedText = await speechToText(filePath)
-      logger.info(`Transcribed audio file: "${transcribedText}"`)
+      logger.info(`Transcribed voice command: "${transcribedText}"`)
       const text = trimArbitrarySounds(transcribedText)
-      transcribingSpinner.animate(false)
 
       if (this.aborted) {
         return
       }
       if (!text.length) {
-        terminal.eraseLine('\n').yellow(`Skipping empty voice command`)
+        terminal.eraseLine('\n').yellow(`Skipping empty transcription`)
       } else {
         terminal.eraseLine('\n').cyan(`Transcribed voice command: "${text}"`)
       }
@@ -280,28 +245,10 @@ export class VoiceChatView extends View {
       }
     } catch (error) {
       logger.error(error)
-      transcribingSpinner.animate(false)
     }
 
-    const processedFile = this.voiceCommandsQueue.shift()
-    if (processedFile) {
-      try {
-        logger.info(
-          `Removing processed voice command audio file: ${processedFile}`,
-        )
-        fs.unlinkSync(processedFile)
-      } catch (error) {
-        logger.error(error)
-      }
-    }
-    return await this.processNextCommand()
-  }
-
-  private queueVoiceCommand(filePath: string) {
-    this.voiceCommandsQueue.push(filePath)
-    if (this.voiceCommandsQueue.length === 1) {
-      this.processNextCommand().catch(this.handleError)
-    }
+    this.transcribedVoiceCommandsQueue.shift()
+    return await this.processNextTranscribedVoiceCommand()
   }
 
   private async processChatMessage(message: ChatMessage) {
@@ -352,6 +299,13 @@ export class VoiceChatView extends View {
       printPostChatMessage()
     } catch (error) {
       this.handleError(error)
+    }
+  }
+
+  private queueTranscribedVoiceCommand(transcription: string) {
+    this.transcribedVoiceCommandsQueue.push(transcription)
+    if (this.transcribedVoiceCommandsQueue.length === 1) {
+      this.processNextTranscribedVoiceCommand().catch(this.handleError)
     }
   }
 }
