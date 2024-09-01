@@ -10,7 +10,7 @@ __metadata:
   resolution: "@aktyn-assistant-tools/assistant@workspace:tools/assistant"
   dependencies:
     "@aktyn-assistant/common": "npm:*"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@typescript-eslint/eslint-plugin": "npm:^7.15.0"
     "@typescript-eslint/parser": "npm:^7.15.0"
     cheerio: "npm:^1.0.0-rc.12"
@@ -33,7 +33,7 @@ __metadata:
   resolution: "@aktyn-assistant-tools/coding-assistant@workspace:tools/coding-assistant"
   dependencies:
     "@aktyn-assistant/common": "npm:*"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@typescript-eslint/eslint-plugin": "npm:^7.15.0"
     "@typescript-eslint/parser": "npm:^7.15.0"
     cross-env: "npm:^7.0.3"
@@ -54,7 +54,7 @@ __metadata:
   resolution: "@aktyn-assistant-tools/web-search@workspace:tools/web-search"
   dependencies:
     "@aktyn-assistant/common": "npm:*"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@typescript-eslint/eslint-plugin": "npm:^7.15.0"
     "@typescript-eslint/parser": "npm:^7.15.0"
     cheerio: "npm:^1.0.0-rc.12"
@@ -76,7 +76,7 @@ __metadata:
   resolution: "@aktyn-assistant/common@workspace:packages/common"
   dependencies:
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@typescript-eslint/eslint-plugin": "npm:^7.15.0"
     "@typescript-eslint/parser": "npm:^7.15.0"
     eslint: "npm:^8.57.0"
@@ -102,7 +102,7 @@ __metadata:
     "@aktyn-assistant-tools/web-search": "npm:*"
     "@aktyn-assistant/common": "npm:*"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@types/node-notifier": "npm:^8.0.5"
     "@types/pino-multi-stream": "npm:^5.1.6"
     "@types/uuid": "npm:^10.0.0"
@@ -162,7 +162,7 @@ __metadata:
     "@nextui-org/theme": "npm:^2.2.6"
     "@nextui-org/tooltip": "npm:^2.0.36"
     "@types/animejs": "npm:^3.1.12"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@types/path-browserify": "npm:^1.0.2"
     "@types/prismjs": "npm:^1.26.4"
     "@types/react": "npm:^18.3.3"
@@ -202,7 +202,7 @@ __metadata:
     "@aktyn-assistant/common": "npm:*"
     "@aktyn-assistant/core": "npm:*"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@types/terminal-kit": "npm:^2.5.6"
     "@types/uuid": "npm:^10.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^7.15.0"
@@ -6823,7 +6823,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.14.9, @types/node@npm:^20.9.0":
+"@types/node@npm:*, @types/node@npm:^20.9.0":
   version: 20.14.9
   resolution: "@types/node@npm:20.14.9"
   dependencies:
@@ -6838,6 +6838,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: 10c0/a9eb33bc093beba6bd5d4e839de7d1d1f496cd7e741c2f6c7161318dba0f37227bb25d8306907194992488d6c59a7363a419d72298549483d33402227a2d435b
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.5.2":
+  version: 22.5.2
+  resolution: "@types/node@npm:22.5.2"
+  dependencies:
+    undici-types: "npm:~6.19.2"
+  checksum: 10c0/624a7fd76229eacc6c158eb3b9afd55b811d7f01976c5f92c630d5b9d47047cc218928c343988484a165ac400e5eb6fe70ea300fc7242deeb0e920c7724290f6
   languageName: node
   linkType: hard
 
@@ -7848,7 +7857,7 @@ __metadata:
     "@types/auto-launch": "npm:^5.0.5"
     "@types/electron-squirrel-startup": "npm:^1.0.2"
     "@types/jest": "npm:^29.5.12"
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^22.5.2"
     "@types/prismjs": "npm:^1.26.4"
     "@types/showdown": "npm:^2.0.6"
     "@typescript-eslint/eslint-plugin": "npm:^7.15.0"
@@ -22366,6 +22375,13 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.19.2":
+  version: 6.19.8
+  resolution: "undici-types@npm:6.19.8"
+  checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
   languageName: node
   linkType: hard
 
