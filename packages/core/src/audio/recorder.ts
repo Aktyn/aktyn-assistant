@@ -6,7 +6,8 @@ import { assert, once } from '@aktyn-assistant/common'
 // eslint-disable-next-line import/order
 import * as ffmetadata from 'ffmetadata'
 
-//@ts-expect-error ignore error since only type is imported here
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore ignore error since only type is imported here
 import type Mic from 'node-mic'
 import { v4 as uuidv4 } from 'uuid'
 

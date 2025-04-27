@@ -1,7 +1,6 @@
 import {
   type PropsWithChildren,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -14,12 +13,10 @@ import { Select, SelectItem } from '@nextui-org/select'
 import anime from 'animejs'
 import { enqueueSnackbar } from 'notistack'
 import { GlassCard } from '../components/common/GlassCard'
-import { GlobalContext } from '../context/GlobalContextProvider'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
 
 export const Settings = ({ in: active }: { in?: boolean }) => {
   const ref = useRef<HTMLDivElement>(null)
-  const { initData } = useContext(GlobalContext)
 
   const [models, setModels] = useState<
     Record<'chatModels' | 'imageModels', string[]>
@@ -110,7 +107,6 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
     }
   }
 
-  initData?.autoLaunchEnabled
   const toggleLaunchOnStartup = async (checked: boolean) => {
     setLaunchOnStartup(checked, true)
 

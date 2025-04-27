@@ -10,7 +10,8 @@
     "declarationMap": true,
     "skipLibCheck": true,
     "lib": [
-      "ESNext"
+      "ESNext",
+      "DOM"
     ],
     "allowJs": false,
     "outDir": "./dist",

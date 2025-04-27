@@ -26,11 +26,12 @@ const toolSchema: ToolSchema = {
     },
     required: ['url_or_query'],
   },
+  // strict: true, //? would be nice to test it
 }
 
-async function openSite(data: { url_or_query: string }) {
-  const { url_or_query } = data
+type OpenSiteParameters = { url_or_query: string }
 
+async function openSite({ url_or_query }: OpenSiteParameters) {
   try {
     const url = await getUrl(url_or_query)
 
@@ -71,4 +72,4 @@ function resolveChildProcess(child: ChildProcess, url: string) {
 export const openSiteTool = {
   schema: toolSchema,
   function: openSite,
-} satisfies Tool<{ url_or_query: string }>
+} satisfies Tool<OpenSiteParameters>

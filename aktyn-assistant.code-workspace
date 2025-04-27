@@ -24,15 +24,11 @@
 			"path": "./apps/desktop-ui"
 		},
 		{
-			"name": "Weather tool",
-			"path": "./tools/weather"
-		},
-		{
 			"name": "Web search tool",
 			"path": "./tools/web-search"
 		},
 		{
-			"name": "Assistant tool",
+			"name": "Assistant tools",
 			"path": "./tools/assistant"
 		},
 		{
@@ -51,6 +47,7 @@
 		"jest.runMode": "watch",
 		"cSpell.words": [
 			"afplay",
+			"aktyn",
 			"aplay",
 			"arecord",
 			"Audic",
@@ -71,9 +68,11 @@
 			"nodewhisper",
 			"omxplayer",
 			"pkill",
+			"Radek",
 			"Rhasspy",
 			"rhasspywhisper",
-			"uddg"
+			"uddg",
+			"visualcompletion"
 		],
 		"editor.foldingImportsByDefault": false,
 		"autoimport.showNotifications": false,

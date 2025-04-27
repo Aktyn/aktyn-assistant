@@ -35,7 +35,7 @@ import {
 initLogger('desktop')
 
 if (!isDev()) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { updateElectronApp } = require('update-electron-app')
   updateElectronApp()
 }

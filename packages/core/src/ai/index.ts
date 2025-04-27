@@ -10,7 +10,7 @@ import {
   type Tool,
 } from '@aktyn-assistant/common'
 import { notify } from 'node-notifier'
-import { AuthenticationError, OpenAI } from 'openai'
+import { AuthenticationError, type OpenAI } from 'openai'
 
 import { BufferedSpeech } from '../audio'
 import { getUserConfigValue } from '../user/user-config'
@@ -56,15 +56,9 @@ function throwUnsupportedProviderError(provider: AiProviderType) {
   throw new UnsupportedProviderError(provider)
 }
 
-const AiProviderClass = {
-  [AiProviderType.openai]: OpenAI,
-} as const satisfies {
-  [key in AiProviderType]: InstanceType<ObjectConstructor>
+type AiProviderClasses = {
+  [key in AiProviderType]: OpenAI
 }
-
-type GetProviderClass<ProviderType extends AiProviderType> = InstanceType<
-  (typeof AiProviderClass)[ProviderType]
->
 
 type InitType<ProviderType extends AiProviderType> = {
   providerType: ProviderType
@@ -80,7 +74,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
   private constructor(
     private readonly providerType: ProviderType,
-    private readonly providerClient: GetProviderClass<ProviderType>,
+    private readonly providerClient: AiProviderClasses[ProviderType],
   ) {
     this.loadTools()
   }
@@ -88,7 +82,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
   private static async getProviderClient<ProviderType extends AiProviderType>(
     init: InitType<ProviderType>,
     previousAttemptFailed = false,
-  ): Promise<GetProviderClass<ProviderType>> {
+  ): Promise<AiProviderClasses[ProviderType]> {
     try {
       let apiKey = loadProviderApiKey(init.providerType)
       while (!apiKey) {
@@ -103,7 +97,6 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
       try {
         switch (init.providerType) {
           case AiProviderType.openai:
-            //@ts-expect-error Typescript reports type mismatch between return type of OpenAiAPI.getOpenAiClient and this function
             return await OpenAiAPI.getOpenAiClient(apiKey)
           default:
             throw throwUnsupportedProviderError(init.providerType)

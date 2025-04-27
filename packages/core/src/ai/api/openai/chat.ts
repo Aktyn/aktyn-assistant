@@ -120,6 +120,7 @@ export async function performChatQuery(
             name: schema.functionName,
             description: schema.description,
             parameters: schema.parameters,
+            strict: schema.strict ?? false,
           },
         }))
       : undefined,

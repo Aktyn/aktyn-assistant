@@ -43,6 +43,7 @@ export type ImportedToolInfo = ToolInfoBase & {
 }
 export type ToolInfo = BuiltInToolInfo | ImportedToolInfo
 
+//TODO: implement
 const builtInTools = [...AssistantTool(), ...WebSearchTool()] as Array<
   Tool<object>
 >
@@ -52,7 +53,7 @@ const getToolsDirectoryPath = once(() => path.join(getDataDirectory(), 'tools'))
 function loadToolsFromExternalSource(indexPath: string) {
   const tools: Tool[] = []
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { default: index } = require(indexPath)
   if (typeof index !== 'function') {
     throw new Error(

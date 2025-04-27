@@ -204,7 +204,7 @@ export class VoiceChatView extends View {
         stdio: 'ignore',
         encoding: 'utf8',
       })
-    } catch (error) {
+    } catch {
       printError({
         title: 'Rhasspy whisper error',
         message: 'Provided path is not valid rhasspy whisper executable/script',
