@@ -1,2 +1,2 @@
-export * from './chat'
+export type * from './chat'
 export * from './tool'

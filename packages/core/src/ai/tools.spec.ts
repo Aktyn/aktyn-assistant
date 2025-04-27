@@ -34,18 +34,15 @@ vi.mock('fs', () => ({
   },
 }))
 
-vi.mock(
-  '/mock/tools/foo/bar.js',
-  () => ({
-    __esModule: true,
-    default: () => [
-      {
-        schema: mockSchema,
-        function: vi.fn(),
-      },
-    ],
-  }),
-)
+vi.mock('/mock/tools/foo/bar.js', () => ({
+  __esModule: true,
+  default: () => [
+    {
+      schema: mockSchema,
+      function: vi.fn(),
+    },
+  ],
+}))
 
 describe(getActiveTools.name, () => {
   it('should return list of available tools', () => {

@@ -18,4 +18,4 @@ export default defineConfig({
     include: ['**/*.spec.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/out/**'],
   },
-}) 
+})

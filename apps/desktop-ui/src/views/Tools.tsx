@@ -3,11 +3,11 @@ import { mdiPlusBox } from '@mdi/js'
 import Icon from '@mdi/react'
 import { Button } from '@nextui-org/button'
 import { CardBody, CardHeader } from '@nextui-org/card'
-import anime from 'animejs'
 import { GlassCard } from '../components/common/GlassCard'
 import { AddToolDialog } from '../components/tools/AddToolDialog'
 import { ToolsList } from '../components/tools/ToolsList'
 import { useCancellablePromise } from '../hooks/useCancellablePromise'
+import { animate, stagger } from 'animejs'
 
 type ToolInfo = Awaited<
   ReturnType<typeof window.electronAPI.loadToolsInfo>
@@ -38,16 +38,15 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
       return
     }
 
-    const animation = anime({
-      targets: container.querySelectorAll(':scope > *'),
+    const animation = animate(container.querySelectorAll(':scope > *'), {
       easing: 'spring(1, 80, 10, 0)',
       scale: active ? 1 : 0.618,
-      rotate: active ? 0 : anime.stagger(['15deg', '-15deg']),
-      delay: anime.stagger(200, { from: 'first' }),
+      rotate: active ? 0 : stagger(['15deg', '-15deg']),
+      delay: stagger(200, { from: 'first' }),
     })
 
     return () => {
-      anime.remove(animation)
+      animation.cancel()
     }
   }, [active])
 

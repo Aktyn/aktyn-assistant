@@ -3,6 +3,7 @@ node_modules/
 .vscode/
 .env
 .directory
+*.tsbuildinfo
 
 yarn-error.log
 .yarn/*

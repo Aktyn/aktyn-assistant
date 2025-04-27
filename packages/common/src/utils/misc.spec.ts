@@ -1,4 +1,5 @@
 import { vi, describe, it, expect } from 'vitest'
+
 import { cmp, formatBytes, once, trimString, wait, zip } from './misc'
 
 describe(once.name, () => {
