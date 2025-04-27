@@ -8,9 +8,9 @@
 		"build": "tsc -p ./tsconfig.json",
 		"dev": "nodemon --watch ./src --exec \"yarn run build\" --ignore lib/ -e ts",
 		"setup:whisper": "node ./scripts/setupWhisper.js",
-		"test": "jest",
-		"test:ci": "jest --collectCoverage",
-		"test:watch": "jest --watch",
+		"test": "vitest run",
+		"test:ci": "vitest run --coverage",
+		"test:watch": "vitest",
 		"format": "prettier --write src/**/*{.ts,.tsx}",
 		"lint": "eslint src/**/*.ts --fix",
 		"typecheck": "tsc --noEmit --skipLibCheck"
@@ -32,24 +32,24 @@
 		"uuid": "^10.0.0"
 	},
 	"devDependencies": {
-		"@types/jest": "^29.5.12",
 		"@types/node": "^22.2.0",
 		"@types/node-notifier": "^8.0.5",
 		"@types/pino-multi-stream": "^5.1.6",
 		"@types/uuid": "^10.0.0",
 		"@typescript-eslint/eslint-plugin": "^8.0.1",
 		"@typescript-eslint/parser": "^8.0.1",
+		"@vitest/coverage-v8": "^2.0.4",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-import": "^2.29.1",
 		"eslint-plugin-prettier": "^5.2.1",
-		"jest": "^29.7.0",
 		"nodemon": "^3.1.4",
 		"prettier": "^3.3.3",
 		"prettier-eslint": "^16.3.0",
-		"ts-jest": "^29.2.4",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.5.4"
+		"typescript": "^5.5.4",
+		"vite-tsconfig-paths": "^4.3.2",
+		"vitest": "^2.0.4"
 	}
 }

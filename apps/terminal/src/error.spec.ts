@@ -1,11 +1,12 @@
+import { vi, describe, it, expect } from 'vitest'
 import { printError } from './error'
 
 describe(printError.name, () => {
   it('should print error', () => {
     const stdoutWrite = process.stdout.write
     const stderrWrite = process.stderr.write
-    process.stdout.write = jest.fn()
-    process.stderr.write = jest.fn()
+    process.stdout.write = vi.fn() as any // Type assertion needed for mock
+    process.stderr.write = vi.fn() as any // Type assertion needed for mock
 
     printError({
       title: 'Test error',

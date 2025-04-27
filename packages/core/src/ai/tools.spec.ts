@@ -1,3 +1,4 @@
+import { vi, describe, it, expect } from 'vitest'
 import type { ToolSchema } from '@aktyn-assistant/common'
 
 import { getActiveTools, loadToolsInfo } from './tools'
@@ -9,15 +10,15 @@ const mockSchema: ToolSchema = {
   parameters: {},
 }
 
-jest.mock('../utils', () => ({
+vi.mock('../utils', () => ({
   getDataDirectory: () => '/mock',
 }))
 
-jest.mock('fs', () => ({
-  writeFileSync: jest.fn(),
-  mkdirSync: jest.fn(),
-  existsSync: jest.fn((filePath) => filePath.endsWith('index.json')),
-  unlinkSync: jest.fn(),
+vi.mock('fs', () => ({
+  writeFileSync: vi.fn(),
+  mkdirSync: vi.fn(),
+  existsSync: vi.fn((filePath: string) => filePath.endsWith('index.json')),
+  unlinkSync: vi.fn(),
   readFileSync: (filePath: string) => {
     if (filePath.endsWith('index.json')) {
       return JSON.stringify([
@@ -33,18 +34,17 @@ jest.mock('fs', () => ({
   },
 }))
 
-jest.mock(
+vi.mock(
   '/mock/tools/foo/bar.js',
   () => ({
     __esModule: true,
     default: () => [
       {
         schema: mockSchema,
-        function: jest.fn(),
+        function: vi.fn(),
       },
     ],
   }),
-  { virtual: true },
 )
 
 describe(getActiveTools.name, () => {

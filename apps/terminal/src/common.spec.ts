@@ -1,23 +1,25 @@
-const processExit = jest.fn()
+import { vi, describe, it, expect, afterEach } from 'vitest'
+
+const processExit = vi.fn()
 const keyEvents: any[] = []
-const on = jest.fn().mockImplementation((event, callback) => {
+const on = vi.fn().mockImplementation((event: string, callback: Function) => {
   if (event === 'key') {
     keyEvents.push({ event, callback })
   }
 })
-const off = jest.fn().mockImplementation((event, callback) => {
+const off = vi.fn().mockImplementation((event: string, callback: Function) => {
   if (event === 'key') {
     keyEvents.splice(keyEvents.indexOf({ event, callback }), 1)
   }
 })
 
-jest.mock('terminal-kit', () => ({
+vi.mock('terminal-kit', () => ({
   terminal: {
     processExit,
     on,
     off,
     width: 64,
-    defaultColor: jest.fn(),
+    defaultColor: vi.fn(),
   },
 }))
 

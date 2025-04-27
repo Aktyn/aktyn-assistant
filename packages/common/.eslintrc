@@ -23,8 +23,7 @@
   ],
   "root": true,
   "env": {
-    "node": true,
-    "jest": true
+    "node": true
   },
   "settings": {
     "import/parsers": {

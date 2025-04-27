@@ -1,9 +1,11 @@
-const speakMock = jest.fn()
-jest.mock('./textToSpeech', () => ({
+import { vi, describe, it, expect, beforeEach } from 'vitest'
+
+const speakMock = vi.fn()
+vi.mock('./textToSpeech', () => ({
   speak: speakMock,
 }))
-jest.mock('../user', () => ({
-  getUserConfigValue: jest.fn().mockReturnValue('en-us'),
+vi.mock('../user', () => ({
+  getUserConfigValue: vi.fn().mockReturnValue('en-us'),
 }))
 
 import { wait } from '@aktyn-assistant/common'

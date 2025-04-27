@@ -19,9 +19,9 @@
     "start:legacy": "electron ./dist/index.js",
     "start": "electron-forge start",
     "dev": "cross-env NODE_ENV=dev nodemon --legacy-watch ./src/**/* --exec \"yarn run build && yarn start:legacy || exit 1\" -e ts,html",
-    "test": "jest --passWithNoTests",
-    "test:ci": "jest --collectCoverage --passWithNoTests",
-    "test:watch": "jest --watch",
+    "test": "vitest run --passWithNoTests",
+    "test:ci": "vitest run --coverage --passWithNoTests",
+    "test:watch": "vitest --watch",
     "format": "prettier --write src/**/*{.ts,.tsx}",
     "lint": "eslint src/**/*.ts --fix",
     "typecheck": "tsc --noEmit --skipLibCheck"
@@ -48,12 +48,12 @@
     "@types/animejs": "^3.1.12",
     "@types/auto-launch": "^5.0.5",
     "@types/electron-squirrel-startup": "^1.0.2",
-    "@types/jest": "^29.5.12",
     "@types/node": "^22.2.0",
     "@types/prismjs": "^1.26.4",
     "@types/showdown": "^2.0.6",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
     "@typescript-eslint/parser": "^8.0.1",
+    "@vitest/coverage-v8": "^2.0.4",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "electron": "^31.3.1",
@@ -62,13 +62,13 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.2.1",
-    "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "prettier": "^3.3.3",
     "prettier-eslint": "^16.3.0",
     "shx": "^0.3.4",
-    "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^2.0.4"
   }
 }

@@ -1,14 +1,16 @@
-const notifyMock = jest.fn()
+import { vi, describe, it, expect, beforeAll, afterAll } from 'vitest'
 
-jest.mock('node-notifier', () => ({
+const notifyMock = vi.fn()
+
+vi.mock('node-notifier', () => ({
   notify: notifyMock,
 }))
-jest.mock('fs', () => ({
-  writeFileSync: jest.fn(),
-  mkdirSync: jest.fn(),
-  mkdir: jest.fn(),
-  existsSync: jest.fn(),
-  unlinkSync: jest.fn(),
+vi.mock('fs', () => ({
+  writeFileSync: vi.fn(),
+  mkdirSync: vi.fn(),
+  mkdir: vi.fn(),
+  existsSync: vi.fn(),
+  unlinkSync: vi.fn(),
   readFileSync: (filePath: string) => {
     if (filePath.endsWith('config.json')) {
       return JSON.stringify({
@@ -20,12 +22,12 @@ jest.mock('fs', () => ({
     return 'mock file content'
   },
 }))
-jest.mock('openai', () => ({
+vi.mock('openai', () => ({
   __esModule: true,
   OpenAI: class OpenAiMock {
     constructor(_: any) {}
     models = {
-      list: jest.fn(),
+      list: vi.fn(),
     }
   },
 }))
@@ -84,7 +86,7 @@ describe(AI.notifyError.name, () => {
   const errorLog = console.error
 
   beforeAll(() => {
-    console.error = jest.fn()
+    console.error = vi.fn()
   })
 
   afterAll(() => {
