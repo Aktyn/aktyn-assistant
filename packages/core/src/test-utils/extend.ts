@@ -1,3 +1,5 @@
+import { expect } from 'vitest'
+
 //istanbul ignore next
 expect.extend({
   toBeIn(received, expected) {

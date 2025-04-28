@@ -1,3 +1,7 @@
+import { cn } from '@/lib/utils'
+import type { ChatMessage } from '@aktyn-assistant/common'
+import type { ChatSource } from '@aktyn-assistant/core'
+import { Loader2, MoveHorizontal } from 'lucide-react'
 import {
   useCallback,
   useEffect,
@@ -5,15 +9,8 @@ import {
   useState,
   type WheelEventHandler,
 } from 'react'
-import type { ChatMessage } from '@aktyn-assistant/common'
-import type { ChatSource } from '@aktyn-assistant/core'
-import { mdiCursorMove, mdiDownload, mdiLoading } from '@mdi/js'
-import Icon from '@mdi/react'
-import { cn } from '@nextui-org/react'
-import { ScrollShadow } from '@nextui-org/scroll-shadow'
-import anime from 'animejs'
-import { enqueueSnackbar } from 'notistack'
 import { Converter } from 'showdown'
+import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import {
   AdvancedInput,
@@ -21,7 +18,7 @@ import {
   type AdvancedInputProps,
 } from '../components/chat/AdvancedInput'
 import { ChatMenu } from '../components/chat/ChatMenu'
-import { ChatMode, chatModeProps } from '../components/chat/helpers'
+import { ChatMode } from '../components/chat/helpers'
 import { GlassCard } from '../components/common/GlassCard'
 import { SpeechSynthesisIndicator } from '../components/common/SpeechSynthesisIndicator'
 import { useCancellablePromise } from '../hooks/useCancellablePromise'
@@ -38,7 +35,7 @@ type ChatProps = {
 export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   const inputRef = useRef<AdvancedInputHandle>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const activeAiMessageElementRef = useRef<HTMLDivElement | null>()
+  const activeAiMessageElementRef = useRef<HTMLDivElement>(null)
   const activeAiMessageBuffersRef = useRef(new Map<string, string>())
   const converterRef = useRef(
     new Converter({
@@ -118,7 +115,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   }, [active])
 
   const handleWheel = useCallback<WheelEventHandler<HTMLDivElement>>(
-    (event) => {
+    (event: React.WheelEvent<HTMLDivElement>) => {
       const output = event.currentTarget
       if (!output.childNodes.length) {
         return
@@ -179,13 +176,14 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
       messagesContainerRef.current?.appendChild(
         activeAiMessageElementRef.current,
       )
-      anime({
-        targets: [messageElement, activeAiMessageElementRef.current],
-        easing: 'spring(1, 80, 10, 0)',
-        opacity: [0, 1],
-        translateX: ['4rem', '0rem'],
-        delay: anime.stagger(200, { from: 'first' }),
-      })
+      //TODO: Add animation
+      // anime({
+      //   targets: [messageElement, activeAiMessageElementRef.current],
+      //   easing: 'spring(1, 80, 10, 0)',
+      //   opacity: [0, 1],
+      //   translateX: ['4rem', '0rem'],
+      //   delay: anime.stagger(200, { from: 'first' }),
+      // })
       scrollToBottom()
       setStickToBottom(true)
       setLoading(true)
@@ -288,7 +286,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
             'http://www.w3.org/2000/svg',
             'path',
           )
-          path.setAttributeNS(null, 'd', mdiDownload)
+          // path.setAttributeNS(null, 'd', mdiDownload) //TODO: refactor to use lucide-react
 
           downloadIcon.appendChild(path)
           downloadButton.appendChild(downloadIcon)
@@ -305,10 +303,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         })
         .catch((error) => {
           if (error) {
-            enqueueSnackbar({
-              variant: 'error',
-              message: error instanceof Error ? error.message : String(error),
-            })
+            toast.error(error instanceof Error ? error.message : String(error))
           }
         })
     },
@@ -437,7 +432,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
     })
 
     window.electronAPI.onSpeakingState(
-      (conversationId, messageId, finished) => {
+      (conversationId, _messageId, finished) => {
         setSpeakingConversationId(finished ? null : conversationId)
       },
     )
@@ -536,11 +531,9 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         mode,
       )}
     >
-      <ScrollShadow
-        orientation="vertical"
-        size={60}
+      <div
         ref={messagesContainerRef}
-        className="chat-output empty"
+        className="chat-output empty overflow-auto shadow-inner"
         onWheel={handleWheel}
         onClick={(event) => {
           if (event.currentTarget.children.length === 0) {
@@ -549,7 +542,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         }}
       />
       <div className="small-info flex flex-row items-center gap-x-2 text-sm text-foreground-600">
-        <Icon path={chatModeProps[mode].icon} size="1.25rem" />
+        <MoveHorizontal size={20} />
         <span>
           {mode === ChatMode.Assistant
             ? selectedChatModel
@@ -576,7 +569,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
           textOnly={mode === ChatMode.ImageGeneration}
         />
         <div className="chat-spinner" style={{ opacity: loading ? 1 : 0 }}>
-          <Icon path={mdiLoading} spin size="1.5rem" />
+          <Loader2 className="animate-spin" size={24} />
         </div>
         <div
           className="chat-speaking-indicator"
@@ -590,7 +583,7 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
       </div>
       <div className="handle-container">
         <div className="handle">
-          <Icon path={mdiCursorMove} size="1.5rem" />
+          <MoveHorizontal size={24} />
           <span>Grab here to move the window</span>
         </div>
       </div>

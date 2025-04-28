@@ -1,4 +1,4 @@
-import { mdiForum, mdiImageMultiple } from '@mdi/js'
+import type { IconName } from 'lucide-react/dynamic'
 
 export enum ChatMode {
   Assistant = 'assistant',
@@ -6,15 +6,15 @@ export enum ChatMode {
 }
 
 export const chatModeProps: {
-  [key in ChatMode]: { title: string; icon: string }
+  [key in ChatMode]: { title: string; icon: IconName }
 } = {
   [ChatMode.Assistant]: {
     title: 'Assistant',
-    icon: mdiForum,
+    icon: 'messages-square',
   },
   [ChatMode.ImageGeneration]: {
     title: 'Image generation',
-    icon: mdiImageMultiple,
+    icon: 'images',
   },
 }
 

@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Divider } from '@nextui-org/divider'
-import { Listbox, ListboxItem } from '@nextui-org/listbox'
-import { Spinner } from '@nextui-org/spinner'
+import { Loader2 } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Dialog } from './Dialog'
 
 type ChatModelSelectDialogProps = {
@@ -37,7 +43,7 @@ export const ModelsSelectDialog = ({
 
   return (
     <Dialog
-      size="xl"
+      onClose={onClose}
       isOpen={open}
       isDismissable={false}
       isKeyboardDismissDisabled
@@ -56,61 +62,61 @@ export const ModelsSelectDialog = ({
       }}
     >
       {models.chatModels.length > 0 && models.imageModels.length > 0 ? (
-        <div className="grid grid-cols-[1fr_1px_1fr] gap-x-4">
-          <Listbox
-            topContent={
-              <span className="font-semibold text-lg text-foreground-300">
-                Chat model
-              </span>
-            }
-            label="Chat model"
-            variant="flat"
-            color="primary"
-            disallowEmptySelection
-            selectionMode="single"
-            selectedKeys={chatModel ? [chatModel] : []}
-            onSelectionChange={(selection) => {
-              if (selection !== 'all') {
-                setChatModel(selection.values().next().value)
-              }
-            }}
-          >
-            {models.chatModels.map((model) => (
-              <ListboxItem key={model} value={model}>
-                {model}
-              </ListboxItem>
-            ))}
-          </Listbox>
-          <Divider orientation="vertical" />
-          <Listbox
-            topContent={
-              <span className="font-semibold text-lg text-foreground-300">
-                Image generation model
-              </span>
-            }
-            label="Image generation model"
-            variant="flat"
-            color="primary"
-            disallowEmptySelection
-            selectionMode="single"
-            selectedKeys={imageGenerationModel ? [imageGenerationModel] : []}
-            onSelectionChange={(selection) => {
-              if (selection !== 'all') {
-                setImageGenerationModel(selection.values().next().value)
-              }
-            }}
-          >
-            {models.imageModels.map((model) => (
-              <ListboxItem key={model} value={model}>
-                {model}
-              </ListboxItem>
-            ))}
-          </Listbox>
+        <div className="grid grid-cols-[1fr_auto_1fr] gap-x-4 items-start">
+          <div className="flex flex-col gap-2">
+            <span className="font-semibold text-lg text-muted-foreground">
+              Chat model
+            </span>
+            <Select
+              value={chatModel ?? undefined}
+              onValueChange={(value: string) => {
+                setChatModel(value)
+              }}
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a chat model" />
+              </SelectTrigger>
+              <SelectContent>
+                {models.chatModels.map((model) => (
+                  <SelectItem key={model} value={model}>
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Separator orientation="vertical" className="h-auto" />
+          <div className="flex flex-col gap-2">
+            <span className="font-semibold text-lg text-muted-foreground">
+              Image generation model
+            </span>
+            <Select
+              value={imageGenerationModel ?? undefined}
+              onValueChange={(value: string) => {
+                setImageGenerationModel(value)
+              }}
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select an image model" />
+              </SelectTrigger>
+              <SelectContent>
+                {models.imageModels.map((model) => (
+                  <SelectItem key={model} value={model}>
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       ) : loading ? (
-        <Spinner size="lg" color="current" />
+        <div className="flex justify-center items-center min-h-24">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        </div>
       ) : (
-        <div className="text-deepOrange-200 font-bold text-xl text-center text-balance">
+        <div className="text-destructive font-bold text-xl text-center text-balance">
           No models available!
           <br />
           This should not happen, please report this issue!

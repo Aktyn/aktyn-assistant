@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { useDebounce } from '../../hooks/useDebounce'
 
 type AutoSizerProps = {
@@ -10,18 +10,16 @@ export const AutoSizer = ({ children, delay = 16 }: AutoSizerProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 0, height: 0 })
 
-  const updateSize = useDebounce(
-    () => {
-      const boundingBox = containerRef.current?.getBoundingClientRect?.()
+  const onResize = useCallback(() => {
+    const boundingBox = containerRef.current?.getBoundingClientRect?.()
 
-      setSize({
-        width: boundingBox?.width ?? 0,
-        height: boundingBox?.height ?? 0,
-      })
-    },
-    delay,
-    [],
-  )
+    setSize({
+      width: boundingBox?.width ?? 0,
+      height: boundingBox?.height ?? 0,
+    })
+  }, [])
+
+  const updateSize = useDebounce(onResize, delay)
 
   useEffect(() => {
     if (!containerRef.current) {

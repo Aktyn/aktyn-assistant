@@ -11,7 +11,7 @@ import { selectOption } from '../select'
 import { clearTerminal } from './common'
 import { View } from './view'
 
-enum TOOL_ACTION {
+enum ToolAction {
   ToggleEnabled = 'Toggle enabled',
   Return = 'Return',
 }
@@ -92,7 +92,7 @@ export class ToolsView extends View {
     terminal.eraseLineAfter('\n')
     terminal.eraseLineAfter('\n')
 
-    const items = Object.values(TOOL_ACTION)
+    const items = Object.values(ToolAction)
     const action = await selectOption(
       items,
       'Select action:',
@@ -104,7 +104,7 @@ export class ToolsView extends View {
     }
 
     switch (action) {
-      case TOOL_ACTION.ToggleEnabled:
+      case ToolAction.ToggleEnabled:
         {
           const enabledTools = tools.reduce((acc, tool) => {
             if (tool.schema.functionName === toolToEdit.schema.functionName) {
@@ -120,7 +120,7 @@ export class ToolsView extends View {
           setEnabledTools(enabledTools)
         }
         break
-      case TOOL_ACTION.Return:
+      case ToolAction.Return:
         break
     }
 

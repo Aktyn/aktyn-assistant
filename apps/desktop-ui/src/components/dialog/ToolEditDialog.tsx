@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { BuiltInToolInfo, ToolInfo } from '@aktyn-assistant/core'
-import { Checkbox, CheckboxGroup } from '@nextui-org/checkbox'
-import { closeSnackbar, enqueueSnackbar } from 'notistack'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { toast } from 'sonner'
 import { Dialog } from './Dialog'
 import { NotificationMessage } from '../common/NotificationMessage'
 
@@ -65,33 +66,44 @@ export const ToolEditDialog = ({
           })
           .then(() => onClose(true))
           .catch((error) => {
-            const key = enqueueSnackbar({
-              variant: 'error',
-              message: (
+            toast.error('Failed to edit tool', {
+              description: (
                 <NotificationMessage
                   title="Failed to edit tool"
                   message={error}
                   copyable
-                  onClose={() => closeSnackbar(key)}
                 />
               ),
+              duration: Infinity,
+              closeButton: true,
             })
           })
       }}
     >
-      <CheckboxGroup
-        label="Omit in:"
-        value={omitIn}
-        onValueChange={(selection) => {
-          setOmitIn(selection as OmitKey[])
-        }}
-      >
+      <div className="flex flex-col gap-2">
+        <Label className="font-semibold">Omit in:</Label>
         {Object.entries(omitInOptions).map(([key, { label }]) => (
-          <Checkbox key={key} value={key}>
-            {label}
-          </Checkbox>
+          <div key={key} className="flex items-center space-x-2">
+            <Checkbox
+              id={`omit-${key}`}
+              checked={omitIn.includes(key as OmitKey)}
+              onCheckedChange={(checked: boolean) => {
+                const currentOmitIn = [...omitIn]
+                if (checked) {
+                  currentOmitIn.push(key as OmitKey)
+                } else {
+                  const index = currentOmitIn.indexOf(key as OmitKey)
+                  if (index > -1) {
+                    currentOmitIn.splice(index, 1)
+                  }
+                }
+                setOmitIn(currentOmitIn)
+              }}
+            />
+            <Label htmlFor={`omit-${key}`}>{label}</Label>
+          </div>
         ))}
-      </CheckboxGroup>
+      </div>
       {/* TODO: allow editing description and parameters */}
     </Dialog>
   )

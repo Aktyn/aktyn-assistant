@@ -50,7 +50,15 @@ export type MessengerToolInitParameters = {
   userDataPath?: string
 } & MessengerCredentials
 
-export function getMessengerTool(initParameters: MessengerToolInitParameters) {
+export function getMessengerTool(initParameters?: MessengerToolInitParameters) {
+  if (!initParameters) {
+    console.warn('No init parameters provided to messenger tool')
+    return {
+      schema: toolSchema,
+      function: () => 'No init parameters provided to messenger tool',
+    } satisfies Tool<MessengerParameters>
+  }
+
   if (
     !('cookies' in initParameters && initParameters.cookies?.length) &&
     !(

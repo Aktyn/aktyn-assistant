@@ -1,4 +1,5 @@
 import { vi, describe, it, expect } from 'vitest'
+
 import { printError } from './error'
 
 describe(printError.name, () => {

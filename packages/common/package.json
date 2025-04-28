@@ -4,7 +4,6 @@
 	"private": true,
 	"main": "lib/index.js",
 	"types": "src/index.ts",
-	"type": "module",
 	"scripts": {
 		"build": "tsc --project ./tsconfig.build.json",
 		"dev": "tsc --watch --project ./tsconfig.build.json",

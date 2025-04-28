@@ -4,11 +4,11 @@ import path from 'path'
 import { getDataDirectory, logger } from '../../utils'
 
 export enum AiProviderType {
-  openai = 'OpenAI',
+  OpenAI = 'OpenAI',
 }
 
 const AiProviderApiKeyFileNames: { [key in AiProviderType]: string } = {
-  [AiProviderType.openai]: 'openai-key.json',
+  [AiProviderType.OpenAI]: 'openai-key.json',
 }
 
 const getKeyFilePath = (providerType: AiProviderType) =>

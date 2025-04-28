@@ -1,14 +1,12 @@
-import type { PropsWithChildren, ReactNode } from 'react'
-import { Button } from '@nextui-org/button'
+import { Button } from '@/components/ui/button'
 import {
-  Modal,
-  ModalBody,
-  type ModalBodyProps,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  type ModalProps,
-} from '@nextui-org/modal'
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Dialog as ShadDialog,
+} from '@/components/ui/dialog'
+import type { PropsWithChildren, ReactNode } from 'react'
 
 type DialogProps = PropsWithChildren<
   {
@@ -17,10 +15,19 @@ type DialogProps = PropsWithChildren<
     onConfirm?: () => void
     disableConfirmButton?: boolean
     isLoading?: boolean
-    bodyProps?: ModalBodyProps
-  } & Omit<ModalProps, 'children' | 'title'>
+    // bodyProps?: ModalBodyProps // bodyProps might not directly map
+  } & Omit<
+    React.ComponentPropsWithoutRef<typeof ShadDialog>,
+    'open' | 'onOpenChange'
+  > & {
+      isOpen: boolean
+      onClose: () => void
+      isDismissable?: boolean
+      isKeyboardDismissDisabled?: boolean
+    }
 >
 
+/** @deprecated Use the Dialog component from @/components/ui/dialog instead */
 export const Dialog = ({
   title,
   children,
@@ -28,42 +35,67 @@ export const Dialog = ({
   onConfirm,
   disableConfirmButton,
   isLoading,
-  bodyProps,
-  ...modalProps
+  // bodyProps, // Ignoring bodyProps for now
+  isOpen,
+  onClose,
+  isDismissable = true,
+  isKeyboardDismissDisabled = false,
+  ...dialogProps
 }: DialogProps) => {
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      onClose()
+    }
+  }
+
+  const handleInteractOutside = (event: Event) => {
+    if (!isDismissable) {
+      event.preventDefault()
+    }
+  }
+
+  const handleEscapeKeyDown = (event: KeyboardEvent) => {
+    if (isKeyboardDismissDisabled) {
+      event.preventDefault()
+    }
+  }
+
   return (
-    <Modal
-      scrollBehavior="inside"
-      backdrop="blur"
-      hideCloseButton
-      classNames={{
-        backdrop:
-          'backdrop-blur-sm bg-gradient-to-br from-primary-700/15 to-secondary-700/15',
-        wrapper: 'overflow-hidden',
-      }}
-      {...modalProps}
-    >
-      <ModalContent>
-        {title && <ModalHeader>{title}</ModalHeader>}
-        <ModalBody {...bodyProps}>{children}</ModalBody>
-        <ModalFooter>
+    <ShadDialog open={isOpen} onOpenChange={handleOpenChange} {...dialogProps}>
+      <DialogContent
+        onInteractOutside={handleInteractOutside}
+        onEscapeKeyDown={handleEscapeKeyDown}
+        className="sm:max-w-[425px]"
+      >
+        {title && (
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            {/* Optional: Add DialogDescription if needed */}
+          </DialogHeader>
+        )}
+        <div className="grid gap-4 py-4">
+          {' '}
+          {/* Replaces ModalBody */}
+          {children}
+        </div>
+        <DialogFooter>
           {onCancel && (
-            <Button color="secondary" onPress={onCancel}>
+            <Button variant="secondary" onClick={onCancel}>
               Cancel
             </Button>
           )}
           {onConfirm && (
             <Button
-              color="primary"
-              isDisabled={disableConfirmButton}
-              onPress={onConfirm}
-              isLoading={isLoading}
+              type="submit" // Assuming confirmation might submit a form
+              disabled={disableConfirmButton || isLoading} // Combine disabled states
+              onClick={onConfirm}
             >
-              Confirm
+              {isLoading ? 'Loading...' : 'Confirm'}{' '}
+              {/* Add loading state display */}
             </Button>
           )}
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </ShadDialog>
   )
 }

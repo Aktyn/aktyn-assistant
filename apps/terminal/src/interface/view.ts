@@ -1,7 +1,7 @@
 import { assert, type ChatMessage } from '@aktyn-assistant/common'
 import { getUserConfigValue, type AI } from '@aktyn-assistant/core'
 
-export enum INTERFACE_VIEW {
+export enum InterfaceView {
   Chat = 'chat',
   VoiceChat = 'voice-chat',
   Tools = 'tools',
@@ -11,7 +11,7 @@ export enum INTERFACE_VIEW {
 
 export abstract class View {
   constructor(
-    public readonly type: INTERFACE_VIEW,
+    public readonly type: InterfaceView,
     protected readonly handleError: (error: unknown) => void,
     protected readonly onReturnToMenu: () => void,
     protected readonly ai: AI,

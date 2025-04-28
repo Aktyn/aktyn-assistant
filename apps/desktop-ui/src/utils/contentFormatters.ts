@@ -1,5 +1,4 @@
-import anime from 'animejs'
-import { enqueueSnackbar } from 'notistack'
+import { toast } from 'sonner'
 import type { Converter } from 'showdown'
 
 export function format(
@@ -61,10 +60,7 @@ function createCodeBlockHeaderElement(pre: HTMLPreElement) {
 
   copyButton.onclick = () => {
     navigator.clipboard.writeText(code).catch(console.error)
-    enqueueSnackbar({
-      variant: 'success',
-      message: 'Copied to clipboard',
-    })
+    toast.success('Copied to clipboard')
   }
   codeOptionsDiv.appendChild(copyButton)
 
@@ -83,14 +79,15 @@ function createCodeBlockHeaderElement(pre: HTMLPreElement) {
       codeHeight,
       codeElement.getBoundingClientRect().height,
     )
-    const range = [codeHeight, 0]
-    anime({
-      targets: codeElement,
-      easing: 'easeInOutCirc',
-      duration: 200,
-      maxHeight: hidden ? range : range.reverse(),
-      opacity: hidden ? 0 : 1,
-    })
+    //TODO: Add animation
+    // const range = [codeHeight, 0]
+    // anime({
+    //   targets: codeElement,
+    //   easing: 'easeInOutCirc',
+    //   duration: 200,
+    //   maxHeight: hidden ? range : range.reverse(),
+    //   opacity: hidden ? 0 : 1,
+    // })
   }
 
   codeOptionsDiv.appendChild(toggleButton)

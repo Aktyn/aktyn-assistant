@@ -10,16 +10,21 @@ export default tseslint.config(
       'dist/',
       'node_modules/',
       '*.config.js',
+      'lib/',
       'coverage/',
+      'assets/',
+      'vitest.config.ts',
     ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
+      parser: tseslint.parser,
       parserOptions: {
-        project: true,
-        tsconfigRootDir: import.meta.dirname,
+        project: "tsconfig.json",
+        sourceType: "module",
       },
     },
     plugins: {
@@ -71,11 +76,11 @@ export default tseslint.config(
         },
         {
           selector: 'function',
-          format: ['strictCamelCase', 'StrictPascalCase'],
+          format: ['strictCamelCase', 'PascalCase'],
         },
         {
           selector: ['class', 'interface', 'typeAlias', 'enum', 'enumMember'],
-          format: ['StrictPascalCase'],
+          format: ['PascalCase'],
         },
         {
           selector: 'typeParameter',
@@ -98,7 +103,7 @@ export default tseslint.config(
         },
       ],
       'import/no-duplicates': ['error', { 'prefer-inline': true }],
-      'import/no-extraneous-dependencies': [
+       'import/no-extraneous-dependencies': [
         'warn',
         { devDependencies: false },
       ],
@@ -125,6 +130,7 @@ export default tseslint.config(
         'warn',
         { devDependencies: true },
       ],
+      'no-console': 'off',
     },
   }
 ); 

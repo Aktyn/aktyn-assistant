@@ -9,7 +9,7 @@ import { selectOption, selectYesOrNo } from '../select'
 import { clearTerminal } from './common'
 import { View } from './view'
 
-enum SETTINGS_ITEM {
+enum SettingsItem {
   MockPaidRequests = 'Mock paid requests',
   SelectChatModel = 'Select chat model',
   IncludeHistory = 'Include history',
@@ -19,21 +19,21 @@ enum SETTINGS_ITEM {
   TextToSpeechLanguage = 'Text to speech language',
 }
 
-function getConfigValueBySettingItem(item: SETTINGS_ITEM) {
+function getConfigValueBySettingItem(item: SettingsItem) {
   switch (item) {
-    case SETTINGS_ITEM.MockPaidRequests:
+    case SettingsItem.MockPaidRequests:
       return getUserConfigValue('mockPaidRequests')
-    case SETTINGS_ITEM.SelectChatModel:
+    case SettingsItem.SelectChatModel:
       return getUserConfigValue('selectedChatModel')
-    case SETTINGS_ITEM.IncludeHistory:
+    case SettingsItem.IncludeHistory:
       return getUserConfigValue('includeHistory')
-    case SETTINGS_ITEM.PreviousMessagesSentToAI:
+    case SettingsItem.PreviousMessagesSentToAI:
       return getUserConfigValue('maxChatHistoryLength')
-    case SETTINGS_ITEM.InitialSystemMessage:
+    case SettingsItem.InitialSystemMessage:
       return getUserConfigValue('initialSystemMessage')
-    case SETTINGS_ITEM.ReadChatResponses:
+    case SettingsItem.ReadChatResponses:
       return getUserConfigValue('readChatResponses')
-    case SETTINGS_ITEM.TextToSpeechLanguage: {
+    case SettingsItem.TextToSpeechLanguage: {
       const key = getUserConfigValue('textToSpeechLanguage')
       return gttsLanguages[key as keyof typeof gttsLanguages] ?? key
     }
@@ -57,7 +57,7 @@ export class SettingsView extends View {
     terminal.moveTo(1, terminal.height - 1)
     terminal.bold('Which settings do you want to change?')
 
-    const items = Object.values(SETTINGS_ITEM)
+    const items = Object.values(SettingsItem)
     terminal.singleColumnMenu(
       [
         ...items.map((item) => {
@@ -97,25 +97,25 @@ export class SettingsView extends View {
         } else {
           const item = items[response.selectedIndex]
           switch (item) {
-            case SETTINGS_ITEM.MockPaidRequests:
+            case SettingsItem.MockPaidRequests:
               this.selectMockPaidRequests().catch(this.handleError)
               break
-            case SETTINGS_ITEM.SelectChatModel:
+            case SettingsItem.SelectChatModel:
               this.selectChatModel().catch(this.handleError)
               break
-            case SETTINGS_ITEM.IncludeHistory:
+            case SettingsItem.IncludeHistory:
               this.selectIncludeHistory().catch(this.handleError)
               break
-            case SETTINGS_ITEM.PreviousMessagesSentToAI:
+            case SettingsItem.PreviousMessagesSentToAI:
               this.selectPreviousMessagesSentToAI().catch(this.handleError)
               break
-            case SETTINGS_ITEM.InitialSystemMessage:
+            case SettingsItem.InitialSystemMessage:
               this.selectInitialSystemMessage().catch(this.handleError)
               break
-            case SETTINGS_ITEM.ReadChatResponses:
+            case SettingsItem.ReadChatResponses:
               this.selectReadChatResponses().catch(this.handleError)
               break
-            case SETTINGS_ITEM.TextToSpeechLanguage:
+            case SettingsItem.TextToSpeechLanguage:
               this.selectTextToSpeechLanguage().catch(this.handleError)
               break
           }
@@ -177,7 +177,6 @@ export class SettingsView extends View {
     clearTerminal()
     terminal.moveTo(1, terminal.height - 1)
 
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const maxChatHistoryLength = await inputNumber(
         'Enter max chat history length',

@@ -1,27 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/icon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' wss:;
     style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net 'unsafe-inline';
     script-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net 'unsafe-inline';
     img-src 'self' 'unsafe-inline' data:;
     font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net;
     connect-src 'self' https://web-backend.codeium.com">
-
   <title>Aktyn Assistant</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
 </head>
 
 <body>
   <div id="root"></div>
-  <script src="./prism.js" data-manual></script>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 
 </html>

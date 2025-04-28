@@ -9,7 +9,7 @@ import {
 } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
-import { toggleTerminateOnCtrlC } from './common'
+import { toggleTerminateOnKeys } from './common'
 import { printError } from './error'
 import { requestApiKey } from './input'
 import { TerminalInterface } from './interface/terminalInterface'
@@ -22,7 +22,7 @@ initLogger('terminal', { disableStdout: true })
 async function run() {
   terminal.reset()
   terminal.clear()
-  toggleTerminateOnCtrlC(true)
+  toggleTerminateOnKeys(true)
   showWelcomeMessage()
 
   const now = Date.now()

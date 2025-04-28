@@ -1,43 +1,42 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import anime from 'animejs'
 import { GlobalContext } from '../context/GlobalContextProvider'
-import { ViewType } from '../utils/navigation'
 import { palette } from '../utils/palette'
 
 const words = 'Aktyn Assistant'.split(/\s/)
 
 export const TitleHeader = () => {
   const ref = useRef<HTMLHeadingElement>(null)
-  const { ready, view } = useContext(GlobalContext)
+  const { ready } = useContext(GlobalContext)
 
-  const [isReady, setIsReady] = useState(false)
+  const [, setIsReady] = useState(false)
 
-  const visible = view !== ViewType.Chat
-  const isAnyViewEntered = !!view
+  // const visible = view !== ViewType.Chat
+  // const isAnyViewEntered = !!view
 
-  useEffect(() => {
-    const header = ref.current
-    if (!header || !isReady) {
-      return
-    }
+  //TODO: Add animation
+  // useEffect(() => {
+  //   const header = ref.current
+  //   if (!header || !isReady) {
+  //     return
+  //   }
 
-    const height = header.getBoundingClientRect().height
-    const animation = anime({
-      targets: header.childNodes,
-      easing: 'spring(1, 80, 10, 0)',
-      delay: anime.stagger(100, { from: visible ? 'last' : 'first' }),
-      translateY: visible
-        ? isAnyViewEntered
-          ? 0
-          : (window.innerHeight - height) / 2
-        : -height,
-      opacity: visible ? 1 : 0,
-    })
+  //   const height = header.getBoundingClientRect().height
+  //   const animation = anime({
+  //     targets: header.childNodes,
+  //     easing: 'spring(1, 80, 10, 0)',
+  //     delay: anime.stagger(100, { from: visible ? 'last' : 'first' }),
+  //     translateY: visible
+  //       ? isAnyViewEntered
+  //         ? 0
+  //         : (window.innerHeight - height) / 2
+  //       : -height,
+  //     opacity: visible ? 1 : 0,
+  //   })
 
-    return () => {
-      anime.remove(animation)
-    }
-  }, [isAnyViewEntered, isReady, visible])
+  //   return () => {
+  //     anime.remove(animation)
+  //   }
+  // }, [isAnyViewEntered, isReady, visible])
 
   useEffect(() => {
     if (!ready) {

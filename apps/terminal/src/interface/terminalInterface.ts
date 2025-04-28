@@ -6,37 +6,37 @@ import { clearTerminal } from './common'
 import { InfoView } from './infoView'
 import { SettingsView } from './settingsView'
 import { ToolsView } from './toolsView'
-import { INTERFACE_VIEW, type View } from './view'
+import { InterfaceView, type View } from './view'
 import { VoiceChatView } from './voiceChatView'
 
 const menu = {
-  [INTERFACE_VIEW.Chat]: {
-    type: INTERFACE_VIEW.Chat,
+  [InterfaceView.Chat]: {
+    type: InterfaceView.Chat,
     label: 'Chat',
     Class: ChatView,
   },
-  [INTERFACE_VIEW.VoiceChat]: {
-    type: INTERFACE_VIEW.VoiceChat,
+  [InterfaceView.VoiceChat]: {
+    type: InterfaceView.VoiceChat,
     label: 'Voice chat',
     Class: VoiceChatView,
   },
-  [INTERFACE_VIEW.Tools]: {
-    type: INTERFACE_VIEW.Tools,
+  [InterfaceView.Tools]: {
+    type: InterfaceView.Tools,
     label: 'Tools',
     Class: ToolsView,
   },
-  [INTERFACE_VIEW.Settings]: {
-    type: INTERFACE_VIEW.Settings,
+  [InterfaceView.Settings]: {
+    type: InterfaceView.Settings,
     label: 'Settings',
     Class: SettingsView,
   },
-  [INTERFACE_VIEW.Info]: {
-    type: INTERFACE_VIEW.Info,
+  [InterfaceView.Info]: {
+    type: InterfaceView.Info,
     label: 'Info',
     Class: InfoView,
   },
 } as const satisfies {
-  [key in INTERFACE_VIEW]: { type: key; label: string; Class: typeof View }
+  [key in InterfaceView]: { type: key; label: string; Class: typeof View }
 }
 
 export class TerminalInterface {

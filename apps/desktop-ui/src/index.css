@@ -1,0 +1,163 @@
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@theme inline {
+  --text-xxs: 0.5rem;
+
+  --radius-4xl: calc(var(--radius) * 4);
+  --radius-3xl: calc(var(--radius) * 3);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-xs: calc(var(--radius) * 0.25);
+
+  --backdrop-blur-xs: 2px;
+
+  --scale-golden: 1.618;
+  --scale-golden-reverse: 0.618;
+
+  --height-golden: 161.8%;
+  --height-golden-reverse: 61.8%;
+
+  --breakpoint-xs: 480px;
+
+  --default-transition-duration: 200ms;
+  --transition-duration: 200ms;
+  --transition-duration-view-transition: 400ms;
+  --transition-delay-view-transition: 400ms;
+
+  --ease: ease-in-out;
+  --ease-spring: cubic-bezier(0.25, 0, 0.15, 1.5);
+  --ease-spring-soft: cubic-bezier(0.5, 0, 0.25, 1.25);
+
+  --font:
+    Inter Variable, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+}
+
+@layer utilities {
+  @font-face {
+    font-family: "Inter Variable";
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+    src: url("/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "Inter Variable";
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: italic;
+    src: url("/Inter-Italic-VariableFont_opsz,wght.ttf") format("truetype");
+  }
+
+  :root {
+    font-family:
+      "Inter Variable", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 199 47% 4%;
+    --foreground: 199 7.3% 97.5%;
+
+    --muted: 199 36.5% 15%;
+    --muted-foreground: 199 7.3% 55%;
+
+    --popover: 199 50.4% 6.5%;
+    --popover-foreground: 199 7.3% 97.5%;
+
+    --card: 199 50.4% 6.5%;
+    --card-foreground: 199 7.3% 97.5%;
+
+    --border: 199 36.5% 15%;
+    --input: 199 36.5% 15%;
+
+    --primary: 199 73% 50%;
+    --primary-foreground: 199 7.3% 5%;
+
+    --secondary: 199 36.5% 15%;
+    --secondary-foreground: 199 7.3% 97.5%;
+
+    --accent: 199 36.5% 15%;
+    --accent-foreground: 199 7.3% 97.5%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 199 7.3% 97.5%;
+
+    --ring: 199 73% 50%;
+
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border focus-visible:outline-hidden;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  #root {
+    @apply h-screen w-screen;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield !important;
+    appearance: textfield !important;
+  }
+
+  [data-slot="button"] {
+    @apply not-disabled:cursor-pointer;
+  }
+}

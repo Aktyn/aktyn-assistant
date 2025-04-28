@@ -1,19 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { formatBytes } from '@aktyn-assistant/common'
-import { mdiFile, mdiFolder, mdiFolderArrowUp, mdiFolderOpen } from '@mdi/js'
-import Icon from '@mdi/react'
-import { BreadcrumbItem, Breadcrumbs } from '@nextui-org/breadcrumbs'
-import { Button } from '@nextui-org/button'
 import {
-  Dropdown,
-  DropdownItem,
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import {
   DropdownMenu,
-  DropdownTrigger,
-} from '@nextui-org/dropdown'
-import { cn } from '@nextui-org/react'
-import { ScrollShadow } from '@nextui-org/scroll-shadow'
-import { Spacer } from '@nextui-org/spacer'
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { cn } from '@/lib/utils'
+import { formatBytes } from '@aktyn-assistant/common'
+import { File, Folder, FolderOpen, FolderUp } from 'lucide-react'
 import path from 'path-browserify'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { FilesTree, FixedFile } from '../../utils/file-helpers'
 import { AutoSizer } from '../common/AutoSizer'
 
@@ -66,43 +71,45 @@ export const FilesTreeView = ({
       />
       <AutoSizer>
         {({ height }) => (
-          <ScrollShadow
-            className="flex flex-col items-start gap-y-1 max-h-56 pr-2"
+          <ScrollArea
+            className="flex flex-col items-start gap-y-1 max-h-56 pr-2 border rounded-md"
             style={{ minHeight: height }}
           >
-            {localTree !== filesTree && (
-              <DirectoryEntry
-                name="Go up"
-                isReturn
-                onClick={() => {
-                  const currentParts = splitPath(localTree.path)
-                  goTo(currentParts, currentParts.length - 2)
-                }}
-              />
-            )}
-            {Object.entries(localTree.directories).map(([name, tree]) => (
-              <DirectoryEntry
-                key={name}
-                name={name}
-                entriesCount={
-                  tree.files.length + Object.keys(tree.directories).length
-                }
-                onClick={() => setLocalTree(tree)}
-              />
-            ))}
-            <Spacer y={1} />
-            {localTree.files.map((file) => (
-              <FileEntry
-                key={file.path}
-                file={file}
-                selected={file === selectedFile}
-                onClick={() => {
-                  setSelectedFile(file)
-                  onFileSelected(file)
-                }}
-              />
-            ))}
-          </ScrollShadow>
+            <div className="p-2">
+              {localTree !== filesTree && (
+                <DirectoryEntry
+                  name="Go up"
+                  isReturn
+                  onClick={() => {
+                    const currentParts = splitPath(localTree.path)
+                    goTo(currentParts, currentParts.length - 2)
+                  }}
+                />
+              )}
+              {Object.entries(localTree.directories).map(([name, tree]) => (
+                <DirectoryEntry
+                  key={name}
+                  name={name}
+                  entriesCount={
+                    tree.files.length + Object.keys(tree.directories).length
+                  }
+                  onClick={() => setLocalTree(tree)}
+                />
+              ))}
+              <div className="my-2" />
+              {localTree.files.map((file) => (
+                <FileEntry
+                  key={file.path}
+                  file={file}
+                  selected={file === selectedFile}
+                  onClick={() => {
+                    setSelectedFile(file)
+                    onFileSelected(file)
+                  }}
+                />
+              ))}
+            </div>
+          </ScrollArea>
         )}
       </AutoSizer>
     </div>
@@ -118,66 +125,75 @@ type PathBarProps = {
 const PathBar = ({ path: pathValue, originalPath, goTo }: PathBarProps) => {
   const parts = useMemo(() => splitPath(pathValue), [pathValue])
   const originalParts = useMemo(() => splitPath(originalPath), [originalPath])
+  const MAX_ITEMS = 4
 
   return (
     <div className="flex flex-row items-center gap-x-4">
-      <Icon
-        path={mdiFolderOpen}
-        size="2rem"
-        className="text-foreground-400 min-w-8"
-      />
-      <Breadcrumbs
-        variant="bordered"
-        radius="full"
-        maxItems={4}
-        itemsAfterCollapse={4}
-        itemsBeforeCollapse={0}
-        renderEllipsis={({ items, ellipsisIcon, separator }) => (
-          <div key="ellipsis" className="flex items-center">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  isIconOnly
-                  className="min-w-6 w-6 h-6"
-                  size="sm"
-                  variant="flat"
-                >
-                  {ellipsisIcon}
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disabledKeys={Array.from({
-                  length: originalParts.length - 1,
-                }).map((_, index) => index.toString())}
-              >
-                {items.map((item, index2) => (
-                  <DropdownItem
-                    key={index2}
-                    onClick={() =>
-                      index2 >= originalParts.length - 1 && goTo(parts, index2)
-                    }
+      <FolderOpen size="2rem" className="text-muted-foreground min-w-8" />
+      <Breadcrumb>
+        <BreadcrumbList>
+          {parts.slice(0, originalParts.length - 1).map((part, index) => (
+            <BreadcrumbItem key={`${part}-${index}`}>
+              <BreadcrumbLink asChild>
+                <span className="cursor-not-allowed text-muted-foreground">
+                  {part}
+                </span>
+              </BreadcrumbLink>
+              <BreadcrumbSeparator />
+            </BreadcrumbItem>
+          ))}
+
+          {parts.length > MAX_ITEMS &&
+          parts.length - (originalParts.length - 1) > 1 ? (
+            <>
+              <BreadcrumbItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-1">
+                    <BreadcrumbEllipsis className="h-4 w-4" />
+                    <span className="sr-only">Toggle menu</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {parts
+                      .slice(originalParts.length - 1, parts.length - 1)
+                      .map((part, index) => (
+                        <DropdownMenuItem
+                          key={index}
+                          onClick={() =>
+                            goTo(parts, originalParts.length - 1 + index)
+                          }
+                        >
+                          {part}
+                        </DropdownMenuItem>
+                      ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+            </>
+          ) : (
+            parts
+              .slice(originalParts.length - 1, parts.length - 1)
+              .map((part, index) => (
+                <BreadcrumbItem key={`${part}-${index}`}>
+                  <BreadcrumbLink
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      goTo(parts, originalParts.length - 1 + index)
+                    }}
                   >
-                    {item.children}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            {separator}
-          </div>
-        )}
-        className="*:border-1 *:border-divider/20"
-      >
-        {parts.map((part, index) => (
-          <BreadcrumbItem
-            key={`${part}-${index}`}
-            className="last-of-type:font-bold"
-            isDisabled={index < originalParts.length - 1}
-            onPress={() => goTo(parts, index)}
-          >
-            {part}
+                    {part}
+                  </BreadcrumbLink>
+                  <BreadcrumbSeparator />
+                </BreadcrumbItem>
+              ))
+          )}
+
+          <BreadcrumbItem>
+            <BreadcrumbPage>{parts[parts.length - 1]}</BreadcrumbPage>
           </BreadcrumbItem>
-        ))}
-      </Breadcrumbs>
+        </BreadcrumbList>
+      </Breadcrumb>
     </div>
   )
 }
@@ -197,17 +213,17 @@ const DirectoryEntry = ({
 }: DirectoryEntryProps) => {
   return (
     <div
-      className="flex flex-row items-center gap-x-2 w-full px-2 rounded-md cursor-pointer hover:bg-primary-200/20 transition-background"
+      className="flex flex-row items-center gap-x-2 w-full p-2 rounded-md cursor-pointer hover:bg-accent transition-colors"
       onClick={onClick}
     >
-      <Icon
-        path={isReturn ? mdiFolderArrowUp : mdiFolder}
-        size="1.5rem"
-        className="text-foreground-400"
-      />
+      {isReturn ? (
+        <FolderUp size="1.5rem" className="text-muted-foreground" />
+      ) : (
+        <Folder size="1.5rem" className="text-muted-foreground" />
+      )}
       <span>{name}</span>
       {entriesCount > 0 && (
-        <span className="ml-auto text-foreground-400 text-sm">
+        <span className="ml-auto text-muted-foreground text-sm">
           {entriesCount}&nbsp;{entriesCount === 1 ? 'entry' : 'entries'}
         </span>
       )}
@@ -225,15 +241,15 @@ const FileEntry = ({ file, selected, onClick }: FileEntryProps) => {
   return (
     <div
       className={cn(
-        'flex flex-row items-center justify-start gap-x-2 w-full px-2 rounded-md transition-background',
-        selected && 'bg-primary-400/50',
-        !selected && 'cursor-pointer hover:bg-primary-200/20',
+        'flex flex-row items-center justify-start gap-x-2 w-full p-2 rounded-md transition-colors',
+        selected && 'bg-primary/50 text-primary-foreground',
+        !selected && 'cursor-pointer hover:bg-accent',
       )}
       onClick={onClick}
     >
-      <Icon path={mdiFile} size="1.5rem" className="text-foreground-400" />
+      <File size="1.5rem" className="text-muted-foreground" />
       <span>{file.name}</span>
-      <span className="ml-auto text-foreground-400 text-sm">
+      <span className="ml-auto text-muted-foreground text-sm">
         {formatBytes(file.size)}
       </span>
     </div>

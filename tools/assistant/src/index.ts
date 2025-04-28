@@ -10,11 +10,7 @@ export default function index(
   return [
     openSiteTool,
     getMessengerTool(
-      messengerToolInitParameters ?? {
-        //TODO: handle no messengerToolInitParameters
-        username: '',
-        password: '',
-      },
+      messengerToolInitParameters
     ),
     //TODO: more assistant related tools like emails, alarms, etc.
   ] as const

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Input } from '@nextui-org/input'
+import { Input } from '@/components/ui/input'
 import { Dialog } from './Dialog'
 
 type ApiKeyInputDialogProps = {
@@ -17,6 +17,7 @@ export const ApiKeyInputDialog = ({
 
   return (
     <Dialog
+      onClose={onClose}
       isOpen={open}
       isDismissable={false}
       isKeyboardDismissDisabled
@@ -31,12 +32,10 @@ export const ApiKeyInputDialog = ({
       }}
     >
       <Input
-        size="lg"
-        variant="bordered"
-        label="API key"
-        isRequired
+        required
         value={apiKeyValue ?? ''}
-        onChange={(value) => setApiKeyValue(value.target.value)}
+        onChange={(e) => setApiKeyValue(e.target.value)}
+        placeholder="API key"
       />
     </Dialog>
   )

@@ -2,8 +2,8 @@ import {
   launch,
   type Browser,
   type ElementHandle,
+  type LaunchOptions,
   type Page,
-  type PuppeteerLaunchOptions,
   type Viewport,
 } from 'puppeteer'
 
@@ -23,7 +23,7 @@ export abstract class Bot {
   protected browser: Browser | null = null
   protected page: Page | null = null
 
-  constructor(options: Partial<PuppeteerLaunchOptions> = {}) {
+  constructor(options: Partial<LaunchOptions> = {}) {
     this.init(options)
       .catch((error) => {
         console.error(error)
@@ -35,7 +35,7 @@ export abstract class Bot {
       })
   }
 
-  private async init(options: Partial<PuppeteerLaunchOptions> = {}) {
+  private async init(options: Partial<LaunchOptions> = {}) {
     this.browser = await launch({
       headless: false, //TODO: make it configurable though env variable
       browser: 'chrome',

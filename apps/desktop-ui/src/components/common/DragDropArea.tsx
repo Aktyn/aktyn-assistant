@@ -6,9 +6,8 @@ import {
   type ChangeEventHandler,
   type DragEventHandler,
 } from 'react'
-import { mdiFolderDownloadOutline } from '@mdi/js'
-import Icon from '@mdi/react'
-import { cn, Spinner } from '@nextui-org/react'
+import { Loader2, FolderDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { useMounted } from '../../hooks/useMounted'
 import {
   buildFilesTree,
@@ -99,15 +98,9 @@ export const DragDropArea = forwardRef<HTMLDivElement, DragDropAreaProps>(
           style={{ display: 'none' }}
         />
         {loading ? (
-          <div className="flex" style={{ width: '5rem', height: '5rem' }}>
-            <Spinner size="lg" color="current" />
-          </div>
+          <Loader2 className="w-20 h-20 animate-spin text-primary" />
         ) : (
-          <Icon
-            path={mdiFolderDownloadOutline}
-            size="5rem"
-            className="pointer-events-none"
-          />
+          <FolderDown className="w-20 h-20 pointer-events-none text-primary" />
         )}
         <div className="flex flex-col items-start pointer-events-none">
           <span className="font-bold text-lg text-balance">

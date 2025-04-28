@@ -1,42 +1,35 @@
 import { forwardRef } from 'react'
-import Icon from '@mdi/react'
-import { Button, type ButtonProps } from '@nextui-org/button'
-import { cn } from '@nextui-org/react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 type IconButtonProps = {
-  icon: string
-  activeIcon?: string
+  icon: React.ElementType
+  activeIcon?: React.ElementType
   active?: boolean
-} & ButtonProps
+} & React.ComponentProps<typeof Button>
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ icon, activeIcon, active, ...buttonProps }, ref) => {
+  ({ icon: Icon, activeIcon: ActiveIcon, active, ...buttonProps }, ref) => {
     return (
       <Button
         ref={ref}
-        radius="full"
-        variant="light"
-        isIconOnly
-        {...buttonProps}
+        variant="ghost"
         className={cn(
-          'data-[hover=true]:bg-foreground-50/25 text-current relative *:absolute *:transition-[opacity,transform]',
+          'rounded-full p-2 data-[hover=true]:bg-foreground-50/25 text-current relative *:absolute *:transition-[opacity,transform]',
           buttonProps.className,
         )}
+        {...buttonProps}
       >
         <Icon
-          path={icon}
-          size="1.25rem"
-          color="currentColor"
           className={cn(
+            'size-5',
             active ? 'opacity-0 rotate-90' : 'opacity-100 rotate-0',
           )}
         />
-        {activeIcon && (
-          <Icon
-            path={activeIcon}
-            size="1.25rem"
-            color="currentColor"
+        {ActiveIcon && (
+          <ActiveIcon
             className={cn(
+              'size-5',
               active ? 'opacity-100 rotate-0' : 'opacity-0 rotate-90',
             )}
           />

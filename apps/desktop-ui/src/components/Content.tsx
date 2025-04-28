@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { ScrollShadow } from '@nextui-org/scroll-shadow'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { GlobalContext } from '../context/GlobalContextProvider'
 import { ViewType } from '../utils/navigation'
 import { Chat } from '../views/Chat'
@@ -72,7 +72,7 @@ export const Content = () => {
             const active = ready && view === viewType
 
             return (
-              <ScrollShadow
+              <ScrollArea
                 key={viewType}
                 className="absolute left-0 top-0 w-full h-full flex flex-col justify-start items-start transition-[opacity,transform] duration-400 ease-in-out px-4 *:mx-auto"
                 style={{
@@ -90,7 +90,7 @@ export const Content = () => {
                 {viewType === ViewType.Tools && <Tools in={active} />}
                 {viewType === ViewType.Settings && <Settings in={active} />}
                 {viewType === ViewType.Info && <Info in={active} />}
-              </ScrollShadow>
+              </ScrollArea>
             )
           })
         : null}

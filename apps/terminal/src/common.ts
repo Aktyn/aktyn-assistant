@@ -6,11 +6,14 @@ function terminateOnCtrlC(key: string) {
   }
 }
 
-export function toggleTerminateOnCtrlC(enable: boolean) {
+export function toggleTerminateOnKeys(
+  enable: boolean,
+  handler = terminateOnCtrlC,
+) {
   if (enable) {
-    terminal.on('key', terminateOnCtrlC)
+    terminal.on('key', handler)
   } else {
-    terminal.off('key', terminateOnCtrlC)
+    terminal.off('key', handler)
   }
 }
 

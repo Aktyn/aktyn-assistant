@@ -1,8 +1,9 @@
+/* eslint-disable import/order */
 import { vi, describe, it, expect, beforeEach } from 'vitest'
+import { speak } from './textToSpeech'
 
-const speakMock = vi.fn()
 vi.mock('./textToSpeech', () => ({
-  speak: speakMock,
+  speak: vi.fn(),
 }))
 vi.mock('../user', () => ({
   getUserConfigValue: vi.fn().mockReturnValue('en-us'),
@@ -15,6 +16,8 @@ import { RESPONSE_WITH_LINKS_WORDS } from '../ai/chatMock'
 import { BufferedSpeech } from './buffered'
 
 describe(BufferedSpeech.name, () => {
+  const speakMock = speak as unknown as ReturnType<typeof vi.fn>
+
   const isGitHubActionsOrCI =
     process.env.GITHUB_ACTIONS === 'true' || process.env.CI === 'true'
 

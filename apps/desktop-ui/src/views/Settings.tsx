@@ -6,12 +6,12 @@ import {
   useState,
 } from 'react'
 import { gttsLanguages } from '@aktyn-assistant/common'
-import { CardBody } from '@nextui-org/card'
-import { Checkbox } from '@nextui-org/checkbox'
-import { Input, Textarea } from '@nextui-org/input'
-import { Select, SelectItem } from '@nextui-org/select'
-import anime from 'animejs'
-import { enqueueSnackbar } from 'notistack'
+import { CardContent } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectItem } from '@/components/ui/select'
+import { toast } from 'sonner'
 import { GlassCard } from '../components/common/GlassCard'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
 
@@ -113,10 +113,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
     try {
       const success = await window.electronAPI.setAutoLaunch(checked)
       if (!success) {
-        enqueueSnackbar({
-          variant: 'error',
-          message: 'Failed to set auto launch',
-        })
+        toast.error('Failed to set auto launch')
       }
     } catch (error) {
       console.error(error)
@@ -129,52 +126,44 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
       return
     }
 
-    const animation = anime({
-      targets: container.querySelectorAll('.settings-section'),
-      easing: 'spring(1, 80, 10, 0)',
-      scale: active ? 1 : 0.618,
-      opacity: active ? 1 : 0,
-      rotate: active ? 0 : anime.stagger(['-30deg', '30deg']),
-      delay: anime.stagger(200, { from: 'center' }),
-    })
+    //TODO: Add animation
+    // const animation = anime({
+    //   targets: container.querySelectorAll('.settings-section'),
+    //   easing: 'spring(1, 80, 10, 0)',
+    //   scale: active ? 1 : 0.618,
+    //   opacity: active ? 1 : 0,
+    //   rotate: active ? 0 : anime.stagger(['-30deg', '30deg']),
+    //   delay: anime.stagger(200, { from: 'center' }),
+    // })
 
-    return () => {
-      anime.remove(animation)
-    }
+    // return () => {
+    //   anime.remove(animation)
+    // }
   }, [active])
 
   return (
     <div ref={ref} className="my-auto py-4">
       <GlassCard className="overflow-visible">
-        <CardBody className="grid grid-cols-2 xl:grid-cols-4 items-stretch gap-2 overflow-visible">
+        <CardContent className="grid grid-cols-2 xl:grid-cols-4 items-stretch gap-2 overflow-visible">
           <Section title="General">
-            <Select
-              label="AI provider"
-              selectedKeys={['OpenAI']}
-              variant="underlined"
-            >
-              <SelectItem key="OpenAI" value="OpenAI">
-                OpenAI
-              </SelectItem>
+            <Select value="OpenAI" onValueChange={() => {}}>
+              <SelectItem value="OpenAI">OpenAI</SelectItem>
             </Select>
             <Checkbox
-              color="default"
-              isSelected={!!mockPaidRequests}
-              onValueChange={setMockPaidRequests}
+              checked={!!mockPaidRequests}
+              onCheckedChange={setMockPaidRequests}
             >
               Mock paid requests
             </Checkbox>
             <Checkbox
-              color="default"
-              isSelected={!!launchOnStartup}
-              onValueChange={toggleLaunchOnStartup}
+              checked={!!launchOnStartup}
+              onCheckedChange={toggleLaunchOnStartup}
             >
               Launch on startup
             </Checkbox>
             <Checkbox
-              color="default"
-              isSelected={!!launchHidden}
-              onValueChange={setLaunchHidden}
+              checked={!!launchHidden}
+              onCheckedChange={setLaunchHidden}
             >
               Launch hidden
             </Checkbox>
@@ -182,19 +171,8 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
           <Section title="Media">
             <Select
-              label="Image generation model"
-              variant="underlined"
-              selectedKeys={
-                imageGenerationModel &&
-                models.imageModels.includes(imageGenerationModel)
-                  ? [imageGenerationModel]
-                  : []
-              }
-              onSelectionChange={(keys) => {
-                if (keys instanceof Set) {
-                  setImageGenerationModel(keys.values().next().value)
-                }
-              }}
+              value={imageGenerationModel ?? ''}
+              onValueChange={setImageGenerationModel}
             >
               {models.imageModels.map((model) => (
                 <SelectItem key={model} value={model}>
@@ -203,25 +181,14 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
               ))}
             </Select>
             <Checkbox
-              color="default"
-              isSelected={!!readChatResponses}
-              onValueChange={setReadChatResponses}
+              checked={!!readChatResponses}
+              onCheckedChange={setReadChatResponses}
             >
               Read chat responses
             </Checkbox>
             <Select
-              label="Text to speech language"
-              variant="underlined"
-              selectedKeys={
-                textToSpeechLanguage && textToSpeechLanguage in gttsLanguages
-                  ? [textToSpeechLanguage]
-                  : []
-              }
-              onSelectionChange={(keys) => {
-                if (keys instanceof Set) {
-                  setTextToSpeechLanguage(keys.values().next().value)
-                }
-              }}
+              value={textToSpeechLanguage ?? ''}
+              onValueChange={setTextToSpeechLanguage}
             >
               {Object.entries(gttsLanguages).map(([key, language]) => (
                 <SelectItem key={key} value={key}>
@@ -232,68 +199,37 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
           </Section>
 
           <Section title="Chat">
-            <Select
-              label="Chat model"
-              variant="underlined"
-              selectedKeys={
-                chatModel && models.chatModels.includes(chatModel)
-                  ? [chatModel]
-                  : []
-              }
-              onSelectionChange={(keys) => {
-                if (keys instanceof Set) {
-                  setChatModel(keys.values().next().value)
-                }
-              }}
-            >
+            <Select value={chatModel ?? ''} onValueChange={setChatModel}>
               {models.chatModels.map((model) => (
                 <SelectItem key={model} value={model}>
                   {model}
                 </SelectItem>
               ))}
             </Select>
-            <Checkbox
-              color="default"
-              isSelected={!!useHistory}
-              onValueChange={setUseHistory}
-            >
+            <Checkbox checked={!!useHistory} onCheckedChange={setUseHistory}>
               Include history
             </Checkbox>
             <Input
               className="min-w-56"
-              variant="underlined"
               type="number"
               min="1"
               max="32"
               value={(maxHistoryLength ?? 8).toString()}
               onChange={handleMaxHistoryLengthChange}
-              isDisabled={!useHistory}
-              label={
-                <span className="text-nowrap">
-                  Previous messages sent to AI
-                </span>
-              }
+              disabled={!useHistory}
+              aria-label="Previous messages sent to AI"
             />
           </Section>
 
           <Section title="Assistant">
             <Textarea
-              variant="faded"
-              label="Initial system message"
-              labelPlacement="outside"
               placeholder="Enter message that tells the AI about its purpose and how to respond to user's questions"
-              maxRows={5}
               value={initialSystemMessage ?? ''}
-              onValueChange={setInitialSystemMessage}
+              onChange={(e) => setInitialSystemMessage(e.target.value)}
               className="h-full max-h-full"
-              classNames={{
-                inputWrapper:
-                  'flex-grow max-h-full border-1 border-foreground-400/50 bg-foreground-600/10 rounded-md',
-                input: 'placeholder:text-foreground-700',
-              }}
             />
           </Section>
-        </CardBody>
+        </CardContent>
       </GlassCard>
     </div>
   )

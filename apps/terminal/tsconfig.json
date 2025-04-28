@@ -1,48 +1,22 @@
 {
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module": "CommonJS"
+  },
   "include": [
-    "./src"
+    "src/**/*"
   ],
   "exclude": [
-    "./node_modules",
-    "./dist"
+    "node_modules",
+    "dist"
   ],
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "skipLibCheck": true,
-    "lib": [
-      "ESNext"
-    ],
-    "allowJs": false,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": "./src",
-    "paths": {
-      "~/*": [
-        "./src/*"
-      ]
-    },
-    "removeComments": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true
-  },
-  "ts-node": {
-    "transpileOnly": true,
-    "files": true,
-    "compilerOptions": {
-      "rootDir": "./src"
+  "references": [
+    {
+      "path": "../../packages/common"
     }
-  }
+  ]
 }

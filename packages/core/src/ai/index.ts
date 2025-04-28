@@ -68,7 +68,6 @@ type InitType<ProviderType extends AiProviderType> = {
   ) => Promise<string>
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export class AI<ProviderType extends AiProviderType = AiProviderType> {
   private static instance: AI | null = null
 
@@ -96,7 +95,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
 
       try {
         switch (init.providerType) {
-          case AiProviderType.openai:
+          case AiProviderType.OpenAI:
             return await OpenAiAPI.getOpenAiClient(apiKey)
           default:
             throw throwUnsupportedProviderError(init.providerType)
@@ -174,7 +173,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
   //istanbul ignore next
   getAvailableModels = once(async () => {
     switch (this.providerType) {
-      case AiProviderType.openai:
+      case AiProviderType.OpenAI:
         return await OpenAiAPI.getAvailableModels(this.providerClient).then(
           (models) =>
             Object.keys(models).reduce(
@@ -211,7 +210,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     const initialSystemMessage = getUserConfigValue('initialSystemMessage')
 
     switch (this.providerType) {
-      case AiProviderType.openai: {
+      case AiProviderType.OpenAI: {
         const stream = mockPaidRequests
           ? mockChatStream(
               (content, isLast): OpenAI.ChatCompletionChunk.Choice => ({
@@ -278,7 +277,7 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     const mockPaidRequests = getUserConfigValue('mockPaidRequests')
 
     switch (this.providerType) {
-      case AiProviderType.openai:
+      case AiProviderType.OpenAI:
         if (mockPaidRequests) {
           return MOCKED_BASE64_IMAGE
         }

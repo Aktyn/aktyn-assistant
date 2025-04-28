@@ -1,5 +1,11 @@
 import { useState } from 'react'
-import { Listbox, ListboxItem } from '@nextui-org/listbox'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Dialog } from './Dialog'
 
 type AiProviderSelectDialogProps = {
@@ -20,6 +26,7 @@ export const AiProviderSelectDialog = ({
   return (
     <Dialog
       isOpen={open}
+      onClose={onClose}
       isDismissable={false}
       isKeyboardDismissDisabled
       title="Select AI provider"
@@ -32,24 +39,21 @@ export const AiProviderSelectDialog = ({
         onClose()
       }}
     >
-      <Listbox
-        label="AI provider"
-        variant="flat"
-        color="primary"
-        disallowEmptySelection
-        selectionMode="single"
-        selectedKeys={selectedAiProvider ? [selectedAiProvider] : []}
-        onSelectionChange={(selection) =>
-          selection !== 'all' &&
-          setSelectedAiProvider(selection.values().next().value)
-        }
+      <Select
+        value={selectedAiProvider ?? ''}
+        onValueChange={(value) => setSelectedAiProvider(value)}
       >
-        {aiProviders.map((provider) => (
-          <ListboxItem key={provider} value={provider}>
-            {provider}
-          </ListboxItem>
-        ))}
-      </Listbox>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select AI provider" />
+        </SelectTrigger>
+        <SelectContent>
+          {aiProviders.map((provider) => (
+            <SelectItem key={provider} value={provider}>
+              {provider}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </Dialog>
   )
 }

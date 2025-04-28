@@ -1,13 +1,18 @@
 import { useCallback, useState } from 'react'
 import type { ImportedToolInfo, ToolInfo } from '@aktyn-assistant/core'
-import { mdiCog, mdiDelete } from '@mdi/js'
-import Icon from '@mdi/react'
-import { Button } from '@nextui-org/button'
-import { Checkbox, CheckboxGroup } from '@nextui-org/checkbox'
-import { Chip } from '@nextui-org/chip'
-import { Tooltip } from '@nextui-org/tooltip'
+import { Settings, Trash2 } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { useCancellablePromise } from '../../hooks/useCancellablePromise'
 import { ToolEditDialog } from '../dialog/ToolEditDialog'
+import { cn } from '@/lib/utils'
 
 type ToolsListProps = {
   tools: ToolInfo[]
@@ -44,14 +49,17 @@ export const ToolsList = ({ tools, onRequestReload }: ToolsListProps) => {
     <>
       <div className="flex flex-col gap-y-2">
         <Checkbox
-          size="lg"
-          radius="sm"
-          className="gap-x-2"
-          isIndeterminate={
-            enabledToolsCount > 0 && enabledToolsCount < tools.length
+          id="enable-all-tools"
+          className="flex items-center gap-x-2"
+          checked={
+            enabledToolsCount > 0 && enabledToolsCount === tools.length
+              ? true
+              : enabledToolsCount > 0
+                ? 'indeterminate'
+                : false
           }
-          isSelected={enabledToolsCount === tools.length}
-          onValueChange={(selected) => {
+          onCheckedChange={(checked: boolean | 'indeterminate') => {
+            const selected = checked === true // indeterminate also triggers change
             if (selected) {
               handleEnabledToolsChange(
                 tools.map((tool) => tool.schema.functionName),
@@ -61,82 +69,102 @@ export const ToolsList = ({ tools, onRequestReload }: ToolsListProps) => {
             }
           }}
         >
-          Enable all
+          <label htmlFor="enable-all-tools" className="text-lg">
+            Enable all
+          </label>
         </Checkbox>
-        <CheckboxGroup
-          size="lg"
-          radius="sm"
-          value={tools.reduce((acc, tool) => {
-            if (tool.enabled) {
-              acc.push(tool.schema.functionName)
-            }
-            return acc
-          }, [] as string[])}
-          onValueChange={handleEnabledToolsChange}
-        >
+        <div className="flex flex-col gap-y-2">
           {tools.map((tool) => (
             <div
               key={tool.schema.functionName}
               className="flex flex-row items-center justify-between gap-x-2"
             >
-              <Checkbox value={tool.schema.functionName} className="gap-x-2">
+              <Checkbox
+                id={`tool-${tool.schema.functionName}`}
+                checked={tool.enabled}
+                onCheckedChange={(checked: boolean) => {
+                  const currentEnabled = tools
+                    .filter((t) => t.enabled)
+                    .map((t) => t.schema.functionName)
+                  const toolName = tool.schema.functionName
+                  if (checked) {
+                    handleEnabledToolsChange([...currentEnabled, toolName])
+                  } else {
+                    handleEnabledToolsChange(
+                      currentEnabled.filter((name) => name !== toolName),
+                    )
+                  }
+                }}
+                className="gap-x-2"
+              >
                 <div className="flex flex-col items-start max-w-96">
                   <div className="flex flex-row items-baseline">
-                    <strong>{tool.schema.functionName}</strong>
-                    <Chip
-                      size="sm"
-                      radius="full"
-                      variant="light"
-                      className="text-foreground-400"
+                    <label
+                      htmlFor={`tool-${tool.schema.functionName}`}
+                      className="font-bold"
+                    >
+                      {tool.schema.functionName}
+                    </label>
+                    <Badge
+                      variant="outline"
+                      className="ml-1 text-muted-foreground"
                     >
                       ({tool.schema.version})
-                    </Chip>
+                    </Badge>
                   </div>
-                  <span className="text-sm text-foreground-500 text-balance">
+                  <span className="text-sm text-muted-foreground text-balance">
                     {tool.schema.description}
                   </span>
                 </div>
               </Checkbox>
-              <Tooltip content="Edit tool">
-                <Button
-                  isIconOnly
-                  size="md"
-                  variant="light"
-                  radius="full"
-                  onClick={(event) => {
-                    setToolToEdit(tool)
-                    setOpenToolEditDialog(true)
-                    event.stopPropagation()
-                  }}
-                >
-                  <Icon
-                    className="transition-transform"
-                    path={mdiCog}
-                    rotate={openToolEditDialog && toolToEdit === tool ? 90 : 0}
-                    size="1.5rem"
-                  />
-                </Button>
-              </Tooltip>
-              {tool.builtIn ? (
-                <Chip size="sm" radius="full" variant="flat" color="secondary">
-                  Built-in
-                </Chip>
-              ) : (
-                <Tooltip content="Remove tool">
-                  <Button
-                    isIconOnly
-                    size="md"
-                    variant="light"
-                    radius="full"
-                    onClick={() => removeTool(tool)}
-                  >
-                    <Icon path={mdiDelete} size="1.5rem" />
-                  </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        setToolToEdit(tool)
+                        setOpenToolEditDialog(true)
+                      }}
+                    >
+                      <Settings
+                        className={cn(
+                          'transition-transform h-6 w-6',
+                          openToolEditDialog &&
+                            toolToEdit === tool &&
+                            'rotate-90',
+                        )}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Edit tool</TooltipContent>
                 </Tooltip>
+              </TooltipProvider>
+              {tool.builtIn ? (
+                <Badge variant="secondary">Built-in</Badge>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full text-destructive"
+                        onClick={() => removeTool(tool)}
+                      >
+                        <Trash2 className="h-6 w-6" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Remove tool</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
           ))}
-        </CheckboxGroup>
+        </div>
       </div>
       {toolToEdit && (
         <ToolEditDialog

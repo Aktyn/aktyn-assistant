@@ -1,27 +1,38 @@
-import { vi, describe, it, expect, beforeAll, afterAll } from 'vitest'
+/* eslint-disable import/order */
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-const notifyMock = vi.fn()
+vi.mock('node-notifier', () => {
+  const nodeNotifierModule = { notify: vi.fn() }
 
-vi.mock('node-notifier', () => ({
-  notify: notifyMock,
-}))
-vi.mock('fs', () => ({
-  writeFileSync: vi.fn(),
-  mkdirSync: vi.fn(),
-  mkdir: vi.fn(),
-  existsSync: vi.fn(),
-  unlinkSync: vi.fn(),
-  readFileSync: (filePath: string) => {
-    if (filePath.endsWith('config.json')) {
-      return JSON.stringify({
-        selectedAiProvider: 'openai',
-        selectedChatModel: 'gpt-3.5-turbo',
-        mockPaidRequests: true,
-      })
-    }
-    return 'mock file content'
-  },
-}))
+  return {
+    ...nodeNotifierModule,
+    default: nodeNotifierModule,
+  }
+})
+vi.mock('fs', () => {
+  const fsModule = {
+    writeFileSync: vi.fn(),
+    mkdirSync: vi.fn(),
+    mkdir: vi.fn(),
+    existsSync: vi.fn(),
+    unlinkSync: vi.fn(),
+    readFileSync: (filePath: string) => {
+      if (filePath.endsWith('config.json')) {
+        return JSON.stringify({
+          selectedAiProvider: 'openai',
+          selectedChatModel: 'gpt-3.5-turbo',
+          mockPaidRequests: true,
+        })
+      }
+      return 'mock file content'
+    },
+  }
+
+  return {
+    ...fsModule,
+    default: fsModule,
+  }
+})
 vi.mock('openai', () => ({
   __esModule: true,
   OpenAI: class OpenAiMock {
@@ -32,7 +43,8 @@ vi.mock('openai', () => ({
   },
 }))
 
-import { AI, AiProviderType } from '.'
+import nodeNotifier from 'node-notifier'
+
 import {
   LOREM_IPSUM_WORDS,
   RESPONSE_WITH_CODE_WORDS,
@@ -41,6 +53,8 @@ import {
   RESPONSE_WITH_NUMBERS_WORDS,
 } from './chatMock'
 
+import { AI, AiProviderType } from '.'
+
 import '../test-utils/extend'
 
 describe('AI class', () => {
@@ -48,7 +62,7 @@ describe('AI class', () => {
     'should perform chat query',
     async () => {
       const ai = await AI.client({
-        providerType: AiProviderType.openai,
+        providerType: AiProviderType.OpenAI,
         requestApiKey: async () => 'mock api key',
       })
 
@@ -97,7 +111,8 @@ describe(AI.notifyError.name, () => {
     const error = new Error('Test error')
     process.env.NODE_ENV = 'dev'
     AI.notifyError(error)
-    expect(notifyMock).toHaveBeenCalledWith({
+
+    expect(nodeNotifier.notify).toHaveBeenCalledWith({
       title: 'AI error (OpenAI)',
       message: 'Test error',
     })

@@ -22,6 +22,6 @@ export async function generateImage(
     // style: 'vivid' //TODO: allow user to choose style for dall-e-3
   })
 
-  assert(image.data.length === imagesCount, 'Invalid image data')
-  return image.data[0].b64_json
+  assert(image.data?.length === imagesCount, 'Invalid image data')
+  return image.data?.[0]?.b64_json
 }

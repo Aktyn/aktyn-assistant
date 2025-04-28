@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { closeSnackbar, enqueueSnackbar } from 'notistack'
+import { toast } from 'sonner'
 import { NotificationMessage } from '../components/common/NotificationMessage'
 import { AiProviderSelectDialog } from '../components/dialog/AiProviderSelectDialog'
 import { ApiKeyInputDialog } from '../components/dialog/ApiKeyInputDialog'
@@ -16,6 +16,7 @@ import type { ViewType } from '../utils/navigation'
 type InitData = Awaited<ReturnType<typeof window.electronAPI.getInitData>>
 const noop = () => {}
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const GlobalContext = createContext({
   ready: false,
   initData: null as InitData | null,
@@ -59,16 +60,12 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     window.electronAPI.onError((title, message) => {
-      const key = enqueueSnackbar({
-        variant: 'error',
-        message: (
-          <NotificationMessage
-            title={title}
-            message={message}
-            copyable
-            onClose={() => closeSnackbar(key)}
-          />
+      toast.error(title, {
+        description: (
+          <NotificationMessage title={title} message={message} copyable />
         ),
+        duration: Infinity,
+        closeButton: true,
       })
     })
 

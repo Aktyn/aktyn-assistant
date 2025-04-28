@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { mdiPlusBox } from '@mdi/js'
-import Icon from '@mdi/react'
-import { Button } from '@nextui-org/button'
-import { CardBody, CardHeader } from '@nextui-org/card'
+import { PlusSquare } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { CardContent, CardHeader } from '@/components/ui/card'
 import { GlassCard } from '../components/common/GlassCard'
 import { AddToolDialog } from '../components/tools/AddToolDialog'
 import { ToolsList } from '../components/tools/ToolsList'
 import { useCancellablePromise } from '../hooks/useCancellablePromise'
-import { animate, stagger } from 'animejs'
 
 type ToolInfo = Awaited<
   ReturnType<typeof window.electronAPI.loadToolsInfo>
@@ -32,23 +30,24 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
     }
   }, [active, loadTools])
 
-  useEffect(() => {
-    const container = ref.current
-    if (!container) {
-      return
-    }
+  //TODO: Add animation
+  // useEffect(() => {
+  //   const container = ref.current
+  //   if (!container) {
+  //     return
+  //   }
 
-    const animation = animate(container.querySelectorAll(':scope > *'), {
-      easing: 'spring(1, 80, 10, 0)',
-      scale: active ? 1 : 0.618,
-      rotate: active ? 0 : stagger(['15deg', '-15deg']),
-      delay: stagger(200, { from: 'first' }),
-    })
+  //   const animation = animate(container.querySelectorAll(':scope > *'), {
+  //     easing: 'spring(1, 80, 10, 0)',
+  //     scale: active ? 1 : 0.618,
+  //     rotate: active ? 0 : stagger(['15deg', '-15deg']),
+  //     delay: stagger(200, { from: 'first' }),
+  //   })
 
-    return () => {
-      animation.cancel()
-    }
-  }, [active])
+  //   return () => {
+  //     animation.cancel()
+  //   }
+  // }, [active])
 
   return (
     <>
@@ -59,11 +58,10 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
         <Button
           className="font-semibold backdrop-blur-sm shadow-[0_0_8rem] shadow-primary-400/40 border-1 border-primary-500/50 hover:border-primary-200"
           size="lg"
-          color="primary"
-          variant="flat"
-          startContent={<Icon path={mdiPlusBox} size="2rem" />}
+          variant="secondary"
           onClick={() => setAddToolDialogOpen(true)}
         >
+          <PlusSquare size={32} className="mr-2" />
           Add tool
         </Button>
         {availableTools.length > 0 && (
@@ -71,9 +69,9 @@ export const Tools = ({ in: active }: { in?: boolean }) => {
             <CardHeader className="text-xl font-bold justify-center">
               Available tools
             </CardHeader>
-            <CardBody>
+            <CardContent>
               <ToolsList tools={availableTools} onRequestReload={loadTools} />
-            </CardBody>
+            </CardContent>
           </GlassCard>
         )}
       </div>

@@ -1,34 +1,33 @@
-import { Fragment, useContext, useEffect, useMemo, useRef } from 'react'
-import { CardBody, CardHeader } from '@nextui-org/card'
-import { Link } from '@nextui-org/link'
-import anime from 'animejs'
+import { CardContent, CardHeader } from '@/components/ui/card'
+import { Fragment, useContext, useMemo, useRef } from 'react'
 import { GlassCard } from '../components/common/GlassCard'
 import { GlobalContext } from '../context/GlobalContextProvider'
 
-export const Info = ({ in: active }: { in?: boolean }) => {
+export const Info = ({ in: _active }: { in?: boolean }) => {
   const ref = useRef<HTMLDivElement>(null)
   const { initData } = useContext(GlobalContext)
 
-  const versions = useMemo(getVersions, [])
+  const versions = useMemo(() => getVersions(), [])
 
-  useEffect(() => {
-    const container = ref.current
-    if (!container) {
-      return
-    }
+  //TODO: Add animation
+  // useEffect(() => {
+  //   const container = ref.current
+  //   if (!container) {
+  //     return
+  //   }
 
-    const animation = anime({
-      targets: container.querySelectorAll(':scope > *'),
-      easing: 'spring(1, 80, 10, 0)',
-      scale: active ? 1 : 0.618,
-      rotate: active ? 0 : anime.stagger(['15deg', '-15deg']),
-      delay: anime.stagger(200, { from: 'first' }),
-    })
+  //   const animation = anime({
+  //     targets: container.querySelectorAll(':scope > *'),
+  //     easing: 'spring(1, 80, 10, 0)',
+  //     scale: active ? 1 : 0.618,
+  //     rotate: active ? 0 : anime.stagger(['15deg', '-15deg']),
+  //     delay: anime.stagger(200, { from: 'first' }),
+  //   })
 
-    return () => {
-      anime.remove(animation)
-    }
-  }, [active])
+  //   return () => {
+  //     anime.remove(animation)
+  //   }
+  // }, [active])
 
   return (
     <div
@@ -39,40 +38,34 @@ export const Info = ({ in: active }: { in?: boolean }) => {
         <CardHeader className="text-xl font-bold justify-center">
           Author
         </CardHeader>
-        <CardBody className="justify-start items-center gap-y-1">
+        <CardContent className="justify-start items-center gap-y-1">
           <div>
             <span>Created by </span>
             <b>Aktyn</b>
           </div>
-          <Link
+          <a
             href="https://github.com/Aktyn"
-            color="foreground"
-            isBlock
-            isExternal
-            showAnchorIcon
-            underline="hover"
+            className="text-primary underline hover:no-underline block"
+            target="_blank"
             rel="noreferrer"
           >
             Author repository
-          </Link>
-          <Link
+          </a>
+          <a
             href="https://github.com/Aktyn/aktyn-assistant"
-            color="foreground"
-            isBlock
-            isExternal
-            showAnchorIcon
-            underline="hover"
+            className="text-primary underline hover:no-underline block"
+            target="_blank"
             rel="noreferrer"
           >
             Project repository
-          </Link>
-        </CardBody>
+          </a>
+        </CardContent>
       </GlassCard>
       <GlassCard className="overflow-visible">
         <CardHeader className="text-xl font-bold justify-center">
           Versions
         </CardHeader>
-        <CardBody className="justify-start">
+        <CardContent className="justify-start">
           <div className="versions values-list">
             <span>Aktyn Assistant:</span>
             <b>{initData?.version ?? '-'}</b>
@@ -85,7 +78,7 @@ export const Info = ({ in: active }: { in?: boolean }) => {
               </Fragment>
             ))}
           </div>
-        </CardBody>
+        </CardContent>
       </GlassCard>
     </div>
   )

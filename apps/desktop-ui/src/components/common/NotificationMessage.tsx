@@ -1,7 +1,7 @@
+import { Check, Copy, X } from 'lucide-react'
 import { useState } from 'react'
-import { mdiCheck, mdiClose, mdiContentCopy } from '@mdi/js'
-import { IconButton } from './IconButton'
 import { useMounted } from '../../hooks/useMounted'
+import { IconButton } from './IconButton'
 
 type NotificationMessageProps = {
   title?: string
@@ -37,12 +37,12 @@ export const NotificationMessage = ({
         {copyable && (
           <IconButton
             size="sm"
-            icon={copySuccess ? mdiCheck : mdiContentCopy}
-            isDisabled={copySuccess}
+            icon={copySuccess ? Check : Copy}
+            disabled={copySuccess}
             onClick={copyMessage}
           />
         )}
-        {onClose && <IconButton size="sm" onClick={onClose} icon={mdiClose} />}
+        {onClose && <IconButton size="sm" onClick={onClose} icon={X} />}
       </div>
     </div>
   )
