@@ -37,7 +37,7 @@
 		}
 	],
 	"settings": {
-		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",
+		"typescript.tsdk": "Core/node_modules/typescript/lib",
 		"typescript.preferences.includePackageJsonAutoImports": "on",
 		"testing.automaticallyOpenPeekView": "never",
 		"cSpell.words": [
@@ -71,9 +71,11 @@
 			"shadcn",
 			"sonner",
 			"uddg",
+			"uuidv",
 			"visualcompletion"
 		],
 		"editor.foldingImportsByDefault": false,
-		"typescript.preferences.preferTypeOnlyAutoImports": true
+		"typescript.preferences.preferTypeOnlyAutoImports": true,
+		"npm.packageManager": "yarn"
 	}
 }

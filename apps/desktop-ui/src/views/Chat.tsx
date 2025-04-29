@@ -26,6 +26,8 @@ import { useStateToRef } from '../hooks/useStateToRef'
 import { useUserConfigValue } from '../hooks/useUserConfigValue'
 import { format } from '../utils/contentFormatters'
 
+import './chat.css'
+
 type ChatProps = {
   in?: boolean
   quickChatMode?: boolean

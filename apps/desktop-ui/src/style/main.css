@@ -2,11 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-@import './common/animations.css';
+/* TODO: fix styles */
+/* @import './common/animations.css';
 @import './common/elements.css';
 @import './common/lists.css';
 @import './common/notifications.css';
-@import './common/code-blocks.css';
+@import './common/code-blocks.css'; */
 
 @font-face {
   font-family: 'AI';

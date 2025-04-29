@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
-@import "./views/chat.css";
 
 @theme inline {
   --text-xxs: 0.5rem;

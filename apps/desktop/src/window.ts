@@ -24,6 +24,8 @@ const recordingTrayIconPath = path.join(
   'icon-tray-recording.png',
 )
 
+const localhostUrl = 'http://localhost:5173'
+
 export const getDefaultTrayIcon = once(() =>
   nativeImage.createFromPath(trayIconPath),
 )
@@ -58,7 +60,7 @@ export async function createMainWindow() {
 
   if (isDev()) {
     win.webContents.openDevTools()
-    await win.loadURL('http://localhost:3000')
+    await win.loadURL(localhostUrl)
   } else {
     await win.loadFile(path.join(uiPath, 'index.html'))
   }
@@ -93,7 +95,7 @@ export async function createQuickChatWindow() {
   setupWindowToOpenLinksExternally(win)
 
   if (isDev()) {
-    await win.loadURL('http://localhost:3000?mode=quick-chat')
+    await win.loadURL(`${localhostUrl}?mode=quick-chat`)
   } else {
     await win.loadFile(path.join(uiPath, 'index.html'), {
       search: 'mode=quick-chat',

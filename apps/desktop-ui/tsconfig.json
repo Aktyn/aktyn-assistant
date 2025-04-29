@@ -9,14 +9,15 @@
     }
   ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@/*": [
         "./src/*"
       ]
     },
     "types": [
-      "vitest/globals"
+      "vitest/globals",
+      "prismjs"
     ]
   }
 }
