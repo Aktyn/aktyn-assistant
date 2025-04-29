@@ -14,7 +14,7 @@
     "package": "cross-env DEBUG=electron-packager electron-forge package --verbose",
     "make": "./fix-modules.sh && electron-forge make && shx rm -rf ./node_modules",
     "publish": "./fix-modules.sh && electron-forge publish && shx rm -rf ./node_modules",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc -p ./tsconfig.build.json",
     "start:no-electron": "node ./dist/index.js",
     "start:legacy": "electron ./dist/index.js",
     "start": "electron-forge start",

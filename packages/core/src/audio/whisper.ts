@@ -8,8 +8,10 @@ import { getDataDirectory, logger } from '../utils'
 const huggingFaceUrl = 'https://huggingface.co/ggerganov/whisper.cpp'
 const modelFileName = 'ggml-base.en.bin'
 
-//@ts-expect-error resourcesPath comes from packaged electron
-const basePath = process.resourcesPath ?? path.join(__dirname, '..', '..')
+const basePath =
+  'resourcesPath' in process && typeof process.resourcesPath === 'string'
+    ? process.resourcesPath
+    : path.join(__dirname, '..', '..')
 
 const whisperAssetsPath = path.join(basePath, 'assets', 'whisper')
 //TODO: support for other platforms

@@ -21,7 +21,7 @@
 
 ## Overview <a id="overview"></a>
 
-#### Aktyn Assistant is an application that allows you to interact with an AI on various types of devices while performing regular tasks.
+#### Aktyn Assistant is an application that allows you to interact with an AI on various types of devices while performing regular tasks
 
 - Quick chat window can be easily activated with a keyboard shortcut.
 - Users can configure its default behavior by simply describing it in the settings.
@@ -49,7 +49,7 @@
 
 </details>
 
-###### (Coming soon) It is able to take a quick glance at your screen and answer questions about it.<br />By utilizing different type of AI models, it can perform different tasks like generating images, making real time conversations, understanding image context, etc.
+###### (Coming soon) It is able to take a quick glance at your screen and answer questions about it.<br />By utilizing different type of AI models, it can perform different tasks like generating images, making real time conversations, understanding image context, etc
 
 ---
 

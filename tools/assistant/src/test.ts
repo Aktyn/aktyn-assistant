@@ -12,7 +12,7 @@ if (
   process.exit(1)
 }
 
-const [openSiteOrRunApplicationTool, sendChatMessageTool] = getTools({
+const [_openSiteOrRunApplicationTool, sendChatMessageTool] = getTools({
   userDataPath: process.env.PUPPETEER_USER_DATA_DIRECTORY,
   username: process.env.MESSENGER_USERNAME!,
   password: process.env.MESSENGER_PASSWORD!,

@@ -11,15 +11,22 @@ export default tseslint.config(
       'node_modules/',
       '*.config.js',
       'coverage/',
+      'out/',
+      'ui/',
+      'assets/',
+      'img/',
+      '*.js',
     ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ["**/*.ts"],
     languageOptions: {
+      parser: tseslint.parser,
       parserOptions: {
-        project: true,
-        tsconfigRootDir: import.meta.dirname,
+        project: "tsconfig.json",
+        sourceType: "module",
       },
     },
     plugins: {
@@ -28,7 +35,7 @@ export default tseslint.config(
     },
     settings: {
       'import/parsers': {
-        '@typescript-eslint/parser': ['.ts', '.tsx'],
+        '@typescript-eslint/parser': ['.ts'],
       },
       'import/resolver': {
         typescript: {
@@ -52,7 +59,7 @@ export default tseslint.config(
         'error',
         { functions: false, classes: true, variables: false },
       ],
-       '@typescript-eslint/no-unused-vars': [
+      '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
       ],
@@ -98,12 +105,12 @@ export default tseslint.config(
         },
       ],
       'import/no-duplicates': ['error', { 'prefer-inline': true }],
-      'import/no-extraneous-dependencies': [
+       'import/no-extraneous-dependencies': [
         'warn',
         { devDependencies: false },
       ],
       'import/resolver': 'off',
-      'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
+      'no-console': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
@@ -121,7 +128,10 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
-      'import/no-extraneous-dependencies': 'off',
+      'import/no-extraneous-dependencies': [
+        'warn',
+        { devDependencies: true },
+      ],
     },
   }
 ); 

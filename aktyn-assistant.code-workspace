@@ -40,11 +40,6 @@
 		"typescript.tsdk": "aktyn-assistant/node_modules/typescript/lib",
 		"typescript.preferences.includePackageJsonAutoImports": "on",
 		"testing.automaticallyOpenPeekView": "never",
-		"jest.disabledWorkspaceFolders": [
-			"aktyn-assistant"
-		],
-		"jest.monitorLongRun": 30000,
-		"jest.runMode": "watch",
 		"cSpell.words": [
 			"afplay",
 			"aktyn",
@@ -68,6 +63,7 @@
 			"nodewhisper",
 			"omxplayer",
 			"pkill",
+			"Promisyfy",
 			"Radek",
 			"Radosław",
 			"Rhasspy",
@@ -78,8 +74,6 @@
 			"visualcompletion"
 		],
 		"editor.foldingImportsByDefault": false,
-		"autoimport.showNotifications": false,
-		"autoimport.useSemiColon": false,
 		"typescript.preferences.preferTypeOnlyAutoImports": true
 	}
 }

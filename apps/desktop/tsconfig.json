@@ -1,11 +1,5 @@
 {
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "./node_modules",
-    "./dist"
-  ],
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
@@ -17,8 +11,8 @@
       "DOM.Iterable"
     ],
     "allowJs": false,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "dist",
+    "rootDir": "src",
     "baseUrl": "./src",
     "paths": {
       "~/*": [
@@ -40,11 +34,26 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true
   },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "./node_modules",
+    "./dist"
+  ],
   "ts-node": {
     "transpileOnly": true,
     "files": true,
     "compilerOptions": {
       "rootDir": "./src"
     }
-  }
+  },
+  "references": [
+    {
+      "path": "../../packages/common"
+    },
+    {
+      "path": "../../packages/core"
+    }
+  ]
 }

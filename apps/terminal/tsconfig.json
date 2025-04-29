@@ -17,6 +17,9 @@
   "references": [
     {
       "path": "../../packages/common"
+    },
+    {
+      "path": "../../packages/core"
     }
   ]
 }

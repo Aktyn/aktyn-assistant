@@ -20,6 +20,16 @@ import { Chat } from './views/Chat'
 export default function App() {
   const quickChatMode = useQuickChatMode()
 
+  if (!window.electronAPI) {
+    return (
+      <div className="flex flex-col items-center justify-center h-lvh">
+        <p className="text-center text-orange-500 text-xl font-bold text-balance">
+          This application is not running in the Electron environment!
+        </p>
+      </div>
+    )
+  }
+
   return (
     <GlobalContextProvider>
       {!quickChatMode ? (

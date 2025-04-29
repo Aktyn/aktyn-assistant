@@ -8,7 +8,7 @@ import eslintConfigPrettier from "eslint-config-prettier"
 import reactCompiler from "eslint-plugin-react-compiler"
 
 export default tseslint.config(
-  { ignores: ["dist", "node_modules"] },
+  { ignores: ["dist", "node_modules", "vite.config.ts"] },
   {
     extends: [
       js.configs.recommended,

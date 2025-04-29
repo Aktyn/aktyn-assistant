@@ -1,4 +1,6 @@
 [
-  "packages/*",
-  "apps/*"
+  "packages/common",
+  "packages/core",
+  "apps/desktop",
+  "apps/terminal"
 ]

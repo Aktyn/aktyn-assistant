@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
+@import "./views/chat.css";
+
 @theme inline {
   --text-xxs: 0.5rem;
 
@@ -138,6 +140,7 @@
   * {
     @apply border-border focus-visible:outline-hidden;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -159,5 +162,9 @@
 
   [data-slot="button"] {
     @apply not-disabled:cursor-pointer;
+  }
+
+  [data-slot="background-container"] {
+    @apply fixed top-0 left-0 w-full h-full z-[-1];
   }
 }

@@ -1,5 +1,4 @@
 import { palette } from '../utils/palette'
-import './Background.css'
 
 const patternContent = Array.from({ length: 100 })
   .map((_) => 'I')
@@ -9,11 +8,12 @@ export const Background = () => {
   return (
     <>
       <div
-        className="background-container"
+        data-slot="background-container"
         style={{ backgroundColor: palette.backgroundMain }}
       ></div>
       <div
-        className="ai-font left-12 background-container mx-[-8rem] text-center break-words"
+        data-slot="background-container"
+        className="ai-font left-12 mx-[-8rem] text-center break-words"
         style={{
           width: 'calc(100% + 16rem)',
           fontSize: '32rem',

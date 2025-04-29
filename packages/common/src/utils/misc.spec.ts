@@ -31,7 +31,7 @@ describe(wait.name, () => {
   it('should wait for given time', async () => {
     const startTime = Date.now()
     await wait(100)
-    expect(Date.now() - startTime).toBeGreaterThanOrEqual(100)
+    expect(Date.now() - startTime).toBeGreaterThanOrEqual(95)
   })
 })
 

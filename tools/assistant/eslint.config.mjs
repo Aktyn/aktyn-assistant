@@ -16,6 +16,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
         project: true,
@@ -52,7 +53,7 @@ export default tseslint.config(
         'error',
         { functions: false, classes: true, variables: false },
       ],
-       '@typescript-eslint/no-unused-vars': [
+      '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
       ],
