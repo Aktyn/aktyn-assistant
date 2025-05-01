@@ -1,6 +1,6 @@
 {
 	"name": "@aktyn-assistant/common",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"private": true,
 	"main": "lib/index.js",
 	"types": "src/index.ts",
