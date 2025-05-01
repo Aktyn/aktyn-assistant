@@ -13,7 +13,7 @@
   "scripts": {
     "package": "cross-env DEBUG=electron-packager electron-forge package --verbose",
     "make": "./fix-modules.sh && electron-forge make && shx rm -rf ./node_modules",
-    "publish": "./fix-modules.sh && electron-forge publish && shx rm -rf ./node_modules",
+    "publish": "./fix-modules.sh && electron-forge publish && shx rm -rf ./node_modules && yarn install",
     "build": "tsc -p ./tsconfig.build.json",
     "start:no-electron": "node ./dist/index.js",
     "start:legacy": "electron ./dist/index.js",

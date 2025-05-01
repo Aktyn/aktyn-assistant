@@ -28,7 +28,7 @@
     "dev:desktop": "yarn --cwd apps/desktop dev & yarn --cwd apps/desktop-ui dev",
     "dev:packages": "turbo run dev --continue --parallel --filter='./packages/*'",
     "dev:tools": "turbo run dev --continue --parallel --filter='./tools/*'",
-    "copy:desktop-ui": "yarn build:all && shx rm -rf apps/desktop/ui && shx cp -r apps/desktop-ui/build apps/desktop/ui",
+    "copy:desktop-ui": "yarn build:all && shx rm -rf apps/desktop/ui && shx cp -r apps/desktop-ui/dist apps/desktop/ui",
     "publish:desktop": "yarn copy:desktop-ui && yarn --cwd apps/desktop publish",
     "make:desktop": "yarn copy:desktop-ui && yarn --cwd apps/desktop make",
     "test": "turbo run test",

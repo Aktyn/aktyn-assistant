@@ -15,7 +15,7 @@ module.exports = {
     asar: true,
     name: 'Aktyn Assistant',
     executableName: 'aktyn-assistant-desktop',
-    appCopyright: 'Copyright © 2024 Radosław Krajewski (Aktyn)',
+    appCopyright: 'Copyright © 2025 Radosław Krajewski (Aktyn)',
     extraResource: ['node_modules/@aktyn-assistant/core/assets'],
   },
   rebuildConfig: {},

@@ -1,13 +1,12 @@
 #!/bin/bash
 
-echo Recreating node_modules directory
-rm -rf ./node_modules 2> /dev/null
-mkdir ./node_modules
+find ./node_modules -type l | while IFS= read -r link; do
+  target=$(readlink "$link")
+  abs_target=$(realpath -m "$(dirname "$link")/$target")
+  if [ -d "$abs_target" ]; then
+    echo "Replacing symlink $link with copy of $abs_target"
+    rm "$link"
+    cp -rL "$abs_target" "$link"
+  fi
+done
 
-echo Moving to root node_modules
-cd ../../node_modules
-pwd
-echo Copying modules
-cp -rL $(ls | grep -v '^aktyn-assistant-desktop') ../apps/desktop/node_modules/
-
-cd ..
