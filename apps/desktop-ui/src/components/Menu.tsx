@@ -6,6 +6,7 @@ import { ViewType } from '../utils/navigation'
 import { Separator } from './ui/separator'
 import { ScrollArea } from './ui/scroll-area'
 import { cn } from '@/lib/utils'
+import icon from '@/assets/icon.png'
 
 const viewsProperties: {
   [key in ViewType]: { title: string; icon: React.ElementType }
@@ -36,10 +37,10 @@ export const Menu = () => {
       <aside className="min-h-full border-r flex flex-col gap-y-3 items-stretch justify-start pt-4 bg-glass animate-in slide-in-from-left duration-view ease-out">
         <div className="flex flex-col items-center justify-center relative max-h-24 mb-3">
           <img
-            src="/icon.png"
+            src={icon}
             className="max-h-24 left-auto right-auto mx-auto blur-3xl absolute -z-1"
           />
-          <img src="/icon.png" className="h-full max-h-24" />
+          <img src={icon} className="h-full max-h-24" />
         </div>
         <nav className="flex flex-col items-stretch justify-start gap-y-3 px-3">
           {Object.values(ViewType).map((viewType) => {

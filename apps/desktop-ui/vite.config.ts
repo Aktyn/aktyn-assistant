@@ -21,4 +21,5 @@ export default defineConfig({
     },
     preserveSymlinks: true,
   },
+  base: './',
 })

@@ -2,7 +2,6 @@
   "name": "@aktyn-assistant/desktop-ui",
   "version": "3.0.1",
   "private": true,
-  "homepage": "./",
   "type": "module",
   "scripts": {
     "dev": "vite --force",
