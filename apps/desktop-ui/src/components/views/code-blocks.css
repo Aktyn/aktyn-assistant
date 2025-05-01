@@ -1,0 +1,76 @@
+[data-slot="ai-message"] pre,
+[data-slot="ai-message"] *:not(pre)>code,
+[data-slot="ai-message"]>code {
+  margin: 0;
+  background-color: color-mix(in oklch, var(--border) 50%, transparent);
+  border-radius: 0.25rem;
+  border: 1px solid var(--border);
+  padding-inline: 0.5rem;
+  padding-block: 0.125rem;
+  white-space: pre-wrap;
+}
+
+[data-slot="ai-message"] *:not(pre)>code,
+[data-slot="ai-message"]>code {
+  display: inline;
+}
+
+[data-slot="ai-message"] pre {
+  overflow: auto;
+  padding: 0 !important;
+  display: inline-block;
+  min-width: 61.8%;
+  max-width: 100%;
+}
+
+[data-slot="ai-message"] pre>.code-block-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-block: 0.5rem;
+  padding-inline: 1rem;
+  background-color: color-mix(in oklch, var(--border) 50%, transparent);
+}
+
+[data-slot="ai-message"] pre>.code-block-header>.language {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  text-transform: capitalize;
+}
+
+[data-slot="ai-message"] pre>.code-block-header>.code-options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+[data-slot="ai-message"] pre>.code-block-header>.code-options button {
+  padding-block: 0.25rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+[data-slot="ai-message"] pre>.code-block-header>.code-options button:hover {
+  color: var(--primary);
+}
+
+[data-slot="ai-message"] pre>code {
+  display: block;
+  overflow: hidden;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  overflow-x: auto;
+  transition: max-height 0.2s ease-in-out;
+}
+
+[data-slot="ai-message"] pre>code.hidden {
+  max-height: 0;
+}

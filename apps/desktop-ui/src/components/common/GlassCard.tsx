@@ -11,7 +11,7 @@ export const GlassCard = forwardRef<
       {...props}
       ref={ref}
       className={cn(
-        'backdrop-blur-[8px] border-1 border-divider bg-gradient-to-br from-primary-200/10 to-secondary-200/10 !transition-colors',
+        'backdrop-blur-sm bg-background/40 bg-linear-160 from-foreground/10 via-background/20 to-foreground/10 will-change-[backdrop-filter,opacity,transform]',
         props.className,
       )}
     />

@@ -63,6 +63,7 @@ export const Dialog = ({
   return (
     <ShadDialog open={isOpen} onOpenChange={handleOpenChange} {...dialogProps}>
       <DialogContent
+        aria-describedby={undefined}
         onInteractOutside={handleInteractOutside}
         onEscapeKeyDown={handleEscapeKeyDown}
         className="sm:max-w-[425px]"

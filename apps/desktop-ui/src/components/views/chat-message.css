@@ -1,0 +1,86 @@
+[data-slot="user-message"],
+[data-slot="ai-message"] {
+  max-width: 100%;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.5rem;
+  margin-inline: 1rem;
+}
+
+[data-slot="user-message"] img,
+[data-slot="ai-message"] img {
+  display: inline;
+  margin-inline: 0.25rem;
+  vertical-align: middle;
+}
+
+[data-slot="ai-message"] .image-generation-container {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  display: inline-flex;
+  position: relative;
+}
+
+[data-slot="ai-message"] .image-generation-container>.image-generation-download-button {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  opacity: 0;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: hsl(var(--background) / 0.8);
+}
+
+[data-slot="ai-message"] .image-generation-container>.image-generation-download-button svg {
+  fill: currentColor;
+  pointer-events: none;
+  transform: scale(8);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+[data-slot="ai-message"] .image-generation-container:hover>.image-generation-download-button {
+  opacity: 1;
+}
+
+[data-slot="ai-message"] .image-generation-container>img {
+  margin-inline: unset;
+}
+
+[data-slot="user-message"] a,
+[data-slot="ai-message"] a {
+  font-weight: 600;
+  color: #a0d2f7;
+  transition-property: color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+[data-slot="user-message"] a:hover,
+[data-slot="ai-message"] a:hover {
+  color: #f0f9ff;
+}
+
+[data-slot="user-message"] a:active,
+[data-slot="ai-message"] a:active {
+  color: hsl(var(--primary));
+}
+
+[data-slot="user-message"] {
+  color: hsl(var(--muted-foreground));
+  font-weight: 400;
+}
+
+[data-slot="ai-message"] {
+  color: hsl(var(--foreground));
+  font-weight: 500;
+}

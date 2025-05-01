@@ -57,7 +57,6 @@ export async function addImage(
   preview.style.justifyContent = 'center'
   preview.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
   preview.style.backdropFilter = 'blur(4px)'
-  preview.style.animation = 'fade-in 0.2s ease-in-out'
   preview.onclick = () => {
     document.body.removeChild(preview)
   }

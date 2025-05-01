@@ -49,13 +49,13 @@ export const SpeechSynthesisIndicator = ({
       ref={ref}
       className={cn(
         'h-full min-w-32 flex flex-row items-center justify-center gap-x-[0.0625rem] overflow-visible relative',
-        !active && 'pointer-events-none',
+        active ? 'pointer-events-auto' : 'pointer-events-none',
       )}
     >
       {Array.from({ length: segments }).map((_, index) => (
         <span
           key={index}
-          className="segment h-[0.5rem] w-[0.5rem] rounded-full bg-foreground-600"
+          className="segment h-[0.5rem] w-[0.5rem] rounded-full bg-foreground"
           style={{
             opacity: Math.pow(1 - Math.abs(index - segments / 2) / segments, 3),
           }}

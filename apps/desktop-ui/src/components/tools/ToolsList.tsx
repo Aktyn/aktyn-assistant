@@ -13,6 +13,7 @@ import {
 import { useCancellablePromise } from '../../hooks/useCancellablePromise'
 import { ToolEditDialog } from '../dialog/ToolEditDialog'
 import { cn } from '@/lib/utils'
+import { Label } from '../ui/label'
 
 type ToolsListProps = {
   tools: ToolInfo[]
@@ -48,82 +49,84 @@ export const ToolsList = ({ tools, onRequestReload }: ToolsListProps) => {
   return (
     <>
       <div className="flex flex-col gap-y-2">
-        <Checkbox
-          id="enable-all-tools"
-          className="flex items-center gap-x-2"
-          checked={
-            enabledToolsCount > 0 && enabledToolsCount === tools.length
-              ? true
-              : enabledToolsCount > 0
-                ? 'indeterminate'
-                : false
-          }
-          onCheckedChange={(checked: boolean | 'indeterminate') => {
-            const selected = checked === true // indeterminate also triggers change
-            if (selected) {
-              handleEnabledToolsChange(
-                tools.map((tool) => tool.schema.functionName),
-              )
-            } else {
-              handleEnabledToolsChange([])
+        <div className="flex items-center mb-2">
+          <Checkbox
+            id="enable-all-tools"
+            checked={
+              enabledToolsCount > 0 && enabledToolsCount === tools.length
+                ? true
+                : enabledToolsCount > 0
+                  ? 'indeterminate'
+                  : false
             }
-          }}
-        >
-          <label htmlFor="enable-all-tools" className="text-lg">
+            onCheckedChange={(checked: boolean | 'indeterminate') => {
+              const selected = checked === true // indeterminate also triggers change
+              if (selected) {
+                handleEnabledToolsChange(
+                  tools.map((tool) => tool.schema.functionName),
+                )
+              } else {
+                handleEnabledToolsChange([])
+              }
+            }}
+            className="size-6 **:[svg]:size-5"
+          />
+          <Label htmlFor="enable-all-tools" className="text-lg">
             Enable all
-          </label>
-        </Checkbox>
+          </Label>
+        </div>
         <div className="flex flex-col gap-y-2">
           {tools.map((tool) => (
             <div
               key={tool.schema.functionName}
               className="flex flex-row items-center justify-between gap-x-2"
             >
-              <Checkbox
-                id={`tool-${tool.schema.functionName}`}
-                checked={tool.enabled}
-                onCheckedChange={(checked: boolean) => {
-                  const currentEnabled = tools
-                    .filter((t) => t.enabled)
-                    .map((t) => t.schema.functionName)
-                  const toolName = tool.schema.functionName
-                  if (checked) {
-                    handleEnabledToolsChange([...currentEnabled, toolName])
-                  } else {
-                    handleEnabledToolsChange(
-                      currentEnabled.filter((name) => name !== toolName),
-                    )
-                  }
-                }}
-                className="gap-x-2"
-              >
+              <div className="flex flex-row items-center gap-x-2">
+                <Checkbox
+                  id={`tool-${tool.schema.functionName}`}
+                  checked={tool.enabled}
+                  onCheckedChange={(checked: boolean) => {
+                    const currentEnabled = tools
+                      .filter((t) => t.enabled)
+                      .map((t) => t.schema.functionName)
+                    const toolName = tool.schema.functionName
+                    if (checked) {
+                      handleEnabledToolsChange([...currentEnabled, toolName])
+                    } else {
+                      handleEnabledToolsChange(
+                        currentEnabled.filter((name) => name !== toolName),
+                      )
+                    }
+                  }}
+                  className="gap-x-2 size-6 **:[svg]:size-5"
+                />
                 <div className="flex flex-col items-start max-w-96">
                   <div className="flex flex-row items-baseline">
-                    <label
+                    <Label
                       htmlFor={`tool-${tool.schema.functionName}`}
                       className="font-bold"
                     >
                       {tool.schema.functionName}
-                    </label>
+                    </Label>
                     <Badge
                       variant="outline"
                       className="ml-1 text-muted-foreground"
                     >
-                      ({tool.schema.version})
+                      v{tool.schema.version}
                     </Badge>
                   </div>
-                  <span className="text-sm text-muted-foreground text-balance">
+                  <span className="text-sm text-muted-foreground text-pretty">
                     {tool.schema.description}
                   </span>
                 </div>
-              </Checkbox>
+              </div>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="rounded-full"
+                      className="rounded-full ml-auto"
                       onClick={(event) => {
                         event.stopPropagation()
                         setToolToEdit(tool)
@@ -132,7 +135,7 @@ export const ToolsList = ({ tools, onRequestReload }: ToolsListProps) => {
                     >
                       <Settings
                         className={cn(
-                          'transition-transform h-6 w-6',
+                          'transition-transform',
                           openToolEditDialog &&
                             toolToEdit === tool &&
                             'rotate-90',
@@ -155,7 +158,7 @@ export const ToolsList = ({ tools, onRequestReload }: ToolsListProps) => {
                         className="rounded-full text-destructive"
                         onClick={() => removeTool(tool)}
                       >
-                        <Trash2 className="h-6 w-6" />
+                        <Trash2 />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Remove tool</TooltipContent>

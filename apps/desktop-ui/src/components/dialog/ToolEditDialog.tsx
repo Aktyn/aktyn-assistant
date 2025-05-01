@@ -83,7 +83,7 @@ export const ToolEditDialog = ({
       <div className="flex flex-col gap-2">
         <Label className="font-semibold">Omit in:</Label>
         {Object.entries(omitInOptions).map(([key, { label }]) => (
-          <div key={key} className="flex items-center space-x-2">
+          <div key={key} className="flex items-center">
             <Checkbox
               id={`omit-${key}`}
               checked={omitIn.includes(key as OmitKey)}

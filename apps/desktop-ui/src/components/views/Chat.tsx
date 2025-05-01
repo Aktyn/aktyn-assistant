@@ -1,32 +1,35 @@
+import {
+  AdvancedInput,
+  type AdvancedInputHandle,
+  type AdvancedInputProps,
+} from '@/components/chat/AdvancedInput'
+import { ChatMenu } from '@/components/chat/ChatMenu'
+import { ChatMode } from '@/components/chat/helpers'
+import { GlassCard } from '@/components/common/GlassCard'
+import { SpeechSynthesisIndicator } from '@/components/common/SpeechSynthesisIndicator'
+import { useCancellablePromise } from '@/hooks/useCancellablePromise'
+import { useStateToRef } from '@/hooks/useStateToRef'
+import { useUserConfigValue } from '@/hooks/useUserConfigValue'
 import { cn } from '@/lib/utils'
+import { format } from '@/utils/contentFormatters'
 import type { ChatMessage } from '@aktyn-assistant/common'
 import type { ChatSource } from '@aktyn-assistant/core'
-import { Loader2, MoveHorizontal } from 'lucide-react'
+import { Loader2, MessagesSquare, Move } from 'lucide-react'
 import {
   useCallback,
   useEffect,
   useRef,
   useState,
+  type RefObject,
   type WheelEventHandler,
 } from 'react'
 import { Converter } from 'showdown'
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  AdvancedInput,
-  type AdvancedInputHandle,
-  type AdvancedInputProps,
-} from '../components/chat/AdvancedInput'
-import { ChatMenu } from '../components/chat/ChatMenu'
-import { ChatMode } from '../components/chat/helpers'
-import { GlassCard } from '../components/common/GlassCard'
-import { SpeechSynthesisIndicator } from '../components/common/SpeechSynthesisIndicator'
-import { useCancellablePromise } from '../hooks/useCancellablePromise'
-import { useStateToRef } from '../hooks/useStateToRef'
-import { useUserConfigValue } from '../hooks/useUserConfigValue'
-import { format } from '../utils/contentFormatters'
+import { ScrollArea } from '../ui/scroll-area'
 
-import './chat.css'
+import './chat-message.css'
+import './code-blocks.css'
 
 type ChatProps = {
   in?: boolean
@@ -106,10 +109,14 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
 
     scrollToBottomTimeoutRef.current = setTimeout(() => {
       if (active) {
-        messagesContainerRef.current?.scrollTo({
-          top: messagesContainerRef.current.scrollHeight,
-          behavior: 'smooth',
-        })
+        const container =
+          getScrollAreaInnerContainer(messagesContainerRef)?.parentElement
+        if (container) {
+          container.scrollTo({
+            top: container.scrollHeight,
+            behavior: 'smooth',
+          })
+        }
       }
       scrollToBottomTimeoutRef.current = null
     }, 200)
@@ -137,13 +144,17 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
 
   const sendMessageBase = useCallback(
     (message: ChatMessage, id: string) => {
-      if ((messagesContainerRef.current?.childNodes.length ?? 0) > 1) {
+      const container = getScrollAreaInnerContainer(messagesContainerRef)
+      if (!container) {
+        return
+      }
+      if ((container.childNodes.length ?? 0) > 1) {
         const hr = document.createElement('hr')
-        messagesContainerRef.current?.appendChild(hr)
+        container.appendChild(hr)
       }
 
       const messageElement = document.createElement('div')
-      messageElement.className = 'chat-message user'
+      messageElement.dataset.slot = 'user-message'
       messageElement.append(
         ...message.contents.map((item: ChatMessage['contents'][number]) => {
           switch (item.type) {
@@ -165,26 +176,18 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         }),
       )
 
-      messagesContainerRef.current?.appendChild(messageElement)
-      messagesContainerRef.current?.classList.remove('empty')
+      container.appendChild(messageElement)
+      container.classList.remove('empty')
 
       const activeAiMessageElement = document.createElement('div')
-      activeAiMessageElement.className = 'chat-message ai reset-tw'
+      activeAiMessageElement.className = 'reset-tw'
+      activeAiMessageElement.dataset.slot = 'ai-message'
       activeAiMessageElement.dataset.messageId = id
 
       activeAiMessageElementRef.current = activeAiMessageElement
       activeAiMessageBuffersRef.current.set(id, '')
-      messagesContainerRef.current?.appendChild(
-        activeAiMessageElementRef.current,
-      )
-      //TODO: Add animation
-      // anime({
-      //   targets: [messageElement, activeAiMessageElementRef.current],
-      //   easing: 'spring(1, 80, 10, 0)',
-      //   opacity: [0, 1],
-      //   translateX: ['4rem', '0rem'],
-      //   delay: anime.stagger(200, { from: 'first' }),
-      // })
+      container.appendChild(activeAiMessageElementRef.current)
+
       scrollToBottom()
       setStickToBottom(true)
       setLoading(true)
@@ -465,17 +468,13 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
   ])
 
   const handleClearChat = useCallback((focusInput = true) => {
-    if (!messagesContainerRef.current) {
+    const container = getScrollAreaInnerContainer(messagesContainerRef)
+    if (!container) {
       return
     }
 
-    for (const child of [
-      ...messagesContainerRef.current.querySelectorAll('.chat-message'),
-      ...messagesContainerRef.current.querySelectorAll(':scope > hr'),
-    ]) {
-      child.remove()
-    }
-    messagesContainerRef.current.classList.add('empty')
+    container.innerHTML = ''
+    container.classList.add('empty')
     setActiveMessageId(null)
     setConversationId(uuidv4())
     activeAiMessageElementRef.current = null
@@ -491,9 +490,9 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
       setShowRawResponse(on)
 
       const messageContainers =
-        messagesContainerRef.current?.querySelectorAll<HTMLDivElement>(
-          '.chat-message.ai',
-        ) ?? []
+        getScrollAreaInnerContainer(
+          messagesContainerRef,
+        )?.querySelectorAll<HTMLDivElement>('[data-slot="ai-message"]') ?? []
       for (const messageContainer of messageContainers) {
         const messageId = messageContainer.dataset.messageId
         if (!messageId) {
@@ -526,15 +525,36 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
 
   return (
     <GlassCard
+      data-slot={quickChatMode ? 'quick-chat-view' : 'chat-view'}
       className={cn(
-        'chat-view border-b-0',
-        quickChatMode && 'quick-chat-view',
-        mode,
+        'relative py-0 grid grid-cols-1 grid-rows-[1fr_auto] gap-0',
+        quickChatMode
+          ? 'bg-background/95 border-2 border-primary/20 shadow-none size-[calc(100%-2px)] box-border max-w-none max-h-none text-shadow-[0_0_1px_#0004] justify-between overflow-hidden rounded-b-md'
+          : 'h-[calc(100vh-var(--spacing)*4)] overflow-hidden mt-4 border-b-0 rounded-b-none',
+        mode === ChatMode.ImageGeneration &&
+          'border-gradient-secondary/20 bg-linear from-gradient-secondary/10 to-gradient-secondary/10',
+        mode === ChatMode.ImageGeneration && quickChatMode && 'bg-background!',
       )}
     >
-      <div
+      <ScrollArea
         ref={messagesContainerRef}
-        className="chat-output empty overflow-auto shadow-inner"
+        className={cn(
+          'overflow-auto shadow-inner\
+          **:data-[slot="scroll-area-viewport"]:*:pt-16\
+          **:data-[slot="scroll-area-viewport"]:mask-t-from-[calc(100%-var(--spacing)*24)]\
+          **:[hr]:border-border **:[hr]:my-2\
+          \
+          **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:content-["AI_responses_will_appear_here"]\
+          **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:text-muted-foreground\
+          **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:font-bold\
+          **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:block\
+          **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:text-center',
+
+          quickChatMode &&
+            'pt-0\
+            **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:content-["Quick_chat_responses_will_appear_here"]\
+            **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:mt-0',
+        )}
         onWheel={handleWheel}
         onClick={(event) => {
           if (event.currentTarget.children.length === 0) {
@@ -542,14 +562,16 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
           }
         }}
       />
-      <div className="small-info flex flex-row items-center gap-x-2 text-sm text-foreground-600">
-        <MoveHorizontal size={20} />
+      <div className="absolute right-16 top-4 h-8 z-10 flex flex-row items-center justify-end gap-x-2 text-sm text-muted-foreground">
+        <MessagesSquare className="size-5" />
         <span>
           {mode === ChatMode.Assistant
             ? selectedChatModel
             : imageGenerationModel}
         </span>
-        {mockPaidRequests && <span className="text-xs">(mock)</span>}
+        {mockPaidRequests && (
+          <span className="text-xs text-orange-300">(mock)</span>
+        )}
       </div>
       <ChatMenu
         mode={mode}
@@ -562,18 +584,21 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
         setReadChatResponses={setReadChatResponses}
         onClearChat={handleClearChat}
       />
-      <div className="chat-view-input-container">
+      <div className="mt-auto flex relative *:not-first:absolute *:not-first:inset-x-0 *:not-first:inset-y-0 *:not-first:my-auto *:not-first:h-auto *:not-first:transition-opacity *:not-first:pointer-events-none">
         <AdvancedInput
           ref={inputRef}
           onSend={handleSend}
-          disabled={loading}
+          loading={loading}
           textOnly={mode === ChatMode.ImageGeneration}
         />
-        <div className="chat-spinner" style={{ opacity: loading ? 1 : 0 }}>
-          <Loader2 className="animate-spin" size={24} />
+        <div
+          className="left-0 right-auto w-fit h-full inline-flex items-center justify-start pointer-events-none p-2"
+          style={{ opacity: loading ? 1 : 0 }}
+        >
+          <Loader2 className="animate-spin size-6" />
         </div>
         <div
-          className="chat-speaking-indicator"
+          className="right-4 h-full flex items-center justify-end min-h-8"
           style={{ opacity: speakingConversationId ? 1 : 0 }}
         >
           <SpeechSynthesisIndicator
@@ -582,12 +607,30 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
           />
         </div>
       </div>
-      <div className="handle-container">
-        <div className="handle">
-          <MoveHorizontal size={24} />
-          <span>Grab here to move the window</span>
+      {quickChatMode && (
+        <div className="absolute top-0 inset-x-0 w-full pointer-events-none z-20">
+          <div
+            className="select-none flex items-center justify-center gap-x-2 color-foreground/25 border rounded-full mx-auto px-4 py-1 text-sm w-golden-reverse max-w-[calc(100%-4rem)] bg-background/50 cursor-pointer overflow-hidden whitespace-nowrap text-muted-foreground"
+            style={{
+              //@ts-expect-error webkit css property
+              WebkitAppRegion: 'drag',
+            }}
+          >
+            <Move className="size-5" />
+            <span className="text-sm">Grab here to move the window</span>
+          </div>
         </div>
-      </div>
+      )}
     </GlassCard>
   )
+}
+
+function getScrollAreaInnerContainer(
+  scrollAreaRef: RefObject<HTMLDivElement | null>,
+) {
+  const scrollArea = scrollAreaRef.current
+  if (!scrollArea) {
+    return null
+  }
+  return scrollArea.querySelector('[data-slot="scroll-area-viewport"]>div')
 }

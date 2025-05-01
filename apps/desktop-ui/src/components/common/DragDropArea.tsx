@@ -77,8 +77,8 @@ export const DragDropArea = forwardRef<HTMLDivElement, DragDropAreaProps>(
       <div
         ref={forwardRef}
         className={cn(
-          'flex flex-row items-center justify-center gap-4 border-2 border-dashed border-divider rounded-2xl p-8 bg-divider/10 cursor-pointer transition-colors text-foreground-200 hover:bg-divider/20 hover:text-foreground-50 hover:border-foreground-50 shadow-xl my-4',
-          isDragOver && 'border-primary-400 text-primary-100 bg-primary-200/20',
+          'flex flex-row items-center justify-center gap-4 border-2 border-dashed rounded-2xl p-8 bg-border/20 cursor-pointer transition-colors text-foreground hover:bg-border/50 hover:text-foreground hover:border-muted-foreground shadow-xl',
+          isDragOver && 'border-primary text-primary bg-primary/20',
         )}
         onDrop={handleDrop}
         onDragOver={(event) => {

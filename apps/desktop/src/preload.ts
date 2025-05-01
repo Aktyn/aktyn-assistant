@@ -22,6 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
 contextBridge.exposeInMainWorld('electronAPI', {
   // Renderer to main
   isReady: () => ipcRenderer.invoke('isReady'),
+  isWaitingForWhisper: () => ipcRenderer.invoke('isWaitingForWhisper'),
   getInitData: () => ipcRenderer.invoke('getInitData'),
   setAutoLaunch: (on: boolean) => ipcRenderer.invoke('setAutoLaunch', on),
   getUserConfigValue: (key: string) =>

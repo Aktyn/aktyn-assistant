@@ -14,11 +14,12 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       <Button
         ref={ref}
         variant="ghost"
+        size="icon"
+        {...buttonProps}
         className={cn(
-          'rounded-full p-2 data-[hover=true]:bg-foreground-50/25 text-current relative *:absolute *:transition-[opacity,transform]',
+          'rounded-full! p-2 aspect-square min-w-auto data-[hover=true]:bg-foreground-50/25 relative *:absolute *:inset-auto *:transition-[opacity,rotate] cursor-pointer',
           buttonProps.className,
         )}
-        {...buttonProps}
       >
         <Icon
           className={cn(

@@ -79,15 +79,6 @@ function createCodeBlockHeaderElement(pre: HTMLPreElement) {
       codeHeight,
       codeElement.getBoundingClientRect().height,
     )
-    //TODO: Add animation
-    // const range = [codeHeight, 0]
-    // anime({
-    //   targets: codeElement,
-    //   easing: 'easeInOutCirc',
-    //   duration: 200,
-    //   maxHeight: hidden ? range : range.reverse(),
-    //   opacity: hidden ? 0 : 1,
-    // })
   }
 
   codeOptionsDiv.appendChild(toggleButton)

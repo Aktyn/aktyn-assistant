@@ -7,9 +7,11 @@ import {
   useImperativeHandle,
   useRef,
   useEffect,
+  type FormEventHandler,
 } from 'react'
 import type { ChatMessage } from '@aktyn-assistant/common'
 import { addFile, autoHeight, imageUrlToFile } from './helpers'
+import { cn } from '@/lib/utils'
 
 const maxInputLength = 2048
 
@@ -21,15 +23,28 @@ export type AdvancedInputHandle = {
 
 export type AdvancedInputProps = {
   onSend: (contents: ChatMessage['contents']) => void
-  disabled?: boolean
+  loading?: boolean
   textOnly?: boolean
 }
 
 export const AdvancedInput = forwardRef<
   AdvancedInputHandle,
   AdvancedInputProps
->(({ onSend, disabled = false, textOnly = false }, forwardRef) => {
+>(({ onSend, loading = false, textOnly = false }, forwardRef) => {
   const inputRef = useRef<HTMLDivElement>(null)
+
+  const handleUpdate = useCallback(
+    (event: {
+      currentTarget: Parameters<
+        FormEventHandler<HTMLDivElement>
+      >[0]['currentTarget']
+    }) => {
+      event.currentTarget.dataset.empty = String(
+        !event.currentTarget.innerText.trim().length,
+      )
+    },
+    [],
+  )
 
   useImperativeHandle(
     forwardRef,
@@ -37,21 +52,22 @@ export const AdvancedInput = forwardRef<
       clear: () => {
         if (inputRef.current) {
           inputRef.current.innerText = ''
+          handleUpdate({ currentTarget: inputRef.current })
         }
       },
       focus: () => inputRef.current?.focus(),
       blur: () => inputRef.current?.blur(),
     }),
-    [],
+    [handleUpdate],
   )
 
   useEffect(() => {
-    inputRef.current?.setAttribute('disabled', disabled.toString())
-    inputRef.current?.setAttribute('readonly', disabled.toString())
-    if (disabled) {
+    inputRef.current?.setAttribute('disabled', loading.toString())
+    inputRef.current?.setAttribute('readonly', loading.toString())
+    if (loading) {
       inputRef.current?.blur()
     }
-  }, [disabled])
+  }, [loading])
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
     (event) => {
@@ -125,6 +141,7 @@ export const AdvancedInput = forwardRef<
         }
         for (const file of files) {
           addFile(file, event.currentTarget).catch(console.error)
+          handleUpdate({ currentTarget: event.currentTarget })
         }
       } else {
         const selection = window.getSelection()
@@ -135,15 +152,20 @@ export const AdvancedInput = forwardRef<
           }
           const filePath = text.replace('file://', '')
           imageUrlToFile(filePath)
-            .then((file) => addFile(file, event.currentTarget))
+            .then((file) => {
+              const addFileResult = addFile(file, event.currentTarget)
+              handleUpdate({ currentTarget: event.currentTarget })
+              return addFileResult
+            })
             .catch(console.error)
         } else {
           console.info('Pasted text:', text)
           selection?.getRangeAt(0).insertNode(document.createTextNode(text))
+          handleUpdate({ currentTarget: event.currentTarget })
         }
       }
     },
-    [textOnly],
+    [handleUpdate, textOnly],
   )
 
   const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>(
@@ -156,17 +178,23 @@ export const AdvancedInput = forwardRef<
       if (files?.length) {
         for (const file of files) {
           addFile(file, event.currentTarget).catch(console.error)
+          handleUpdate({ currentTarget: event.currentTarget })
         }
       }
     },
-    [textOnly],
+    [handleUpdate, textOnly],
   )
 
   return (
     <div
       ref={inputRef}
-      className="chat-input"
+      data-empty={true}
+      className={cn(
+        "outline-none size-full min-h-8 max-h-64 leading-8 px-2 resize-none overflow-y-auto overflow-x-hidden border-t rounded-none box-border focus-within:border-primary focus-within:bg-primary/10 transition-colors disabled:pointer-events-none before:content-['Type_your_message...'] before:text-muted-foreground before:inline-block before:size-0 before:text-nowrap before:pointer-events-none before:transition-opacity data-[empty=true]:before:opacity-50 data-[empty=false]:before:opacity-0 text-foreground **:[img]:inline **:[img]:mx-1 **:[img]:align-middle",
+        loading && 'pointer-events-none data-[empty=true]:before:opacity-0',
+      )}
       contentEditable="true"
+      onInput={handleUpdate}
       onKeyDown={handleKeyDown}
       onPaste={handlePaste}
       onDrop={handleDrop}

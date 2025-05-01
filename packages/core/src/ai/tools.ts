@@ -57,8 +57,7 @@ function loadToolsFromExternalSource(indexPath: string) {
   const { default: index } = require(indexPath)
   if (typeof index !== 'function') {
     throw new Error(
-      'Tool index file must default export a function that returns array of tools',
-      index,
+      `Tool index file must default export a function that returns array of tools ${index}`,
     )
   }
   for (const tool of index()) {

@@ -1,7 +1,3 @@
-import { useState } from 'react'
-import { EllipsisVertical, X } from 'lucide-react'
-import { Icon } from 'lucide-react'
-import { broom } from '@lucide/lab'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -10,9 +6,14 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { GlobalContext } from '@/context/GlobalContextProvider'
+import { ViewType } from '@/utils/navigation'
+import { EllipsisVertical, Settings, Shredder, X } from 'lucide-react'
 import { DynamicIcon } from 'lucide-react/dynamic'
-import { ChatMode, chatModeProps } from './helpers'
+import { useContext, useState } from 'react'
 import { IconButton } from '../common/IconButton'
+import { Separator } from '../ui/separator'
+import { ChatMode, chatModeProps } from './helpers'
 
 type ChatMenuProps = {
   mode: ChatMode
@@ -37,6 +38,8 @@ export const ChatMenu = ({
   readChatResponses,
   setReadChatResponses,
 }: ChatMenuProps) => {
+  const { setView } = useContext(GlobalContext)
+
   const [open, setOpen] = useState(false)
 
   return (
@@ -44,28 +47,36 @@ export const ChatMenu = ({
       <PopoverTrigger asChild>
         <IconButton
           size="sm"
-          className="options-menu-button border-1 border-divider"
+          className="absolute right-4 top-4 size-8 z-10 self-end backdrop-blur-sm border"
           icon={EllipsisVertical}
           activeIcon={X}
           active={open}
         />
       </PopoverTrigger>
-      <PopoverContent className="gap-y-2 py-2 items-center w-80">
-        <div className="text-center font-bold text-foreground-400">
-          Quick chat settings
-        </div>
-        <div className="h-px bg-default-700" />
+      <PopoverContent className="flex flex-col gap-y-2 py-2 px-0 items-stretch min-w-96">
+        <Button
+          variant="link"
+          className="self-center"
+          onClick={() => {
+            setView(ViewType.Settings)
+            setOpen(false)
+          }}
+        >
+          <Settings />
+          See all settings
+        </Button>
+        <Separator />
         <Tabs
           value={mode}
           onValueChange={(v) => setMode(v as ChatMode)}
-          className="w-full"
+          className="w-full px-4"
         >
-          <TabsList className="w-full bg-default-700 p-1">
+          <TabsList className="w-full p-2 h-auto grid grid-cols-2">
             {Object.values(ChatMode).map((m) => (
               <TabsTrigger
                 key={m}
                 value={m}
-                className="flex flex-row items-center gap-x-2 text-foreground-100 font-semibold"
+                className="flex flex-row items-center gap-x-2 text-foreground font-semibold"
               >
                 <DynamicIcon name={chatModeProps[m].icon} size={20} />
                 <span>{chatModeProps[m].title}</span>
@@ -73,8 +84,8 @@ export const ChatMenu = ({
             ))}
           </TabsList>
         </Tabs>
-        <div className="h-px bg-default-700" />
-        <div className="flex flex-col gap-y-1 w-full">
+        <Separator />
+        <div className="flex flex-col gap-y-1 w-full px-4">
           <label className="flex items-center gap-x-2 cursor-pointer">
             <Checkbox
               checked={!!showRawResponse}
@@ -94,14 +105,9 @@ export const ChatMenu = ({
             <span>Read chat responses</span>
           </label>
         </div>
-        <div className="h-px bg-default-700" />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="rounded-full"
-          onClick={onClearChat}
-        >
-          <Icon iconNode={broom} size={16} className="mr-2" />
+        <Separator />
+        <Button variant="outline" onClick={onClearChat} className="mx-4">
+          <Shredder />
           Clear chat
         </Button>
       </PopoverContent>

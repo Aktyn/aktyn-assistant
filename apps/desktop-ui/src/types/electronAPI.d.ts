@@ -18,6 +18,7 @@ declare global {
     electronAPI: {
       // Renderer to main
       isReady: () => Promise<boolean>
+      isWaitingForWhisper: () => Promise<boolean>
       getInitData: () => Promise<{
         autoLaunchEnabled: boolean
         version?: string

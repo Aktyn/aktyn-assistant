@@ -84,6 +84,15 @@ export const GlobalContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setApiKeyProviderType(providerType)
     })
 
+    window.electronAPI
+      .isWaitingForWhisper()
+      .then((waiting) => {
+        if (!waiting) {
+          setWaitingForWhisper(false)
+        }
+      })
+      .catch(console.error)
+
     window.electronAPI.onWhisperInitialized((initialized) => {
       setWaitingForWhisper(false)
       setWhisperInitialized(initialized)

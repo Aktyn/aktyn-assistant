@@ -31,6 +31,7 @@ import {
   createQuickCommandWindow,
   setupTray,
 } from './window'
+import { Whisper } from '@aktyn-assistant/core'
 
 initLogger('desktop')
 
@@ -80,6 +81,7 @@ async function init() {
 
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
+  ipcMain.handle('isWaitingForWhisper', () => Promise.resolve(!Whisper.instance().isReady()))
   ipcMain.handle('getInitData', () => {
     let version: string | undefined
     try {
