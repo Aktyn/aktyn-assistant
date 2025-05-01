@@ -6,7 +6,7 @@ export async function generateImage(
   { prompt, model }: { prompt: string; model: string },
 ) {
   assert(
-    model === 'dall-e-2' || model === 'dall-e-3',
+    model === 'dall-e-2' || model === 'dall-e-3' || model === 'gpt-image-1',
     'Unsupported model for image generation',
   )
 
@@ -16,10 +16,9 @@ export async function generateImage(
     model,
     prompt,
     n: imagesCount,
-    quality: 'standard', //TODO: allow user to choose hd quality for dall-e-3,
-    response_format: 'b64_json',
-    size: '1024x1024', //TODO: allow user to choose size depending on model
-    // style: 'vivid' //TODO: allow user to choose style for dall-e-3
+    output_format: 'png',
+    size: '1536x1024', //TODO: allow user to choose size depending on model
+    quality: 'high', //TODO: allow user to choose hd quality
   })
 
   assert(image.data?.length === imagesCount, 'Invalid image data')

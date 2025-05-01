@@ -36,6 +36,7 @@ export function ChatModelSelect({ type, inView = true }: ChatModelSelectProps) {
           if (!models[type]?.length) {
             throw new Error('No AI chat models available')
           }
+          models[type].sort((a, b) => b.localeCompare(a))
           setModels(models)
         })
         .catch(console.error)

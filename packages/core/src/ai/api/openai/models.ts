@@ -7,7 +7,7 @@ function isModelType(model: OpenAI.Models.Model, type: ModelType) {
     case ModelType.Chat:
       return model.id.startsWith('gpt') || model.id.match(/^o\d+.*/)
     case ModelType.Image:
-      return model.id.startsWith('dall-e')
+      return model.id === 'gpt-image-1'
   }
 }
 

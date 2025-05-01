@@ -548,7 +548,9 @@ export const Chat = ({ in: active, quickChatMode }: ChatProps) => {
           **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:text-muted-foreground\
           **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:font-bold\
           **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:block\
-          **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:text-center',
+          **:data-[slot="scroll-area-viewport"]:*:[.empty]:before:text-center\
+          \
+          **:data-[slot$="-message"]:contain-inline-size',
 
           quickChatMode &&
             'pt-0\
