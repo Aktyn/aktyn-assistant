@@ -1,6 +1,6 @@
 {
   "name": "@aktyn-assistant-tools/coding-assistant",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc -p ./tsconfig.json",
