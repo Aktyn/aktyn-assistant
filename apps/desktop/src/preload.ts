@@ -2,6 +2,7 @@ import type { ChatMessage, ChatResponse } from '@aktyn-assistant/common'
 import type {
   AiProviderType,
   ChatSource,
+  ModelType,
   ToolInfo,
   ToolsSourceData,
 } from '@aktyn-assistant/core'
@@ -29,7 +30,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('getUserConfigValue', key),
   setUserConfigValue: (key: string, value: unknown) =>
     ipcRenderer.send('setUserConfigValue', key, value),
-  getAvailableModels: () => ipcRenderer.invoke('getAvailableModels'),
+  getAvailableModels: <T extends ModelType>(...types: T[]) =>
+    ipcRenderer.invoke('getAvailableModels', types),
   promptAiProviderCallback: (provider: AiProviderType) =>
     ipcRenderer.send('promptAiProviderCallback', provider),
   promptApiKeyCallback: (key: string) =>

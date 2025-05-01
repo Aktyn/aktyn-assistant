@@ -12,6 +12,7 @@ import {
   setUserConfigValue,
   type ChatSource,
   initWhisper,
+  Whisper,
 } from '@aktyn-assistant/core'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron'
@@ -31,7 +32,6 @@ import {
   createQuickCommandWindow,
   setupTray,
 } from './window'
-import { Whisper } from '@aktyn-assistant/core'
 
 initLogger('desktop')
 
@@ -81,7 +81,9 @@ async function init() {
 
   let ready = false
   ipcMain.handle('isReady', () => Promise.resolve(ready))
-  ipcMain.handle('isWaitingForWhisper', () => Promise.resolve(!Whisper.instance().isReady()))
+  ipcMain.handle('isWaitingForWhisper', () =>
+    Promise.resolve(!Whisper.instance().isReady()),
+  )
   ipcMain.handle('getInitData', () => {
     let version: string | undefined
     try {

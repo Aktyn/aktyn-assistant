@@ -1,18 +1,37 @@
-import { type OpenAI } from 'openai'
+import type { OpenAI } from 'openai'
+
+import { ModelType } from '../common'
+
+function isModelType(model: OpenAI.Models.Model, type: ModelType) {
+  switch (type) {
+    case ModelType.Chat:
+      return model.id.startsWith('gpt') || model.id.match(/^o\d+.*/)
+    case ModelType.Image:
+      return model.id.startsWith('dall-e')
+  }
+}
 
 //istanbul ignore next
-export async function getAvailableModels(client: OpenAI) {
-  const chatModels: OpenAI.Models.Model[] = []
-  const imageModels: OpenAI.Models.Model[] = []
+export async function getAvailableModels<T extends ModelType>(
+  client: OpenAI,
+  ...types: T[]
+): Promise<{ [key in T]: OpenAI.Models.Model[] }> {
+  const models = types.reduce(
+    (acc, type) => {
+      acc[type] = []
+      return acc
+    },
+    {} as { [key in T]: OpenAI.Models.Model[] },
+  )
 
   const list = await client.models.list()
   for await (const model of list) {
-    if (model.id.startsWith('gpt')) {
-      chatModels.push(model)
-    } else if (model.id.startsWith('dall-e')) {
-      imageModels.push(model)
+    for (const type of types) {
+      if (isModelType(model, type)) {
+        models[type].push(model)
+      }
     }
   }
 
-  return { chatModels, imageModels }
+  return models
 }

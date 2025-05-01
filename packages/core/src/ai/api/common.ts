@@ -11,6 +11,11 @@ const AiProviderApiKeyFileNames: { [key in AiProviderType]: string } = {
   [AiProviderType.OpenAI]: 'openai-key.json',
 }
 
+export enum ModelType {
+  Chat = 'chat',
+  Image = 'image',
+}
+
 const getKeyFilePath = (providerType: AiProviderType) =>
   path.join(getDataDirectory(), AiProviderApiKeyFileNames[providerType])
 

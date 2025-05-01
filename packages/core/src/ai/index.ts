@@ -20,6 +20,7 @@ import {
   AiProviderType,
   deleteApiKey,
   loadProviderApiKey,
+  ModelType,
   saveProviderApiKey,
 } from './api/common'
 import * as OpenAiAPI from './api/openai'
@@ -32,7 +33,7 @@ import {
   type ToolInfo,
 } from './tools'
 
-export { AiProviderType } from './api/common'
+export { AiProviderType, ModelType } from './api/common'
 export {
   addToolsSource,
   editTool,
@@ -170,28 +171,31 @@ export class AI<ProviderType extends AiProviderType = AiProviderType> {
     }
   }
 
-  //istanbul ignore next
-  getAvailableModels = once(async () => {
+  getAllAvailableModels = once(async () => {
     switch (this.providerType) {
       case AiProviderType.OpenAI:
-        return await OpenAiAPI.getAvailableModels(this.providerClient).then(
-          (models) =>
-            Object.keys(models).reduce(
-              (acc, key) => {
-                return {
-                  ...acc,
-                  [key]: models[key as keyof typeof models]
-                    .map((model) => model.id)
-                    .sort((a, b) => b.localeCompare(a)),
-                }
-              },
-              {} as Record<keyof typeof models, string[]>,
-            ),
+        return await OpenAiAPI.getAvailableModels(
+          this.providerClient,
+          ...Object.values(ModelType),
         )
       default:
         throw throwUnsupportedProviderError(this.providerType)
     }
   })
+
+  //istanbul ignore next
+  getAvailableModels = async <T extends ModelType>(
+    types: T[],
+  ): Promise<{ [key in T]: string[] }> => {
+    const models = await this.getAllAvailableModels()
+    return types.reduce(
+      (acc, type) => {
+        acc[type] = models[type].map((model) => model.id)
+        return acc
+      },
+      {} as { [key in T]: string[] },
+    )
+  }
 
   async performChatQuery(
     message: ChatMessage,

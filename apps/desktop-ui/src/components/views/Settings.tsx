@@ -12,22 +12,12 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { useUserConfigValue } from '@/hooks/useUserConfigValue'
 import { gttsLanguages } from '@aktyn-assistant/common'
-import { type PropsWithChildren, useCallback, useEffect, useState } from 'react'
+import { type PropsWithChildren, useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
+import { ChatModelSelect } from '../chat/ChatModelSelect'
 import { Label } from '../ui/label'
 
 export const Settings = ({ in: active }: { in?: boolean }) => {
-  const [models, setModels] = useState<
-    Record<'chatModels' | 'imageModels', string[]>
-  >({ chatModels: [], imageModels: [] })
-
-  const [chatModel, setChatModel, syncChatModel] =
-    useUserConfigValue('selectedChatModel')
-  const [
-    imageGenerationModel,
-    setImageGenerationModel,
-    syncImageGenerationModel,
-  ] = useUserConfigValue('selectedImageGenerationModel')
   const [mockPaidRequests, setMockPaidRequests, syncMockPaidRequests] =
     useUserConfigValue('mockPaidRequests')
   const [launchOnStartup, setLaunchOnStartup, syncLaunchOnStartup] =
@@ -52,8 +42,6 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
   ] = useUserConfigValue('initialSystemMessage')
 
   const syncSettings = useCallback(async () => {
-    void syncChatModel()
-    void syncImageGenerationModel()
     void syncMockPaidRequests()
     void syncLaunchOnStartup()
     void syncLaunchHidden()
@@ -63,8 +51,6 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
     void syncTextToSpeechLanguage()
     void syncInitialSystemMessage()
   }, [
-    syncChatModel,
-    syncImageGenerationModel,
     syncLaunchHidden,
     syncLaunchOnStartup,
     syncMaxHistoryLength,
@@ -83,12 +69,6 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      const models = await window.electronAPI.getAvailableModels()
-      if (!models.chatModels.length) {
-        throw new Error('No AI chat models available')
-      }
-      setModels(models)
-
       await syncSettings()
     }
 
@@ -162,24 +142,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
           </Section>
 
           <Section title="Media">
-            <div>
-              <Label>Image generation model</Label>
-              <Select
-                value={imageGenerationModel ?? ''}
-                onValueChange={setImageGenerationModel}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Image Generation Model" />
-                </SelectTrigger>
-                <SelectContent>
-                  {models.imageModels.map((model) => (
-                    <SelectItem key={model} value={model}>
-                      {model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <ChatModelSelect type="image" inView={active} />
             <div className="flex items-center">
               <Checkbox
                 id="read-chat-responses"
@@ -209,21 +172,7 @@ export const Settings = ({ in: active }: { in?: boolean }) => {
           </Section>
 
           <Section title="Chat">
-            <div>
-              <Label>Chat model</Label>
-              <Select value={chatModel ?? ''} onValueChange={setChatModel}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chat Model" />
-                </SelectTrigger>
-                <SelectContent>
-                  {models.chatModels.map((model) => (
-                    <SelectItem key={model} value={model}>
-                      {model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <ChatModelSelect type="chat" inView={active} />
             <div className="flex items-center">
               <Checkbox
                 id="include-history"

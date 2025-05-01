@@ -5,6 +5,7 @@ import {
   getUserConfigValue,
   initLogger,
   logger,
+  ModelType,
   setUserConfigValue,
 } from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
@@ -53,11 +54,11 @@ async function run() {
 
     let chatModel = getUserConfigValue('selectedChatModel')
     const spinner = await showSpinner('Loading available models...')
-    const availableModels = await ai.getAvailableModels()
+    const availableModels = await ai.getAvailableModels([ModelType.Chat])
     spinner.stop()
-    if (!chatModel || !availableModels.chatModels.includes(chatModel)) {
+    if (!chatModel || !availableModels.chat.includes(chatModel)) {
       chatModel = await selectOption(
-        availableModels.chatModels.sort(),
+        availableModels.chat.sort(),
         'Select model you want to use for chat:',
       )
       setUserConfigValue('selectedChatModel', chatModel)

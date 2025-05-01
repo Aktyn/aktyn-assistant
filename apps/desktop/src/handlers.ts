@@ -7,6 +7,7 @@ import {
   getUserConfigValue,
   loadToolsInfo,
   logger,
+  type ModelType,
   removeTool,
   setEnabledTools,
   setUserConfigValue,
@@ -34,7 +35,9 @@ export function setupUserConfigHandlers() {
 }
 
 export function setupAiHandlers(ai: AI) {
-  ipcMain.handle('getAvailableModels', () => ai.getAvailableModels())
+  ipcMain.handle('getAvailableModels', (_, types: ModelType[]) =>
+    ai.getAvailableModels(types),
+  )
 
   ipcMain.on('cancelSpeaking', () => {
     ai.cancelSpeaking()

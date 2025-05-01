@@ -1,5 +1,9 @@
 import { gttsLanguages, trimString } from '@aktyn-assistant/common'
-import { getUserConfigValue, setUserConfigValue } from '@aktyn-assistant/core'
+import {
+  getUserConfigValue,
+  ModelType,
+  setUserConfigValue,
+} from '@aktyn-assistant/core'
 import { terminal } from 'terminal-kit'
 
 import { printError } from '../error'
@@ -141,7 +145,9 @@ export class SettingsView extends View {
   private async selectChatModel() {
     terminal.clear()
 
-    const models = (await this.ai.getAvailableModels()).chatModels.sort()
+    const models = (
+      await this.ai.getAvailableModels([ModelType.Chat])
+    ).chat.sort()
     terminal.moveTo(1, terminal.height - 2 - models.length)
 
     const currentModel = getUserConfigValue('selectedChatModel')

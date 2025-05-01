@@ -14,6 +14,7 @@ import { useContext, useState } from 'react'
 import { IconButton } from '../common/IconButton'
 import { Separator } from '../ui/separator'
 import { ChatMode, chatModeProps } from './helpers'
+import { ChatModelSelect } from './ChatModelSelect'
 
 type ChatMenuProps = {
   mode: ChatMode
@@ -84,6 +85,12 @@ export const ChatMenu = ({
             ))}
           </TabsList>
         </Tabs>
+        <Separator />
+        <div className="px-4">
+          <ChatModelSelect
+            type={mode === ChatMode.Assistant ? 'chat' : 'image'}
+          />
+        </div>
         <Separator />
         <div className="flex flex-col gap-y-1 w-full px-4">
           <label className="flex items-center gap-x-2 cursor-pointer">

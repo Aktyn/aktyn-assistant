@@ -55,9 +55,10 @@ export const SpeechSynthesisIndicator = ({
       {Array.from({ length: segments }).map((_, index) => (
         <span
           key={index}
-          className="segment h-[0.5rem] w-[0.5rem] rounded-full bg-foreground"
+          className="segment h-[0.5rem] w-[0.5rem] rounded-full bg-foreground animate-bounce ease-in-out"
           style={{
             opacity: Math.pow(1 - Math.abs(index - segments / 2) / segments, 3),
+            animationDelay: `${index / segments}s`,
           }}
         />
       ))}
@@ -65,7 +66,7 @@ export const SpeechSynthesisIndicator = ({
         <Button
           size="sm"
           variant="default"
-          className="font-bold backdrop-blur-sm rounded-full"
+          className="font-bold backdrop-blur-sm rounded-full h-auto py-0.5 text-xs mx-auto"
           onClick={onCancel}
         >
           Cancel speaking

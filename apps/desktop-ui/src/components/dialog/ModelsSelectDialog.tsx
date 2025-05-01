@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Dialog } from './Dialog'
+import type { ModelType } from '@aktyn-assistant/core'
 
 type ChatModelSelectDialogProps = {
   open: boolean
@@ -23,16 +24,17 @@ export const ModelsSelectDialog = ({
   const [imageGenerationModel, setImageGenerationModel] = useState<
     string | null
   >(null)
-  const [models, setModels] = useState<
-    Record<'chatModels' | 'imageModels', string[]>
-  >({ chatModels: [], imageModels: [] })
+  const [models, setModels] = useState<{ [key in `${ModelType}`]: string[] }>({
+    chat: [],
+    image: [],
+  })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (open) {
       setLoading(true)
       window.electronAPI
-        .getAvailableModels()
+        .getAvailableModels('chat', 'image')
         .then((models) => {
           setModels(models)
           setLoading(false)
@@ -61,7 +63,7 @@ export const ModelsSelectDialog = ({
         onClose()
       }}
     >
-      {models.chatModels.length > 0 && models.imageModels.length > 0 ? (
+      {models.chat.length > 0 && models.image.length > 0 ? (
         <div className="grid grid-cols-[1fr_auto_1fr] gap-x-4 items-start">
           <div className="flex flex-col gap-2">
             <span className="font-semibold text-lg text-muted-foreground">
@@ -78,7 +80,7 @@ export const ModelsSelectDialog = ({
                 <SelectValue placeholder="Select a chat model" />
               </SelectTrigger>
               <SelectContent>
-                {models.chatModels.map((model) => (
+                {models.chat.map((model) => (
                   <SelectItem key={model} value={model}>
                     {model}
                   </SelectItem>
@@ -102,7 +104,7 @@ export const ModelsSelectDialog = ({
                 <SelectValue placeholder="Select an image model" />
               </SelectTrigger>
               <SelectContent>
-                {models.imageModels.map((model) => (
+                {models.image.map((model) => (
                   <SelectItem key={model} value={model}>
                     {model}
                   </SelectItem>

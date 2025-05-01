@@ -5,13 +5,14 @@ import type {
   ToolInfo,
   ToolsSourceData,
   UserConfigType,
+  ModelType,
 } from '@aktyn-assistant/core'
 
-type PromisyfyFunction<T extends (...args: unknown[]) => unknown> = (
-  ...args: Parameters<T>
-) => ReturnType<T> extends Promise<unknown>
-  ? ReturnType<T>
-  : Promise<ReturnType<T>>
+// type PromisyfyFunction<T extends (...args: unknown[]) => unknown> = (
+//   ...args: Parameters<T>
+// ) => ReturnType<T> extends Promise<unknown>
+//   ? ReturnType<T>
+//   : Promise<ReturnType<T>>
 
 declare global {
   interface Window {
@@ -31,9 +32,9 @@ declare global {
         key: Key,
         value: UserConfigType[Key],
       ) => void
-      getAvailableModels: PromisyfyFunction<
-        () => Record<'chatModels' | 'imageModels', string[]>
-      >
+      getAvailableModels: <T extends `${ModelType}`[]>(
+        ...types: T
+      ) => Promise<Record<T[number], string[]>>
       promptAiProviderCallback: (provider: AiProviderType) => void
       promptApiKeyCallback: (key: string) => void
       performChatQuery: (

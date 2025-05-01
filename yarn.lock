@@ -27,6 +27,7 @@ __metadata:
     prettier-eslint: "npm:^16.4.1"
     puppeteer: "npm:^24.7.2"
     typescript: "npm:^5.8.3"
+    typescript-eslint: "npm:^8.31.1"
   languageName: unknown
   linkType: soft
 
@@ -48,6 +49,7 @@ __metadata:
     prettier: "npm:^3.5.3"
     prettier-eslint: "npm:^16.4.1"
     typescript: "npm:^5.8.3"
+    typescript-eslint: "npm:^8.31.1"
   languageName: unknown
   linkType: soft
 
@@ -70,6 +72,7 @@ __metadata:
     prettier: "npm:^3.5.3"
     prettier-eslint: "npm:^16.4.1"
     typescript: "npm:^5.8.3"
+    typescript-eslint: "npm:^8.31.1"
   languageName: unknown
   linkType: soft
 
@@ -224,6 +227,7 @@ __metadata:
     tree-kill: "npm:^1.2.2"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.8.3"
+    typescript-eslint: "npm:^8.31.1"
     uuid: "npm:^11.1.0"
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.1.2"
@@ -4309,6 +4313,7 @@ __metadata:
     shx: "npm:^0.4.0"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.8.3"
+    typescript-eslint: "npm:^8.31.1"
     update-electron-app: "npm:^3.1.1"
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.1.2"
