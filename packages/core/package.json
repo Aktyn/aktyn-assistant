@@ -31,7 +31,7 @@
 		"uuid": "^11.1.0"
 	},
 	"devDependencies": {
-		"@types/node": "^22.15.2",
+		"@types/node": "^22.15.29",
 		"@types/node-notifier": "^8.0.5",
 		"@types/pino-multi-stream": "^5.1.6",
 		"@types/uuid": "^10.0.0",

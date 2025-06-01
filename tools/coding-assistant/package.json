@@ -16,7 +16,7 @@
     "@aktyn-assistant/common": "*"
   },
   "devDependencies": {
-    "@types/node": "^22.15.2",
+    "@types/node": "^22.15.29",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "cross-env": "^7.0.3",

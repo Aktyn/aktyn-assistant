@@ -46,7 +46,7 @@
   "devDependencies": {
     "@aktyn-assistant/core": "*",
     "@eslint/js": "^9.22.0",
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.15.29",
     "@types/path-browserify": "^1.0.3",
     "@types/prismjs": "^1.26.5",
     "@types/react": "^19.0.10",
