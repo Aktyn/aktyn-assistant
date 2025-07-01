@@ -47,7 +47,7 @@
     "@electron/fuses": "^1.8.0",
     "@types/auto-launch": "^5.0.5",
     "@types/electron-squirrel-startup": "^1.0.2",
-    "@types/node": "^22.15.2",
+    "@types/node": "^24.0.10",
     "@types/prismjs": "^1.26.5",
     "@types/showdown": "^2.0.6",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
