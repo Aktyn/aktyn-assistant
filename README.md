@@ -68,7 +68,6 @@ Additional platforms may be supported upon [request](https://github.com/Aktyn/ak
   If neither of them is installed, the application will fall back to a less stable solution for playing audio.
   <details>
     <summary>Supported players</summary>
-
   - mplayer
   - afplay
   - mpg123

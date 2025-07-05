@@ -100,7 +100,7 @@ export const AdvancedInput = forwardRef<
                 {
                   const content = node.textContent?.trim()
                   if (content) {
-                    const last = acc.at(-1)
+                    const last = acc[acc.length - 1]
                     if (last && last.type === 'text') {
                       last.content += '\n' + content
                     } else {

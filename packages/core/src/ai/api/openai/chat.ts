@@ -137,7 +137,7 @@ export async function performChatQuery(
         break
       }
 
-      const choice = chunk.choices.at(0)
+      const choice = chunk.choices[0]
 
       try {
         if (choice?.delta.tool_calls?.length) {
@@ -214,7 +214,7 @@ export async function performChatQuery(
         break
       }
 
-      const choice = chunk.choices.at(0)
+      const choice = chunk.choices[0]
       if (!choice?.delta.content) {
         continue
       }
