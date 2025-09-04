@@ -4489,7 +4489,7 @@ __metadata:
     auto-launch: "npm:^5.0.6"
     cross-env: "npm:^7.0.3"
     dotenv: "npm:^17.0.1"
-    electron: "npm:^37.2.0"
+    electron: "npm:^37.3.1"
     electron-squirrel-startup: "npm:^1.0.1"
     electron-store: "npm:^10.1.0"
     eslint: "npm:^9.30.1"
@@ -6702,16 +6702,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^37.2.0":
-  version: 37.2.0
-  resolution: "electron@npm:37.2.0"
+"electron@npm:^37.3.1":
+  version: 37.4.0
+  resolution: "electron@npm:37.4.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
     "@types/node": "npm:^22.7.7"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10c0/1c300f1fc41e683119f37d81ba874d12c867bf607a8c2fabbcb14dfa04b83ca81094f6f5119825441ed5eabab2a9cbed1e37102c528d6ec90b2cc55d6819e990
+  checksum: 10c0/92a0c41190e234d302bc612af6cce9af08cd07f6699c1ff21a9365297e73dc9d88c6c4c25ddabf352447e3e555878d2ab0f2f31a14e210dda6de74d2787ff323
   languageName: node
   linkType: hard
 
